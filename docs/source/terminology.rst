@@ -6,7 +6,7 @@ This section introduces the terminology convention adopted throughout the rest o
 What is statistical analysis?
 -----------------------------
 
-It can be many things, but I will offer the following description that will cover many of the common analyses performed in HEP:
+It can be many things, but I will offer the following description that will cover many of the common analyses performed in HEP
 
 .. admonition:: \ \ 
   Statistical analysis is the process of make inferences about the values of parameters from a dataset of observables, using a parameterized probability model for the dataset. 
