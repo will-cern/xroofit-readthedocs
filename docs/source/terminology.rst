@@ -1,5 +1,10 @@
 Terminology
-===
+===========
+
+Variables
+---------
+
+
 
 .. autosummary::
    :toctree: generated
