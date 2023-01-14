@@ -8,7 +8,7 @@ What is statistical analysis?
 
 It can be many things, but I will offer the following description that will cover many of the common analyses performed in HEP
 
-.. note:: blah
+.. admonition:: What is statistical analysis?
     Statistical analysis is the process of make inferences about the values of parameters from a dataset of observables, using a parameterized probability model for the dataset. 
 
 Therefore we need to understand the following terms: parameters, observables, models, datasets. 
