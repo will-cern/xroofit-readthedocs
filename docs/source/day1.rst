@@ -22,7 +22,7 @@ Variables
 
 Datasets
 ---------
-`Datasets` consist of a set of values for a collection of variables. The variables that appear in a dataset are known as `observables`. You should think of a dataset as a table of values, where each observable is one column of the table, and the rows of the table are known as `entries` in the dataset. The entries of a dataset usually correspond to a single event, but an entry can also have a `weight` for when dealing with weighted data. Additionally, datasets can have a special list of observables called `global observables`, which can be thought of as like metadata for the dataset: their values are not specific to any entry, and are even defined if the dataset has no entries. The observables that are used as columns in the dataset are known as `regular observables`. Datasets are represented in RooFit by classes inheriting from ``RooAbsData``, of which ``RooDataSet`` is really the only one you need to know about. 
+`Datasets` consist of a set of values for a collection of variables. The variables that appear in a dataset are known as `observables`. You should think of a dataset as a table of values, where each observable is one column of the table, and the rows of the table are known as `entries` in the dataset. The entries of a dataset usually correspond to a single event, but an entry can also have a `weight` for when dealing with weighted data (the weights can also have an error, which can be used if calculating the `chi-squared` test statistic, which will be introduced below). Additionally, datasets can have a special list of observables called `global observables`, which can be thought of as like metadata for the dataset: their values are not specific to any entry, and are even defined if the dataset has no entries. The observables that are used as columns in the dataset are known as `regular observables`. Datasets are represented in RooFit by classes inheriting from ``RooAbsData``, of which ``RooDataSet`` is really the only one you need to know about. 
 
 Models
 ----------
@@ -32,11 +32,14 @@ Parameters are in one of two possible states: they are either `floating` or `con
 
 Test Statistics
 -------------
-`Test statistics` are functions that map a dataset onto a single value. In RooFit they are represented by classes inheriting from ``RooAbsTestStatistic``.
+`Test Statistics` are functions that map a dataset onto a single value. Some, but not all, test statistics take the form of the summation of a quantity over the entries of the dataset and therefore the calculation can readily be parallelized across the entries. Such batch-computable test statistics are represented in RooFit by classes inheriting from `RooAbsTestStatistic`. Two such statistics are:
+
+  * `Negative Log Likelihoood`: represented by  ``RooNLLVar`` in RooFit.
+  * `chi-squared`: represented by ``RooXYChi2Var`` in RooFit.
 
 Fit Results
 ------------
-`Fit Results` represent the result of a minimization of a `test statistic`. In RooFit fit results are represented by the ``RooFitResult`` class.
+`Fit Results` represent the result of a minimization of an `objective function`. In RooFit fit results are represented by the ``RooFitResult`` class.
 
 Workspaces
 ------------
