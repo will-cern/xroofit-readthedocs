@@ -32,7 +32,9 @@ Parameters are in one of two possible states: they are either `floating` or `con
 
 Test Statistics
 -------------
-`Test Statistics` are functions that map a dataset onto a single value. Some, but not all, test statistics take the form of the summation of a quantity over the entries of the dataset and therefore the calculation can readily be parallelized across the entries. Such batch-computable test statistics are represented in RooFit by classes inheriting from `RooAbsTestStatistic`. Two such statistics are:
+`Test Statistics` are functions that map a dataset onto a single value. They are usually constructed/defined using a model, thereby the parameters of the model are parameters of the test statistic. Some, but not all, of these test statistics can be desirable to minimize with respect to the parameters. Such test statistics we will call `objective functions` (this is a term used in machine learning for functions that are designed to be extremised). 
+
+Some, but not all, test statistics take the form of the summation of a quantity over the entries of the dataset and therefore the calculation can readily be parallelized across the entries. Such batch-computable test statistics are represented in RooFit by classes inheriting from `RooAbsTestStatistic`. Two such statistics are:
 
   * `Negative Log Likelihoood`: represented by  ``RooNLLVar`` in RooFit.
   * `chi-squared`: represented by ``RooXYChi2Var`` in RooFit.
@@ -58,14 +60,6 @@ The table below summarises the different type of variable described above:
 |           |----------+----------------------------------------------------------------------------------------------------+
 |           | constant | Constant non-observables of a model (with a given dataset)                                         |
 +-----------+----------+----------------------------------------------------------------------------------------------------+
-
-
-
-In a given statistical analysis all the variables are either an `observable` or a `parameter`. The observables are the variables that appear in a `dataset`, and the parameters are all the variables in `model` that aren't in the dataset. 
-
-There are two types of observable: `regular` and `global`. The regular observables should be thought of as defining the columns of a dataset, and each `entry` in the dataset will have a value for each of the regular observables; the entries of a dataset usually correspond to a single event, but an entry can also have a `weight` for when dealing with weighted data. The global observables, on the other hand, are like metadata of the dataset: they are defined for the dataset as a whole and can be present even if there are no entries in the dataset. Datasets are represented in RooFit by classes inheriting from ``RooAbsData``, of which ``RooDataSet`` is really the only one you need to know about. 
-
-As stated above, the variables of a model that are not observables (as defined by a given dataset) are refered to as `parameters`.  
 
 
   
