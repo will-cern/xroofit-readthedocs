@@ -26,12 +26,14 @@ Datasets
 
 Models
 ----------
-`Models` are functions that evaluate to the probability density (or sometimes probability mass) of observing an entry of a given dataset. This will include the probability of observing the global observable values of the dataset. Any variable that the model depends which isn't an observable is known as a `parameter`. We will learn below that models usually follow a common generic structure in HEP. Models are represented in RooFit by classes inheriting from ``RooAbsPdf``.
+`Models` are functions that evaluate to the probability density (or sometimes probability mass if all the observables are categorical) of observing an entry of a given dataset. This will include the probability of observing the global observable values of the dataset. Any variable that the model depends which isn't an observable is known as a `parameter`. We will learn below that models usually follow a common generic structure in HEP. Models are represented in RooFit by classes inheriting from ``RooAbsPdf``.
 
 Parameters are in one of two possible states: they are either `floating` or `constant`. Only continuous parameters can be floating (we will learn why a floating categorial parameter would cause issues). The constant parameters are also sometimes called the `arguments` of the model, and the floating parameters are the `floats`. 
 
-Test Statistics
+Objective functions
 -------------
+Once a model, :math:`M`, has been defined for a dataset, :math:`D=\{\uline{x},\uline{g}}`
+
 `Test Statistics` are functions that map a dataset onto a single value. They are usually constructed/defined using a model, thereby the parameters of the model are parameters of the test statistic. Some, but not all, of these test statistics can be desirable to minimize with respect to the parameters. Such test statistics we will call `objective functions` (this is a term used in machine learning for functions that are designed to be extremised). 
 
 Some, but not all, test statistics take the form of the summation of a quantity over the entries of the dataset and therefore the calculation can readily be parallelized across the entries. Such batch-computable test statistics are represented in RooFit by classes inheriting from `RooAbsTestStatistic`. Two such statistics are:
@@ -41,7 +43,7 @@ Some, but not all, test statistics take the form of the summation of a quantity 
 
 Fit Results
 ------------
-`Fit Results` represent the result of a minimization of an `objective function`. In RooFit fit results are represented by the ``RooFitResult`` class.
+`Fit Results` represent the result of a minimization of an `objective function` through varying its floating parameters. In RooFit fit results are represented by the ``RooFitResult`` class, and it holds the initial and final floating parameter values of the objective function, along with the constant parameter values, the minimized objective-function value with an estimate of the difference to the true minimum, and a status code to indicate whether the minimization was successful or not. Fit Results can also hold estimates floating parameter errors, along with status codes for the algorithms that estimate these errors.
 
 Workspaces
 ------------
