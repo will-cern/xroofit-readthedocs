@@ -12,3 +12,6 @@ Contents
 
    day0
    basics
+   workspaceBuilding
+   fitting
+   hypothesisTesting
