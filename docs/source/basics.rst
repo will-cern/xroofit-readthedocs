@@ -28,7 +28,7 @@ Models
 ----------
 `Models` are functions that evaluate to the probability density (or sometimes probability mass if all the observables are categorical) of observing an entry of a given dataset. This will include the probability of observing the global observable values of the dataset. Any variable that the model depends which isn't an observable is known as a `parameter`. We will learn below that models usually follow a common generic structure in HEP. Models are represented in RooFit by classes inheriting from ``RooAbsPdf``.
 
-Parameters are in one of two possible states: they are either `floating` or `constant`. Only continuous parameters can be floating (we will learn why a floating categorial parameter would cause issues). The constant parameters are also sometimes called the `arguments` of the model, and the floating parameters are the `floats`.
+Parameters are in one of two possible states: they are either `floating` or `constant`. Parameters that can be in either state are `floatable` parameters. Non-floatable parameters must be `constant`. All categorical variables are non-floatable. Additionally, continuous variables can be non-floatable if they are represented with a `RooConstVar` in RooFit. The constant parameters are also sometimes called the `arguments` of the model, and the floating parameters are the `floats`.
 
 Test Statistics
 -------------
@@ -61,21 +61,33 @@ The table below summarises the different type of variable described above:
 |observable |----------+-----------------------------------------------------------------------------------------------------+
 |           | global   | Metadata of a dataset, same value for every entry (can be defined even if no entries in the datset).|
 +-----------+----------+-----------------------------------------------------------------------------------------------------+
-|           | floating | Non-constant non-observables of a model (with a given dataset).                                     |
+|           | floating | Non-constant floatable non-observables of a model (with a given dataset).                           |
 |parameter  |----------+-----------------------------------------------------------------------------------------------------+
-|           | constant | Constant non-observables of a model (with a given dataset).                                         |
+|           | constant | Constant-floatable, or non-floatable, non-observables of a model (with a given dataset).            |
 +-----------+----------+-----------------------------------------------------------------------------------------------------+
 
+Additionally, for statistical analysis purposes, one or more floatable parameters can be labelled `parameters of interest` (poi). The remaining floatable parameters are deemed the `nuisance parameters` (np).
 
- Exercises
- -----------
+Exercises
+----------------------------
  
- Working with workspaces
- ^^^^^^^^^^^^^^^^^^^^^^^
- Here are some ways to load a workspace into an `xRooNode`:
+Working with workspaces
+^^^^^^^^^^^^^^^^^^^^^^^
+Here are some ways to load a workspace into an `xRooNode`:
  
- >>> w = ROOT.xRooNode("filename.root")
- >>> f = ROOT.TFile("filename.root"); ws = f.Get("wsname"); w = ROOT.xRooNode(ws) # assumes wsname is name of workspace in file
+>>> w = ROOT.xRooNode("filename.root")
+>>> f = ROOT.TFile("filename.root"); ws = f.Get("wsname"); w = ROOT.xRooNode(ws) # assumes wsname is name of workspace in file
  
+Once you have an `xRooNode` that wraps a workspace you can use methods of the node to access the different variables:
 
-
+======== =================
+vars()   List of variables
+obs()    List of observables
+robs()   List of regular observables
+globs()  List of global observables
+pars()   List of parameters
+floats() List of floating parameters
+consts() List of non-floating parameters
+poi()    List of parameters of interest
+np()     List of nuisance parameters (floatables that aren't poi)
+======== =================
