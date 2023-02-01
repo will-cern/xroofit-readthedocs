@@ -10,5 +10,8 @@ Contents
 
 .. toctree::
 
-   day0
-   day1
+   setup
+   basics
+   workspaceBuilding
+   fitting
+   hypothesisTesting

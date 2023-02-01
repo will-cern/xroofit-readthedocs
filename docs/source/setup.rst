@@ -21,4 +21,4 @@ xRooFit
 
 xRooFit installation on top of ROOT ....
 
-.. autofunction:: lumache.get_random_ingredients
+
