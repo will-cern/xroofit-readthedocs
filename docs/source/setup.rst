@@ -27,7 +27,8 @@ xRooFit works in both C++ and python, however, it is much easier to use from pyt
 
 In C++ you would have to do:
 
-.. code-block:: c
+.. code-block:: c++
+
    w.get<RooWorkspace>()->factory( ... )
 
 In C++ you also have to be aware that some methods of ``xRooNode`` will return a pointer to an ``xRooNode`` whereas others will return an ``xRooNode``, and so you have to remember after each method if you should use ``.`` or ``->`` which isn't an issue in python where it is always ``.``. For these reasons, in this course we will stick with python in all the examples as the code is less verbose and more uniform in these cases.
