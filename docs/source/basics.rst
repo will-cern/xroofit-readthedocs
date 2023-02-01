@@ -26,6 +26,7 @@ Datasets
 
 .. figure:: dataset_concept.png
     :width: 80%
+    :align: "center"
     
     A visual representation of a dataset.
 
@@ -33,7 +34,7 @@ Models
 ----------
 `Models` are functions that evaluate to the probability density (or sometimes probability mass if all the observables are categorical) of observing an entry of a given dataset. This will include the probability of observing the global observable values of the dataset. Any variable that the model depends which isn't an observable is known as a `parameter`. We will learn below that models usually follow a common generic structure in HEP. Models are represented in RooFit by classes inheriting from ``RooAbsPdf``.
 
-Parameters are in one of two possible states: they are either `floating` or `constant`. Parameters that can be in either state are `floatable` parameters. Non-floatable parameters must be `constant` - these types of parameters are also called `arguments`. All categorical parameters are non-floatable. Additionally, continuous variables can be non-floatable if they are represented with a `RooConstVar` in RooFit. The constant parameters are also sometimes called the `consts` of the model, and the floating parameters are the `floats`.
+Parameters are in one of two possible states: they are either `floating` or `constant`. Parameters that can be in either state are `floatable` parameters. Non-floatable parameters must be `constant` - these types of parameters are also called `arguments`. All categorical parameters are deemed non-floatable. Additionally, continuous variables can be non-floatable if they are represented with a `RooConstVar` in RooFit. The constant parameters are also sometimes called the `consts` of the model, and the floating parameters are the `floats`.
 
 Test Statistics
 -------------
@@ -66,14 +67,14 @@ The table below summarises the different type of variable described above:
 |observable |----------+-----------------------------------------------------------------------------------------------------+
 |           | global   | Metadata of a dataset, same value for every entry (can be defined even if no entries in the datset).|
 +-----------+----------+-----------+-----------------------------------------------------------------------------------------+
-|           | floatable| floating  | Non-constant floatable non-observables of a model (with a given dataset).               |
-|parameter  |          |-----------+-----------------------------------------------------------------------------------------+
-|           |          | constant  | Constant-floatable non-observables of a model (with a given dataset).                   |
-|           |----------|           |-----------------------------------------------------------------------------------------|
+|           |          | floating  | Non-constant floatable non-observables of a model (with a given dataset).               |
+|           | floatable|-----------+-----------------------------------------------------------------------------------------+
+| parameter |          |           | Constant-floatable non-observables of a model (with a given dataset).                   |
+|           |----------| constant  |-----------------------------------------------------------------------------------------|
 |           | arugment |           | Constant non-floatable non-observables of a model (with a given dataset).               |
 +-----------+----------+-----------+-----------------------------------------------------------------------------------------+
 
-Additionally, for statistical analysis purposes, one or more floatable parameters can be labelled `parameters of interest` (poi). The remaining floatable parameters are deemed the `nuisance parameters` (np).
+Additionally, for statistical analysis purposes, one or more parameters can be labelled `parameters of interest` (poi). The remaining parameters are deemed the `nuisance parameters` (np).
 
 Exercises
 ----------------------------
@@ -96,5 +97,5 @@ pars()   List of parameters
 floats() List of floating parameters
 consts() List of non-floating parameters
 poi()    List of parameters of interest
-np()     List of nuisance parameters (floatables that aren't poi)
+np()     List of nuisance parameters (parameters that aren't poi)
 ======== =================
