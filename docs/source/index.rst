@@ -10,7 +10,7 @@ Contents
 
 .. toctree::
 
-   day0
+   setup
    basics
    workspaceBuilding
    fitting
