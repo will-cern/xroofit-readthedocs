@@ -11,4 +11,4 @@ Contents
 .. toctree::
 
    day0
-   day1
+   basics
