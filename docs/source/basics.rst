@@ -8,7 +8,8 @@ What do I mean by statistical analysis?
 
 For now I will work with the following description that will cover many of the common analyses performed in HEP
 
-.. note:: Statistical Analysis:
+.. admonition:: Statistical Analysis
+
     The process of making inferences about the values of parameters from a dataset of observables, using a parameterized probability model for the dataset. 
 
 Therefore we need to understand the following terms: parameters, observables, models, datasets. 
