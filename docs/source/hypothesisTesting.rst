@@ -28,7 +28,7 @@ Note that by definition ``pNull`` and ``pAlt`` are between 0 and 1, but ``pCLs``
 
 HypoPoint Test Statistics
 ^^^^^^^^^^^^^^^^^^^^^^^^^
-So all that remains is to define what actual test statistic to use at each hypoPoint. We always use a variant of the `Profile Likelihood Ratio` test statistic. The (two-sided) profile likelihood ratio is given by :math:`t_\mu=−2ln(L(\mu,\hat{\hat{θ}},a)/L(\hat{mu},\hat{theta},a)` (where :math:`\mu` are the poi, :math:`\theta` are the np and :math:`a` are the arguments). The test statistic we use for upper limits is the one-sided capped-above profile likelihood ratio:
+So all that remains is to define what actual test statistic to use at each hypoPoint. We always use a variant of the `Profile Likelihood Ratio` test statistic. The (two-sided) profile likelihood ratio is given by :math:`t_\mu=−2ln(L(\mu,\hat{\hat{θ}},a)/L(\hat{\mu},\hat{\theta},a)` (where :math:`\mu` are the poi, :math:`\theta` are the np, and :math:`a` are the arguments). The test statistic we use for upper limits is the one-sided capped-above profile likelihood ratio:
 
 .. math::
 
