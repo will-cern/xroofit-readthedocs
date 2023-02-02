@@ -71,10 +71,10 @@ The table below summarises the different type of variable described above:
 |           | floatable|-----------+-----------------------------------------------------------------------------------------+
 | parameter |          |           | Constant-floatable non-observables of a model (with a given dataset).                   |
 |           |----------| constant  |-----------------------------------------------------------------------------------------|
-|           | arugment |           | Constant non-floatable non-observables of a model (with a given dataset).               |
+|           | argument |           | Constant non-floatable non-observables of a model (with a given dataset).               |
 +-----------+----------+-----------+-----------------------------------------------------------------------------------------+
 
-Additionally, for statistical analysis purposes, one or more parameters can be labelled `parameters of interest` (poi). The remaining parameters are deemed the `nuisance parameters` (np).
+Additionally, for statistical analysis purposes, one or more floatable parameters can be labelled `parameters of interest` (poi). The remaining floatable parameters are deemed the `nuisance parameters` (np).
 
 Exercises
 ----------------------------
@@ -97,5 +97,5 @@ pars()   List of parameters
 floats() List of floating parameters
 consts() List of non-floating parameters
 poi()    List of parameters of interest
-np()     List of nuisance parameters (parameters that aren't poi)
+np()     List of nuisance parameters (floatable parameters that aren't poi)
 ======== =================
