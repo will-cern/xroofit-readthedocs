@@ -7,15 +7,36 @@ Today you will learn how to build a workspace containing a model and a dataset.
 Anatomy of a model
 ==================
 
+.. note:: 
+  In this section :math:`\theta` is used as the symbol to represent *all* types of parameter rather than just the nuisance parameters.
+
+
+
 Channels
 ---------
+Models are factorised into channels, which means that there is a discrete regular observable (traditionally called ``channelCat``) that indicates which channel each entry in the dataset belongs to. If we denote this observable as :math:`c` then the PDF (i.e. the model) is given by:
+
+.. math::
+
+  p(x|\theta) = \prod_g p_g(a_{g}|\theta)\prod_{i=0}^{N} p(x_{i}|\theta) = \prod_g p_g(a_{g}|\theta)\prod_c\prod_{j=0}^{N_{c}} p(x_{j}|\theta) = \prod_g p_g(a_{g}|\theta)\prod_i\left[\frac{\lambda_{c}(\theta)}{\sum_c \lambda_{c}(\theta)}p_{c}(x_{ic}|\theta)\right]
+
+
 
 Samples
 ---------
+Channels can be built out of samples. A sample is just a sub-component of a channel, such that the PDF of the channel corresponds to the sum over the samples:
+
+.. math::
+
+  p_{c}(x_{c}|\theta) = \frac{\sum_s c_{cs}f_s(x_{c}|p)}{\int\sum_s c_{cs}f_s(x_{c}|p)dx_c
+  
+where :math:`c_{cs}` are known as the `coefficients` of the sample :math:`s` that appears in channel :math:`c` (technical points: the coefficients are "owned" by the channel rather than the sample). 
+
+In RooFit the above PDF is represented by `RooRealSumPdf` (if the :math:`f_s` are functions) or `RooAddPdf` (if the :math:`f_s` are all PDFs, in which case the coefficients correspond to the yield for each sample).
 
 Factors
 --------
-Samples can be built out of factors i.e. :math:`f_{s}(x_{c},p) = \prod_f f_{f}(x_{c},p)` where :math:`f_{f}(x_{c},p)` are the individual factors that are themselves functions of the channel observables :math:`x_{c}` and/or the model parameters :math:`p`.
+Samples can be built out of factors i.e. :math:`f_{s}(x_{c},p) = \prod_f f_{f}(x_{c}|p)` where :math:`f_{f}(x_{c}|p)` are the individual factors that are themselves functions of the channel observables :math:`x_{c}` and/or the model parameters :math:`p`.
 
 The most fundamental type of factor we can imagine is literally just a fixed number. We will call this a `Const` factor. To go from this starting point to any other type of factor we conceptually need ways to make our factor either :math:`x_{c}`-dependent and/or :math:`p`-dependent.
 
@@ -42,7 +63,7 @@ This is a discretely-:math:`x_{c}`-dependent (discretely = binned in the observa
 
 Varied Factors
 ^^^^^^^^^^^^^^
-A Varied factor is an implicitly-:math:`x_{c}`-dependent function parameterized on one or more parameters. It should be thought of as being built up of a set of "variations" that correspond to particular points in the "variation space", specifically the points where one of the "variation coordinates" equals +1 or -1 and the remaining "variation coordinates" are all 0. The +1 point is the "up variation" corresponding to the given coordinate, and the -1 point is the "down variation" for that coordinate. There is also the "nominal variation"  corresponding to all coordinates equalling 0. The variations themselves could be functions of the parameters but are normally just ConstHisto factors (in which case the Varied factor is called a `Histo` factor). The variation coordinates are often explicitly model parameters, but could also be functions of the model parameters (i.e. the coordinates implicitly depend on the parameters). The Varied factor has an "interpolation code" that defines how exactly to interpolates/extrapolate from these defined points to any point in the variation space. The formulae for this interpolation are:....
+A Varied factor is a parameterized (i.e. -:math:`p`-dependent) function on one or more parameters. It should be thought of as being built up of a set of "variations" that correspond to particular points in the "variation space", specifically the points where one of the "variation coordinates" equals +1 or -1 and the remaining "variation coordinates" are all 0. The +1 point is the "up variation" corresponding to the given coordinate, and the -1 point is the "down variation" for that coordinate. There is also the "nominal variation"  corresponding to all coordinates equalling 0. The variations themselves could be functions of the parameters but are normally just ConstHisto factors (in which case the Varied factor is called a `Histo` factor). The variation coordinates are often explicitly model parameters, but could also be functions of the model parameters (i.e. the coordinates implicitly depend on the parameters). The Varied factor has an "interpolation code" that defines how exactly to interpolates/extrapolate from these defined points to any point in the variation space. The formulae for this interpolation are:....
 
 .. math::
 
