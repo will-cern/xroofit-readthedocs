@@ -15,9 +15,22 @@ Samples
 
 Factors
 --------
-Samples can be built out of factors i.e. :math:`f_{s}(x_{c},p) = \prod_f f_{f}(x_{c},p)` where :math:`f_{f}(x_{c},p)` are the individual factors that are themselves functions of the channel observables :math:`x_{c}` and the model parameters :math:`p`. 
+Samples can be built out of factors i.e. :math:`f_{s}(x_{c},p) = \prod_f f_{f}(x_{c},p)` where :math:`f_{f}(x_{c},p)` are the individual factors that are themselves functions of the channel observables :math:`x_{c}` and/or the model parameters :math:`p`.
 
-The HistFactory model specification defines the following types of factors: Histo, Shape, Overall, and Norm. For completeness I will also introduce the terminology of "Const" and "ConstHisto" factors. I will explain below how, in fact, Shape, Overall, and Norm factors can technically be viewed as "special cases" of the Histo factor. Let's discuss each of these factor types in turn....
+The most fundamental type of factor we can imagine is literally just a fixed number. We will call this a `Const` factor. To go from this starting point to any other type of factor we conceptually need ways to make our factor either :math:`x_{c}`-dependent and/or :math:`p`-dependent.
+
+We will call the discretely-:math:`x_{c}`-dependent (i.e. binned in the observable) version of a `Const` factor a `ConstHisto` factor. 
+
+There are a multitude of ways we could make a factor :math:`p`-dependent. One strategy is to define a collection of "variations" for the factor (the variations can be arbitrary function but we can make them be a type of factor), locate them at points in a "variation space" with parameterized coordinates, and provide an interpolation/extrapolation rule to calculate the value of the factor at any point in the variation space. Very commonly the variation coordinates will explicitly be model parameters, and the points for which variations are defined will correspond to points where one of the coordinates equals either +1 or -1 and the remaining coordinates are 0. The +1 variation is called the `up` variation of that coordinate, and -1 variation is the `down` variation. Additionally the point where all the coordinates are 0 will be known as the "nominal" variation. We will call this type of factor a `Varied` factor. 
+
+So far we have defined Const (:math:`x_{c}`- and :math:`p`-independent), ConstHisto (:math:`x_{c}`-dependent), and Varied (:math:`p`-independent) factors. We will now define some special cases in terms of these generic factors:
+
+   * `Histo` factor: a Varied factor where all the variations are `ConstHisto` factors.
+   * `Shape` factor: a `Histo` factor with one explicit parameter variation-coordinate for each bin, with the nominal variation being 0 everywhere and each parameter +/-1 variation being 0 everywhere except for the single corresponding bin, which takes on value +/-1.
+   * `Overall` factor: a Varied factor where all the variations are `Const` factors.
+   * `Norm` factor: an `Overall` factor with exactly one parameter and the +/-1 variation is +/-1 (and nominal=0). This is equivalent to the factor being just the parameter explicitly. 
+
+Let's re-iterate each of the factor types in turn....
 
 Const Factors
 ^^^^^^^^^^^^^^
@@ -27,9 +40,9 @@ ConstHisto Factors
 ^^^^^^^^^^^^^^
 This is a discretely-:math:`x_{c}`-dependent (discretely = binned in the observable) unparameterized function, i.e. it's just a histogram over the observable. ConstHisto factors are often used as the variations of a Histo factor (which is how the Histo factor becomes implicitly dependent on the observable). In RooFit a ``ConstHisto`` factor is represented by the ``RooHistFunc`` class.
 
-Histo Factors
+Varied Factors
 ^^^^^^^^^^^^^^
-A Histo factor is an implicitly-:math:`x_{c}`-dependent function parameterized on one or more parameters. It should be thought of as being built up of a set of "variations" that correspond to particular points in the "variation space", specifically the points where one of the "variation coordinates" equals +1 or -1 and the remaining "variation coordinates" are all 0. The +1 point is the "up variation" corresponding to the given coordinate, and the -1 point is the "down variation" for that coordinate. There is also the "nominal variation"  corresponding to all coordinates equalling 0. The variations themselves could be functions of the parameters but are normally just ConstHisto factors. The variation coordinates are often explicitly model parameters, but could also be functions of the model parameters (i.e. the coordinates implicitly depend on the parameters). The Histo factor has an "interpolation code" that defines how exactly to interpolates/extrapolate from these defined points to any point in the variation space. The formulae for this interpolation are:....
+A Varied factor is an implicitly-:math:`x_{c}`-dependent function parameterized on one or more parameters. It should be thought of as being built up of a set of "variations" that correspond to particular points in the "variation space", specifically the points where one of the "variation coordinates" equals +1 or -1 and the remaining "variation coordinates" are all 0. The +1 point is the "up variation" corresponding to the given coordinate, and the -1 point is the "down variation" for that coordinate. There is also the "nominal variation"  corresponding to all coordinates equalling 0. The variations themselves could be functions of the parameters but are normally just ConstHisto factors (in which case the Varied factor is called a `Histo` factor). The variation coordinates are often explicitly model parameters, but could also be functions of the model parameters (i.e. the coordinates implicitly depend on the parameters). The Varied factor has an "interpolation code" that defines how exactly to interpolates/extrapolate from these defined points to any point in the variation space. The formulae for this interpolation are:....
 
 .. math::
 
