@@ -82,11 +82,14 @@ The test statistic we usually use for upper limits is the *one-sided (capped-abo
 
   \tilde{q}_\mu \equiv \begin{cases}
     t_\mu \text{ if $\hat\mu < \mu$,} \\
-    t_\mu-t_0 \text{ if $\hat\mu < \mu_L$,} \\
-    0 \text{ if $\hat\mu >= \mu$}.
+    0 \text{ if $\hat\mu >= \mu$,} \\
+    t_\mu-t_{\mu=\mu_L} \text{ if $\hat\mu < \mu_L$}. \\
     \end{cases}
     
-where :math:`\mu_L` is the lower-bound of the physical range of the parameter of interest, which is normally equal to 0.
+where :math:`\mu_L` is the lower-bound of the physical range of the parameter of interest, which is normally equal to 0. The 
+notation is such that q inidicates this likelihood ratio is one-sided (the second condition), and the ~ above the q indicates it is lower-bound (the third condition).
+It will take up to two fits to evaluate this test statistic (the unconditional fit, the conditional fit at either the test-value of :math:`\mu` 
+or at :math:`\mu=\mu_L`).
 
 The test statistic conventionally used for discovery is the *one-sided (capped-below) profile likelihood ratio*:
 
@@ -104,6 +107,15 @@ However, in recent years a different test statistic variant has become popular f
     t_{\mu=0} \text{ if $\hat\mu > 0$,} \\
     -t_{\mu=0} \text{ if $\hat\mu <= 0$}.
     \end{cases}
+
+
+Asymptotic p-values
+^^^^^^^^^^^^^^^^^^^
+With just what is defined above one could calculate p-values for a hypoPoint by building up the test statistic distributions from toys. 
+However, because each evaluation of the test statistic will involve one or two fits, this can end up being a costly calculation to perform 
+(especially for hypoPoints where the p-value turns out to be small, which will require many toys to determine accurately).
+
+An approximation can be obtained using asymptotic formulae for test statistic distributions based on the Wald approximation.
 
 Limit Setting Checklist
 -----------------------
