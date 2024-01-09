@@ -68,7 +68,7 @@ HypoPoint Test Statistics
 So all that remains is to define what actual test statistic to use at each hypoPoint. We always use a variant of the 
 `Profile Likelihood Ratio` test statistic. The (two-sided) profile likelihood ratio is given by:
 
-.. :math:
+.. :math::
 
   t_\mu=−2\log\left(\frac{L(\mu,\hat{\hat{θ}},\alpha)}{L(\hat{\mu},\hat{\theta},\alpha)}\right)
   
