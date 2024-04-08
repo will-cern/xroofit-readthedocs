@@ -144,20 +144,22 @@ Here is a complete and verbose example python script for computing a CLs limit o
   fileName  = "path/to/workspace.root"           # path to the workspace
   pdfName   = "simPdf"                           # name of the top-level pdf in the workspace
   channels  = "*"                                # comma-separated list of channels to include (n.b. you should not include VRs)
-  dsName    = "obsData"                          # name of the observed dataset, use "" to use an asimov dataset
-  poiName   = "mu"                               # name of the parameter of interest
+  dsName    = "obsData"                          # name of the observed dataset, use "" to use an asimov dataset for the obsData
+  poiName   = ""                                 # name of the parameter of interest - leave blank to auto-infer if possible
   asimovVal = 0                                  # POI-value to assume for asimov dataset (if dsName="")
   scanMin   = 0                                  # lower boundary poi value for limit scan (can be more restricted than fitting range)
   scanMax   = 10                                 # upper boundary poi value for limit scan (can be more restricted than fitting range)
   constPars = ""                                 # comma-separated list of nuisance parameters to hold const, e.g. do "*" for a stat-only limit
   tsType    = XRF.xRooFit.TestStatistic.qmutilde # choices: tmu, qmu, qmutilde, q0, uncappedq0
-  nSigmas   = [0,1,2,-1,-2,float('nan')])        # list of nSigmas to compute limits at ... "NaN" is used by xRooFit to indicate you want obs limit 
+  nSigmas   = [0,1,2,-1,-2,float('nan')]         # list of nSigmas to compute limits at ... "NaN" is used by xRooFit to indicate you want obs limit 
+  outFile   = ""                                 # specify a path to save the post-scan workspace (with result) to
 
   w = XRF.xRooNode(fileName)
+  if poiName == "": poiName = w.poi()[0].GetName() # requires POI to have been pre-specified in the workspace
   w.pars()[poiName].setRange("scan",scanMin,scanMax)
   w.pars().reduced(constPars).setAttribAll("Constant") # mark required parameters constant
-  w.pars()[poiName].setVal(asimovCal) # set to asimov value before building NLL, so that asimov dataset corresponding to this hypo is used if dsName=""
-  hs = w[pdfName].nll(dsName).hypoSpace(poiName) # creates a hypoSpace using the given pdf and dataset for the NLL, and poi = given parameter
+  w.pars()[poiName].setVal(asimovVal) # set to asimov value before building NLL, so that asimov dataset corresponding to this hypo is used if dsName=""
+  hs = w[pdfName].reduced(channels).nll(dsName).hypoSpace(poiName) # creates a hypoSpace using the given pdf and dataset for the NLL, and poi = given parameter
   
   limits = hs.limits("cls visualize",nSigmas) # replace "cls visualize" with "cls" to skip visualizing the automatic scan as it progresses
 
@@ -165,8 +167,7 @@ Here is a complete and verbose example python script for computing a CLs limit o
   print(limits)
   hasNaN = False
   for nSigma,lim in dict(limits).items(): # example of how to get result out of limits map
-      print(nSigma," sigma limit =",lim.value(),"+/-",lim.error())
-      if ROOT.TMath.IsNaN(lim.value()): hasNaN = True
+      if ROOT.TMath.IsNaN(lim.value()): hasNaN = True # use lim.error() to access the 'uncertainty' on the limit
   if hasNaN:
       # failed to find one of the limits, so print the hypoSpace for information about points that were scanned and their FitResult statuscodes
       hs.Print()
@@ -175,6 +176,7 @@ Here is a complete and verbose example python script for computing a CLs limit o
   if outFile != "":
       w.Add( hs.result() )
       w.SaveAs(outFile)
+      w.Browse() # can inspect the workspace ... the hypoSpace will appear under the "scans" folder of workspace
 
 A minimal version of running a limit would be:
 
@@ -183,17 +185,25 @@ A minimal version of running a limit would be:
   import ROOT
   XRF = ROOT # or for ROOT's builtin xRooFit: XRF = ROOT.Experimental.XRooFit
   w = XRF.xRooNode("path/to/workspace.root")
-  print( w.nll("obsData").hypoSpace().limits() )
+  print( w.nll().hypoSpace().limits() )
 
-This assumes that the POI has already been declared in the workspace, there is only one top-level pdf in the workspace, and that the fitting range of the POI is appropriate to also be used as the scan range. 
+This assumes that the POI has already been declared in the workspace, there is only one top-level pdf in the workspace, and that the fitting range of the POI is appropriate to also be used as the scan range. For the observed data an asimov dataset is generated corresponding to whatever the state of the model is at the time the workspace is opened. 
 
 95\% CLs limits on a hypoSpace defined with just the parameter of interest (assigned to x-axis) can be calculated with the asymptotic formulae with:
 
 >>> w["modelName"].nll("datasetName").hypoSpace().limits()
 
-which returns a dictionary of the observed and expected limits on the parameter of interest. The keys of the dictionary are "-2","-1","0","1","2" for the expected limits and "obs" for the observed limits. If no dataset is specified in the construction of the `nll` then the asimov expected dataset is used as the "observed" dataset and the "obs" limits are omitted (because the observed limits will be exactly the same as the expected limits). 
+which returns a dictionary of the observed and expected limits on the parameter of interest. The keys of the dictionary are "-2","-1","0","1","2" for the expected limits and "obs" for the observed limits. If no dataset is specified in the construction of the `nll` then the asimov expected dataset is used as the "observed" dataset.
 
 The values of the dictionary are pairs of numbers where the first number is the limit, and the second number is the uncertainty on that limit. 
 
+Why does my CLs limit scan fail?
+-----------------------------------
 Many fits are involved in the process of calculating the limits. If at any point a fit fails, the limit being calculated will be set to `NaN` and the next limit will be calculated. 
+
+You should print the hypoSpace or explore it in the browser, as demonstrated in the script above, in order to work out which hypothesis tests (hypoPoints) returned non-zero status codes. 
+
+A common issue is that the range specified for the scan is too large, and the so the hypoPoints get created that are too discrepant with the dataset and the fit struggles to correctly evaluate the covariance matrix at the minima (the covariance matrix must be positive definite, but status code = 1 indicates that the matrix was forced positive definite, which means you are not at a valid minima). 
+
+If you specified a sensible scan range, you should next try to identify if there is a particular (nuisance) parameter that is causing your fits to fail. You can use the demo code above to select groups of parameters to hold constant during the fit. Remember that ``w.pars().Print()`` will list all the parameters and ``w.floats().Print()`` will list all the currently-floating parameters.
 
