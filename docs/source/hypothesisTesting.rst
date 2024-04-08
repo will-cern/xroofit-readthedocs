@@ -134,7 +134,7 @@ You should be able to answer the following questions:
 xRooFit Demo: CLs limits with asymptotic formulae
 -----------------------------------
 
-Here is a complete and verbose example python script for computing a CLs limit on an existing workspace. Additional commentary on the code follows the script.
+Here is a complete and verbose example python script for computing a CLs limit on an existing workspace. It is intended to demonstrate how you can control many aspects of how the limit scan is performed.  Additional commentary on the code follows the script.
 
 .. code-block:: python
 
@@ -149,19 +149,21 @@ Here is a complete and verbose example python script for computing a CLs limit o
   asimovVal = 0                                  # POI-value to assume for asimov dataset (if dsName="")
   scanMin   = 0                                  # lower boundary poi value for limit scan (can be more restricted than fitting range)
   scanMax   = 10                                 # upper boundary poi value for limit scan (can be more restricted than fitting range)
+  scanN     = 0                                  # number of points to scan, leave as 0 for an auto-scan
+  scanType  = "cls visualize"                    # leave out the 'visualize' if you don't want to see progress during scan
   constPars = ""                                 # comma-separated list of nuisance parameters to hold const, e.g. do "*" for a stat-only limit
-  tsType    = XRF.xRooFit.TestStatistic.qmutilde # choices: tmu, qmu, qmutilde, q0, uncappedq0
+  tsType    = XRF.xRooFit.TestStatistic.qmutilde # choices: tmu, qmu, qmutilde, q0, u0
   nSigmas   = [0,1,2,-1,-2,float('nan')]         # list of nSigmas to compute limits at ... "NaN" is used by xRooFit to indicate you want obs limit 
   outFile   = ""                                 # specify a path to save the post-scan workspace (with result) to
 
   w = XRF.xRooNode(fileName)
   if poiName == "": poiName = w.poi()[0].GetName() # requires POI to have been pre-specified in the workspace
-  w.pars()[poiName].setRange("scan",scanMin,scanMax)
-  w.pars().reduced(constPars).setAttribAll("Constant") # mark required parameters constant
+  if constPars!= "": w.pars().reduced(constPars).setAttribAll("Constant") # mark required parameters constant
   w.pars()[poiName].setVal(asimovVal) # set to asimov value before building NLL, so that asimov dataset corresponding to this hypo is used if dsName=""
-  hs = w[pdfName].reduced(channels).nll(dsName).hypoSpace(poiName) # creates a hypoSpace using the given pdf and dataset for the NLL, and poi = given parameter
+  hs = w[pdfName].reduced(channels).nll(dsName).hypoSpace(poiName,tsType) # creates a hypoSpace using the given pdf and dataset for the NLL, and poi = given parameter
   
-  limits = hs.limits("cls visualize",nSigmas) # replace "cls visualize" with "cls" to skip visualizing the automatic scan as it progresses
+  hs.scan(scanType,scanN,scanMin,scanMax,nSigmas)
+  limits = hs.limits() # extracts the limits from the scan by interpolation, returns as a dict
 
   # show results ...
   print(limits)
@@ -207,3 +209,24 @@ A common issue is that the range specified for the scan is too large, and the so
 
 If you specified a sensible scan range, you should next try to identify if there is a particular (nuisance) parameter that is causing your fits to fail. You can use the demo code above to select groups of parameters to hold constant during the fit. Remember that ``w.pars().Print()`` will list all the parameters and ``w.floats().Print()`` will list all the currently-floating parameters.
 
+
+xRooFit Demo: Computing Discovery Significance
+----------------------------------------------
+You can compute discovery significances using the example program above, where you scan just a single point, the hypoPoint corresponding to the background-only hypothesis. Instead of obtaining a limit though, you want to extract the null-hypothesis p-value for the point you scan. Namely, make the following changes:
+
+.. code-block:: python
+
+  scanMin = 0 # we want to test just the mu=0 hypothesis
+  scanMax = 0 # so set min and max both to 0
+  scanN = 1
+  scanType = "pnull"
+
+And instead of calling the ``limits`` method, extract the null pvalues as follows:
+
+.. code-block:: python
+   print("Observed p0:",hs[0].pNull_asymp()) # result has a .value() and .error() method
+   print("Expected p0:",hs[0].pNull_asymp(0)) # significance under the mu=1 hypothesis
+   print("Expected +1 sigma:",hs[0].pNull_asymp(1))
+   print("Expected -1 sigma:",hs[0].pNull_asymp(-1))
+
+Null p-values can be converted to significances using the standard gaussian quantile (aka normile) function. 
