@@ -131,8 +131,61 @@ You should be able to answer the following questions:
   * Did any of the fits (for toys, asimov, or obs data) fail?
 
 
-CLs limits with asymptotic formulae
+xRooFit Demo: CLs limits with asymptotic formulae
 -----------------------------------
+
+Here is a complete and verbose example python script for computing a CLs limit on an existing workspace. Additional commentary on the code follows the script.
+
+.. code-block:: python
+
+  import ROOT
+  XRF = ROOT # or for ROOT's builtin xRooFit: XRF = ROOT.Experimental.XRooFit
+
+  fileName  = "path/to/workspace.root"           # path to the workspace
+  pdfName   = "simPdf"                           # name of the top-level pdf in the workspace
+  channels  = "*"                                # comma-separated list of channels to include (n.b. you should not include VRs)
+  dsName    = "obsData"                          # name of the observed dataset, use "" to use an asimov dataset
+  poiName   = "mu"                               # name of the parameter of interest
+  asimovVal = 0                                  # POI-value to assume for asimov dataset (if dsName="")
+  scanMin   = 0                                  # lower boundary poi value for limit scan (can be more restricted than fitting range)
+  scanMax   = 10                                 # upper boundary poi value for limit scan (can be more restricted than fitting range)
+  constPars = ""                                 # comma-separated list of nuisance parameters to hold const, e.g. do "*" for a stat-only limit
+  tsType    = XRF.xRooFit.TestStatistic.qmutilde # choices: tmu, qmu, qmutilde, q0, uncappedq0
+  nSigmas   = [0,1,2,-1,-2,float('nan')])        # list of nSigmas to compute limits at ... "NaN" is used by xRooFit to indicate you want obs limit 
+
+  w = XRF.xRooNode(fileName)
+  w.pars()[poiName].setRange("scan",scanMin,scanMax)
+  w.pars().reduced(constPars).setAttribAll("Constant") # mark required parameters constant
+  w.pars()[poiName].setVal(asimovCal) # set to asimov value before building NLL, so that asimov dataset corresponding to this hypo is used if dsName=""
+  hs = w[pdfName].nll(dsName).hypoSpace(poiName) # creates a hypoSpace using the given pdf and dataset for the NLL, and poi = given parameter
+  
+  limits = hs.limits("cls visualize",nSigmas) # replace "cls visualize" with "cls" to skip visualizing the automatic scan as it progresses
+
+  # show results ...
+  print(limits)
+  hasNaN = False
+  for nSigma,lim in dict(limits).items(): # example of how to get result out of limits map
+      print(nSigma," sigma limit =",lim.value(),"+/-",lim.error())
+      if ROOT.TMath.IsNaN(lim.value()): hasNaN = True
+  if hasNaN:
+      # failed to find one of the limits, so print the hypoSpace for information about points that were scanned and their FitResult statuscodes
+      hs.Print()
+
+  # save the result to the workspace if requested, and then save the workspace
+  if outFile != "":
+      w.Add( hs.result() )
+      w.SaveAs(outFile)
+
+A minimal version of running a limit would be:
+
+.. code-block:: python
+
+  import ROOT
+  XRF = ROOT # or for ROOT's builtin xRooFit: XRF = ROOT.Experimental.XRooFit
+  w = XRF.xRooNode("path/to/workspace.root")
+  print( w.nll("obsData").hypoSpace().limits() )
+
+This assumes that the POI has already been declared in the workspace, there is only one top-level pdf in the workspace, and that the fitting range of the POI is appropriate to also be used as the scan range. 
 
 95\% CLs limits on a hypoSpace defined with just the parameter of interest (assigned to x-axis) can be calculated with the asymptotic formulae with:
 
