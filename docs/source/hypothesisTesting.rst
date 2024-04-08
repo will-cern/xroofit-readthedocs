@@ -224,9 +224,10 @@ You can compute discovery significances using the example program above, where y
 And instead of calling the ``limits`` method, extract the null pvalues as follows:
 
 .. code-block:: python
-   print("Observed p0:",hs[0].pNull_asymp()) # result has a .value() and .error() method
-   print("Expected p0:",hs[0].pNull_asymp(0)) # significance under the mu=1 hypothesis
-   print("Expected +1 sigma:",hs[0].pNull_asymp(1))
-   print("Expected -1 sigma:",hs[0].pNull_asymp(-1))
+
+  print("Observed p0:",hs[0].pNull_asymp()) # return type of pNull_asymp() has a .value() and .error() method
+  print("Expected p0:",hs[0].pNull_asymp(0)) # significance under the mu=1 hypothesis
+  print("Expected +1 sigma:",hs[0].pNull_asymp(1))
+  print("Expected -1 sigma:",hs[0].pNull_asymp(-1))
 
 Null p-values can be converted to significances using the standard gaussian quantile (aka normile) function. 
