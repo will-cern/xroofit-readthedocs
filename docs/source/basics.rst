@@ -30,11 +30,13 @@ Datasets
     
     A visual representation of a dataset.
 
-Models
+PDFs
 ----------
-`Models` are functions that evaluate to the probability density (or sometimes probability mass if all the observables are categorical) of observing an entry of a given dataset. This will include the probability of observing the global observable values of the dataset. Any variable that the model depends which isn't an observable is known as a `parameter`. We will learn below that models usually follow a common generic structure in HEP. Models are represented in RooFit by classes inheriting from ``RooAbsPdf``.
+`PDFs` are functions that evaluate to the probability density (or sometimes probability mass if all the observables are categorical) of observing an entry of a given dataset. This will include the probability of observing the global observable values of the dataset. Any variable that the model depends which isn't an observable is known as a `parameter`. We will learn below that models usually follow a common generic structure in HEP. Models are represented in RooFit by classes inheriting from ``RooAbsPdf``.
 
-Parameters are in one of two possible states: they are either `floating` or `constant`. Parameters that can be in either state are `floatable` parameters. Non-floatable parameters must be `constant` - these types of parameters are also called `arguments`. All categorical parameters are deemed non-floatable. Additionally, continuous variables can be non-floatable if they are represented with a `RooConstVar` in RooFit. The constant parameters are also sometimes called the `consts` of the model, and the floating parameters are the `floats`.
+Parameters are in one of two possible states: they are either `floating` or `constant`. Parameters that can be in either state are `floatable` parameters. Non-floatable parameters must be `constant` - these types of parameters are also called `prespecified`. Categorical parameters can be floatable. Continuous variables can be non-floatable if they are represented with a `RooConstVar` in RooFit. The constant parameters are also sometimes called the `consts` of the model, and the floating parameters are the `floats`.
+
+Additionally, for statistical analysis purposes, one or more floatable parameters can be labelled `parameters of interest` (poi). The remaining floatable parameters are deemed the `nuisance parameters` (np).
 
 Test Statistics
 -------------
@@ -60,7 +62,42 @@ A workspace is a collection of one or more models with one or more datasets. The
 
 Summary of types of variable
 ----------------------------
-The table below summarises the different type of variable described above:
+The table below summarises the different types of variables that were introduced above:
+
+.. list-table:: Types of variable
+    :widths: 25 10 65
+    :header-rows: 1
+
+    * - Type
+      - xRooNode method
+      - Description
+    * - Observable
+      - obs()
+      - Variable that features in a dataset. Includes regular and global observables.
+    * - Regular observable
+      - robs()
+      - Observable that is a column of a dataset, and can have a different value for each entry.
+    * - Global observable
+      - globs()
+      - Metadata of a dataset, same value for every entry (can be defined even if no entries in the datset).
+    * - Parameter
+      - pars()
+      - Not an observable. Includes prespecified and nuisance parameters, and parameters of interest.
+    * - Prespecified parameter
+      - pp()
+      - Non-floatable parameter, i.e. cannot be varied during a fit, nor assigned an uncertainty.
+    * - Parameter of interest
+      - poi()
+      - A floatable parameter that has been marked as "of interest".
+    * - Nuisance parameter
+      - np()
+      - A floatable parameter that is not a parameter of interest.
+    * - Floating parameter
+      - floats()
+      - A parameter that is currently marked as floating (will be poi or np).
+    * - Constant parameter
+      - consts()
+      - A parameter that is currently marked as constant (all pp + any const poi or np). 
 
 +-----------+----------+-----------------------------------------------------------------------------------------------------+
 |           | regular  | Columns of a dataset, can have different value for each entry.                                      |
@@ -74,7 +111,7 @@ The table below summarises the different type of variable described above:
 |           | argument |           | Constant non-floatable non-observables of a model (with a given dataset).               |
 +-----------+----------+-----------+-----------------------------------------------------------------------------------------+
 
-Additionally, for statistical analysis purposes, one or more floatable parameters can be labelled `parameters of interest` (poi). The remaining floatable parameters are deemed the `nuisance parameters` (np).
+
 
 Exercises
 ----------------------------
@@ -98,4 +135,5 @@ floats() List of floating parameters
 consts() List of non-floating parameters
 poi()    List of parameters of interest
 np()     List of nuisance parameters (floatable parameters that aren't poi)
+pp()     List of prespecified parameters (cannot float)
 ======== =================
