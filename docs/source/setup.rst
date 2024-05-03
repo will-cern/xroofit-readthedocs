@@ -34,14 +34,14 @@ Throughout this documentation we will use ``XRF`` as the name of the module (nam
 .. code-block:: python
 
   import ROOT
-  XRF = ROOT.Experimental.XRooFit # setup for builtin xRooFit version
+  from ROOT.Experimental import XRooFit as XRF # setup for builtin xRooFit version
 
 If you want to use the version of xRooFit you have built on top of ROOT, you would do:
 
 .. code-block:: python
 
   import ROOT
-  XRF = ROOT # setup for xRooFit built from source
+  import ROOT as XRF # setup for xRooFit built from source
 
 The main class of xRooFit is the `xRooNode <https://gitlab.cern.ch/will/xroofit#using-xroonode>`_. It is a smart interface class to objects in RooFit, in that it acts a bit like a smart pointer to a RooFit object and in this manner it provides you with a set of additional methods for the object it is "wrapping". 
 
