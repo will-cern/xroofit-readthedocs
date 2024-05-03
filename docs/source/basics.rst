@@ -30,11 +30,13 @@ Datasets
     
     A visual representation of a dataset.
 
-Models
+PDFs
 ----------
-`Models` are functions that evaluate to the probability density (or sometimes probability mass if all the observables are categorical) of observing an entry of a given dataset. This will include the probability of observing the global observable values of the dataset. Any variable that the model depends which isn't an observable is known as a `parameter`. We will learn below that models usually follow a common generic structure in HEP. Models are represented in RooFit by classes inheriting from ``RooAbsPdf``.
+`PDFs` are functions that evaluate to the probability density (or sometimes probability mass if all the observables are categorical) of observing an entry of a given dataset. This will include the probability of observing the global observable values of the dataset. Any variable that the model depends which isn't an observable is known as a `parameter`. We will learn below that models usually follow a common generic structure in HEP. Models are represented in RooFit by classes inheriting from ``RooAbsPdf``.
 
-Parameters are in one of two possible states: they are either `floating` or `constant`. Parameters that can be in either state are `floatable` parameters. Non-floatable parameters must be `constant` - these types of parameters are also called `arguments`. All categorical parameters are deemed non-floatable. Additionally, continuous variables can be non-floatable if they are represented with a `RooConstVar` in RooFit. The constant parameters are also sometimes called the `consts` of the model, and the floating parameters are the `floats`.
+Parameters are in one of two possible states: they are either `floating` or `constant`. Parameters that can be in either state are `floatable` parameters. Non-floatable parameters must be `constant` - these types of parameters are also called `prespecified`. Categorical parameters can be floatable. Continuous variables can be non-floatable if they are represented with a `RooConstVar` in RooFit. The constant parameters are also sometimes called the `consts` of the model, and the floating parameters are the `floats`.
+
+Additionally, for statistical analysis purposes, one or more floatable parameters can be labelled `parameters of interest` (poi). The remaining floatable parameters are deemed the `nuisance parameters` (np).
 
 Test Statistics
 -------------
@@ -60,21 +62,42 @@ A workspace is a collection of one or more models with one or more datasets. The
 
 Summary of types of variable
 ----------------------------
-The table below summarises the different type of variable described above:
+The table below summarises the different types of variables that were introduced above:
 
-+-----------+----------+-----------------------------------------------------------------------------------------------------+
-|           | regular  | Columns of a dataset, can have different value for each entry.                                      |
-|observable |----------+-----------------------------------------------------------------------------------------------------+
-|           | global   | Metadata of a dataset, same value for every entry (can be defined even if no entries in the datset).|
-+-----------+----------+-----------+-----------------------------------------------------------------------------------------+
-|           |          | floating  | Non-constant floatable non-observables of a model (with a given dataset).               |
-|           | floatable|-----------+-----------------------------------------------------------------------------------------+
-| parameter |          |           | Constant-floatable non-observables of a model (with a given dataset).                   |
-|           |----------| constant  |-----------------------------------------------------------------------------------------|
-|           | argument |           | Constant non-floatable non-observables of a model (with a given dataset).               |
-+-----------+----------+-----------+-----------------------------------------------------------------------------------------+
+.. list-table:: Types of variable
+    :widths: 25 10 65
+    :header-rows: 1
 
-Additionally, for statistical analysis purposes, one or more floatable parameters can be labelled `parameters of interest` (poi). The remaining floatable parameters are deemed the `nuisance parameters` (np).
+    * - Type
+      - xRooNode method
+      - Description
+    * - Observable
+      - obs()
+      - Variable that features in a dataset. Includes regular and global observables.
+    * - - Regular observable
+      - robs()
+      - Observable that is a column of a dataset, and can have a different value for each entry.
+    * - - Global observable
+      - globs()
+      - Metadata of a dataset, same value for every entry (can be defined even if no entries in the datset).
+    * - Parameter
+      - pars()
+      - Not an observable. Includes prespecified and nuisance parameters, and parameters of interest.
+    * - - Prespecified parameter
+      - pp()
+      - Non-floatable parameter, i.e. cannot be varied during a fit, nor assigned an uncertainty.
+    * - - Parameter of interest
+      - poi()
+      - A floatable parameter that has been marked as "of interest".
+    * - - Nuisance parameter
+      - np()
+      - A floatable parameter that is not a parameter of interest.
+    * - - Floating parameter
+      - floats()
+      - A parameter that is currently marked as floating (will be subset of poi and np).
+    * - - Constant parameter
+      - consts()
+      - A parameter that is currently marked as constant (all pp + any const poi or np). 
 
 Exercises
 ----------------------------
@@ -83,19 +106,23 @@ Working with workspaces
 ^^^^^^^^^^^^^^^^^^^^^^^
 Here are some ways to load a workspace into an `xRooNode`:
  
->>> w = ROOT.xRooNode("filename.root")
->>> f = ROOT.TFile("filename.root"); ws = f.Get("wsname"); w = ROOT.xRooNode(ws) # assumes wsname is name of workspace in file
- 
-Once you have an `xRooNode` that wraps a workspace you can use methods of the node to access the different variables:
+>>> w = XRF.xRooNode("filename.root")
+>>> f = ROOT.TFile("filename.root"); ws = f.Get("wsname"); w = XRF.xRooNode(ws) # assumes wsname is name of workspace in file
 
-======== =================
-vars()   List of variables
-obs()    List of observables
-robs()   List of regular observables
-globs()  List of global observables
-pars()   List of parameters
-floats() List of floating parameters
-consts() List of non-floating parameters
-poi()    List of parameters of interest
-np()     List of nuisance parameters (floatable parameters that aren't poi)
-======== =================
+Changing parameters from floating to constant and vice versa
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Once you have an `xRooNode` that wraps a workspace you can use methods of the node to access the different variables (see methods in table above). These each return a node that wraps a `RooArgList`. See https://root.cern.ch/doc/master/classRooArgList.html for documentation of that class. The individual elements of the list can be accessed by name or index via xRooNode e.g.: `w.obs()["obsName"]` which will return an xRooNode that wraps e.g. a `RooRealVar` with the name `obsName`. You can also produce another `xRooNode` that is a subset of the list using its `reduced <https://root.cern.ch/doc/master/classROOT_1_1Experimental_1_1XRooFit_1_1xRooNode.html#ac11e410ea9561991b44c2598be8c2659>`_ method, passing a comma separated list with or without wildcards. 
+
+Any variable in RooFit can have boolean attributes on it, essentially a flag on the variable. All the constant parameters have the "Constant" attribute (note: it is case-sensitive). All the parameters of interest have the "poi" attribute. Attributes on individual variables can be set and retrieved with the `setAttribute <https://root.cern.ch/doc/master/classRooAbsArg.html#ac77328af4e29b2642c248a03f03deb73>`_ and `getAttribute <https://root.cern.ch/doc/master/classRooAbsArg.html#aa0e2616c8c43065117031c6797ac19d4>`_ methods of `RooAbsArg` (base class of almost everything in RooFit, including variables). `RooArgList` also has the method `setAttribAll` that can be used to set the same attribute on all the variables in the list.
+
+Here are a few examples:
+
+.. code-block:: python
+
+    w.pars().reduced("alpha_*").setAttribAll("Constant")  # mark all parameters beginning with "alpha_" as constant
+    w.pars()["myPar"].setAttribute("poi")                 # mark the parameter called 'myPar' as a parameter of interest
+    w.poi()[0].setAttribute("Constant")                   # mark the first parameter of interest as constant
+    w.pars()["myPar"].setAttribute("poi",False)           # demote it back to being a nuisance parameter
+    w.floats().Print()                                    # list the currently floating parameters
+
+As an exercise, see if you can list the parameters of your workspace, and play with which ones are constant and which ones are floating. 
