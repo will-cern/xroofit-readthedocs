@@ -10,14 +10,38 @@ The most helpful way to understand the interplay of xRooFit with RooFit is to th
 ROOT
 ------------
 
-How to install ROOT:
-
-.. code-block:: console
-
-   (.venv) $ ...
+If you need to install ROOT, you can follow one of the `instructions for installing ROOT <https://root.cern/install/>`_ but note that you should always try to use the latest stable release. At the time of writing, it is strongly recommended to use at least 6.30 or later.
 
 xRooFit
 ----------------
+
+xRooFit comes pre-installed with ROOT as of 6.30, but is also being continually developed and therefore you may want to build xRooFit on top of ROOT. xRooFit is built with cmake, and you should be able to checkout the source code and compile it as follows:
+
+.. code-block:: console
+
+   $ git clone https://:@gitlab.cern.ch:8443/will/xroofit.git
+   $ cmake -S xroofit -B xroofit_build
+   $ cmake --build xroofit_build
+
+Then each time you start a new terminal, you can add the build to your path (so that ROOT can find it) like this:
+
+.. code-block:: console
+
+   $ source xroofit_build/setup.sh
+
+Throughout this documentation we will use ``XRF`` as the name of the module (namespace) of the version of xRooFit we want to use. If you want to use ROOT's builtin version, do this:
+
+.. code-block:: python
+
+  import ROOT
+  XRF = ROOT.Experimental.XRooFit # setup for builtin xRooFit version
+
+If you want to use the version of xRooFit you have built on top of ROOT, you would do:
+
+.. code-block:: python
+
+  import ROOT
+  XRF = ROOT # setup for xRooFit built from source
 
 The main class of xRooFit is the `xRooNode <https://gitlab.cern.ch/will/xroofit#using-xroonode>`_. It is a smart interface class to objects in RooFit, in that it acts a bit like a smart pointer to a RooFit object and in this manner it provides you with a set of additional methods for the object it is "wrapping". 
 
