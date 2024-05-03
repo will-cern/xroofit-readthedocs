@@ -74,44 +74,30 @@ The table below summarises the different types of variables that were introduced
     * - Observable
       - obs()
       - Variable that features in a dataset. Includes regular and global observables.
-    * - Regular observable
+    * - - Regular observable
       - robs()
       - Observable that is a column of a dataset, and can have a different value for each entry.
-    * - Global observable
+    * - - Global observable
       - globs()
       - Metadata of a dataset, same value for every entry (can be defined even if no entries in the datset).
     * - Parameter
       - pars()
       - Not an observable. Includes prespecified and nuisance parameters, and parameters of interest.
-    * - Prespecified parameter
+    * - - Prespecified parameter
       - pp()
       - Non-floatable parameter, i.e. cannot be varied during a fit, nor assigned an uncertainty.
-    * - Parameter of interest
+    * - - Parameter of interest
       - poi()
       - A floatable parameter that has been marked as "of interest".
-    * - Nuisance parameter
+    * - - Nuisance parameter
       - np()
       - A floatable parameter that is not a parameter of interest.
-    * - Floating parameter
+    * - - Floating parameter
       - floats()
-      - A parameter that is currently marked as floating (will be poi or np).
-    * - Constant parameter
+      - A parameter that is currently marked as floating (will be subset of poi and np).
+    * - - Constant parameter
       - consts()
       - A parameter that is currently marked as constant (all pp + any const poi or np). 
-
-+-----------+----------+-----------------------------------------------------------------------------------------------------+
-|           | regular  | Columns of a dataset, can have different value for each entry.                                      |
-|observable |----------+-----------------------------------------------------------------------------------------------------+
-|           | global   | Metadata of a dataset, same value for every entry (can be defined even if no entries in the datset).|
-+-----------+----------+-----------+-----------------------------------------------------------------------------------------+
-|           |          | floating  | Non-constant floatable non-observables of a model (with a given dataset).               |
-|           | floatable|-----------+-----------------------------------------------------------------------------------------+
-| parameter |          |           | Constant-floatable non-observables of a model (with a given dataset).                   |
-|           |----------| constant  |-----------------------------------------------------------------------------------------|
-|           | argument |           | Constant non-floatable non-observables of a model (with a given dataset).               |
-+-----------+----------+-----------+-----------------------------------------------------------------------------------------+
-
-
 
 Exercises
 ----------------------------
@@ -120,8 +106,8 @@ Working with workspaces
 ^^^^^^^^^^^^^^^^^^^^^^^
 Here are some ways to load a workspace into an `xRooNode`:
  
->>> w = ROOT.xRooNode("filename.root")
->>> f = ROOT.TFile("filename.root"); ws = f.Get("wsname"); w = ROOT.xRooNode(ws) # assumes wsname is name of workspace in file
+>>> w = XRF.xRooNode("filename.root")
+>>> f = ROOT.TFile("filename.root"); ws = f.Get("wsname"); w = XRF.xRooNode(ws) # assumes wsname is name of workspace in file
  
 Once you have an `xRooNode` that wraps a workspace you can use methods of the node to access the different variables:
 
