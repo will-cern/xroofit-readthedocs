@@ -48,18 +48,21 @@ Some, but not all, test statistics take the form of the summation of a quantity 
   * `chi-squared`: represented by ``RooXYChi2Var`` in RooFit.
 
 
+.. _objective functions:
 Objective functions
 -------------
 `Objective Functions` are :ref:`Test Statistics` that are desirable to minimize with respect to the parameters. The term `objective function` is used in machine learning for functions that are designed to be extremised.
 
 Fit Results
 ------------
-`Fit Results` represent the result of a minimization of an `objective function` through varying its floating parameters. In RooFit fit results are represented by the ``RooFitResult`` class, and it holds the initial and final floating parameter values of the objective function, along with the constant parameter values, the minimized objective-function value with an estimate of the difference to the true minimum, and a status code to indicate whether the minimization was successful or not. Fit Results can also hold estimates floating parameter errors, along with status codes for the algorithms that estimate these errors.
+`Fit Results` represent the result of a :ref:`minimization <minimization>` of an `objective function` through varying its floating parameters. In RooFit fit results are represented by the ``RooFitResult`` class, and it holds the initial and final floating parameter values of the objective function, along with the constant parameter values, the minimized objective-function value with an estimate of the difference to the true minimum, and a status code to indicate whether the minimization was successful or not. Fit Results can also hold estimates floating parameter errors, along with status codes for the algorithms that estimate these errors.
 
 Workspaces
 ------------
 A workspace is a collection of one or more models with one or more datasets. The observables of a workspace are all the observables of the datasets. The parameters of a workspace are all the other variables of the models in the workspace. In RooFit these are the class ``RooWorkspace``. These can also store fit results and any other type of ROOT object.
 
+.. _regular observables:
+.. _global observables:
 Summary of types of variable
 ----------------------------
 The table below summarises the different types of variables that were introduced above:
@@ -73,19 +76,24 @@ The table below summarises the different types of variables that were introduced
       - Description
     * - Observable
       - obs()
-      - Variable that features in a dataset. Includes regular and global observables.
+      - Variable that features in a dataset. Includes 
+        regular and global observables.
     * - - Regular observable
       - robs()
-      - Observable that is a column of a dataset, and can have a different value for each entry.
+      - Observable that is a column of a dataset, and can 
+        have a different value for each entry.
     * - - Global observable
       - globs()
-      - Metadata of a dataset, same value for every entry (can be defined even if no entries in the datset).
+      - Metadata of a dataset, same value for every entry 
+        (can be defined even if no entries in the datset).
     * - Parameter
       - pars()
-      - Not an observable. Includes prespecified and nuisance parameters, and parameters of interest.
+      - Not an observable. Includes prespecified and nuisance 
+        parameters, and parameters of interest.
     * - - Prespecified parameter
       - pp()
-      - Non-floatable parameter, i.e. cannot be varied during a fit, nor assigned an uncertainty.
+      - Non-floatable parameter, i.e. cannot be varied 
+        during a fit, nor assigned an uncertainty.
     * - - Parameter of interest
       - poi()
       - A floatable parameter that has been marked as "of interest".
@@ -94,10 +102,12 @@ The table below summarises the different types of variables that were introduced
       - A floatable parameter that is not a parameter of interest.
     * - - Floating parameter
       - floats()
-      - A parameter that is currently marked as floating (will be subset of poi and np).
+      - A parameter that is currently marked as 
+        floating (will be subset of poi and np).
     * - - Constant parameter
       - consts()
-      - A parameter that is currently marked as constant (all pp + any const poi or np). 
+      - A parameter that is currently marked as 
+        constant (all pp + any const poi or np). 
 
 Exercises
 ----------------------------
