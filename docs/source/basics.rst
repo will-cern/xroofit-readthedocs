@@ -55,7 +55,7 @@ Objective functions
 
 Fit Results
 ------------
-`Fit Results` represent the result of a :ref:`minimization <minimization>`: of an `objective function` through varying its floating parameters. In RooFit fit results are represented by the ``RooFitResult`` class, and it holds the initial and final floating parameter values of the objective function, along with the constant parameter values, the minimized objective-function value with an estimate of the difference to the true minimum, and a status code to indicate whether the minimization was successful or not. Fit Results can also hold estimates floating parameter errors, along with status codes for the algorithms that estimate these errors.
+`Fit Results` represent the result of a :ref:`minimization <minimization>` of an `objective function` through varying its floating parameters. In RooFit fit results are represented by the ``RooFitResult`` class, and it holds the initial and final floating parameter values of the objective function, along with the constant parameter values, the minimized objective-function value with an estimate of the difference to the true minimum, and a status code to indicate whether the minimization was successful or not. Fit Results can also hold estimates floating parameter errors, along with status codes for the algorithms that estimate these errors.
 
 Workspaces
 ------------
@@ -82,7 +82,8 @@ The table below summarises the different types of variables that were introduced
       - Observable that is a column of a dataset, and can have a different value for each entry.
     * - - Global observable
       - globs()
-      - Metadata of a dataset, same value for every entry (can be defined even if no entries in the datset).
+      - Metadata of a dataset, same value for every entry 
+(can be defined even if no entries in the datset).
     * - Parameter
       - pars()
       - Not an observable. Includes prespecified and nuisance parameters, and parameters of interest.
