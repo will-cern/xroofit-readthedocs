@@ -38,7 +38,7 @@ Factors
 --------
 Samples can be built out of factors i.e. :math:`f_{s}(x_{c},\theta) = \prod_f f_{f}(x_{c}|\theta)` where :math:`f_{f}(x_{c}|\theta)` are the individual factors that are themselves functions of the channel observables :math:`x_{c}` and/or the model parameters :math:`\theta`.
 
-The most fundamental type of factor we can imagine is literally just a fixed number. We will call this a `Const` factor. To go from this starting point to any other type of factor we conceptually need ways to make our factor either :math:`x_{c}`-dependent and/or :math:`p`-dependent.
+The most fundamental type of factor we can imagine is literally just a fixed number. We will call this a `Const` factor. To go from this starting point to any other type of factor we conceptually need ways to make our factor either :math:`x_{c}`-dependent and/or :math:`\theta`-dependent.
 
 We will call the discretely-:math:`x_{c}`-dependent (i.e. binned in the observable) version of a `Const` factor a `ConstHisto` factor. 
 
