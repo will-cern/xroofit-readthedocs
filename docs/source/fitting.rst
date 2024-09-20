@@ -7,13 +7,13 @@ This is otherwise known as the process of fitting a model to a dataset. The outp
 
 Constructing the NLL Function
 ----------------------------
-The NLL is the most commonly used :ref:`objective function <objective functions>`: for fitting. It is constructed using the ``nll`` method of a pdf node in the workspace:
+The NLL is the most commonly used :ref:`objective function <objective functions>` for fitting. It is constructed using the ``nll`` method of a pdf node in the workspace:
 
 >>> nll = w["pdfs/pdfName"].nll("datasetName",[list,of,nll,options])
 
-The most important NLL options, which affect how the NLL is actually defined, are described in the section below. 
+The list of NLL options is optional. The most important NLL options, which affect how the NLL is actually defined, are described in the :ref:`section below <objective functions>`. 
 
-Whatever the NLL options are, the NLL function can always be factorized into two parts: the *main term* and the *constraint term*. The main term depends on the :ref:`regular observables <regular observables>`: and the constraint term depends on the :ref:`global observables <global observables>`:. The main term is the sum of the negative log likelihoods of each the entries in the dataset (accounting for any weights):
+Whatever the NLL options are, the NLL function can always be factorized into two parts: the *main term* and the *constraint term*. The main term depends on the :ref:`regular observables <regular observables>` and the constraint term depends on the :ref:`global observables <global observables>`. The main term is the sum of the negative log likelihoods of each the entries in the dataset (accounting for any weights):
 
 .. math::
 
@@ -21,6 +21,7 @@ Whatever the NLL options are, the NLL function can always be factorized into two
 
 where :math:`\underline{a}` are the global observables and :math:`\underline{x}_i` are the regular observables of the ith entry in the dataset, which has weight :math:`w_i`. :math:`p(\underline{a}|\mu,\theta)` is the product of just the constraint terms from the pdf, which feature just global observables. In the above expression, the first term is just called the constraint term and the second is called the main term. 
 
+.. _nll options:
 NLL Options
 ^^^^^^^^^^^
 These are passed to the ``nll`` method (alongside the dataset name) and determine specifically how the NLL objective function is constructed ...
