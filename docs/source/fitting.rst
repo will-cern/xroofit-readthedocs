@@ -7,7 +7,7 @@ This is otherwise known as the process of fitting a model to a dataset. The outp
 
 Constructing the NLL Function
 ----------------------------
-The NLL is the most commonly used :ref:`objective function <objective functions>` for fitting. It is constructed using the ``nll`` method of a pdf node in the workspace:
+The NLL is the most commonly used :ref:`objective function <objective functions>`: for fitting. It is constructed using the ``nll`` method of a pdf node in the workspace:
 
 >>> nll = w["pdfs/pdfName"].nll("datasetName",[list,of,nll,options])
 
