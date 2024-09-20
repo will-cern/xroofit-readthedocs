@@ -28,7 +28,7 @@ Channels can be built out of samples. A sample is just a sub-component of a chan
 
 .. math::
 
-  p_{c}(x_{c}|\theta) = \frac{\sum_s c_{cs}f_s(x_{c}|p)}{\int\sum_s c_{cs}f_s(x_{c}|p)dx_c
+  p_{c}(x_{c}|\theta) = \frac{\sum_s c_{cs}f_s(x_{c}|\theta)}{\int\sum_s c_{cs}f_s(x_{c}|\theta)dx_c}
   
 where :math:`c_{cs}` are known as the `coefficients` of the sample :math:`s` that appears in channel :math:`c` (technical points: the coefficients are "owned" by the channel rather than the sample). 
 
@@ -36,15 +36,15 @@ In RooFit the above PDF is represented by `RooRealSumPdf` (if the :math:`f_s` ar
 
 Factors
 --------
-Samples can be built out of factors i.e. :math:`f_{s}(x_{c},p) = \prod_f f_{f}(x_{c}|p)` where :math:`f_{f}(x_{c}|p)` are the individual factors that are themselves functions of the channel observables :math:`x_{c}` and/or the model parameters :math:`p`.
+Samples can be built out of factors i.e. :math:`f_{s}(x_{c},\theta) = \prod_f f_{f}(x_{c}|\theta)` where :math:`f_{f}(x_{c}|\theta)` are the individual factors that are themselves functions of the channel observables :math:`x_{c}` and/or the model parameters :math:`\theta`.
 
 The most fundamental type of factor we can imagine is literally just a fixed number. We will call this a `Const` factor. To go from this starting point to any other type of factor we conceptually need ways to make our factor either :math:`x_{c}`-dependent and/or :math:`p`-dependent.
 
 We will call the discretely-:math:`x_{c}`-dependent (i.e. binned in the observable) version of a `Const` factor a `ConstHisto` factor. 
 
-There are a multitude of ways we could make a factor :math:`p`-dependent. One strategy is to define a collection of "variations" for the factor (the variations can be arbitrary function but we can make them be a type of factor), locate them at points in a "variation space" with parameterized coordinates, and provide an interpolation/extrapolation rule to calculate the value of the factor at any point in the variation space. Very commonly the variation coordinates will explicitly be model parameters, and the points for which variations are defined will correspond to points where one of the coordinates equals either +1 or -1 and the remaining coordinates are 0. The +1 variation is called the `up` variation of that coordinate, and -1 variation is the `down` variation. Additionally the point where all the coordinates are 0 will be known as the "nominal" variation. We will call this type of factor a `Varied` factor. 
+There are a multitude of ways we could make a factor :math:`\theta`-dependent. One strategy is to define a collection of "variations" for the factor (the variations can be arbitrary function but we can make them be a type of factor), locate them at points in a "variation space" with parameterized coordinates, and provide an interpolation/extrapolation rule to calculate the value of the factor at any point in the variation space. Very commonly the variation coordinates will explicitly be model parameters, and the points for which variations are defined will correspond to points where one of the coordinates equals either +1 or -1 and the remaining coordinates are 0. The +1 variation is called the `up` variation of that coordinate, and -1 variation is the `down` variation. Additionally the point where all the coordinates are 0 will be known as the "nominal" variation. We will call this type of factor a `Varied` factor. 
 
-So far we have defined Const (:math:`x_{c}`- and :math:`p`-independent), ConstHisto (:math:`x_{c}`-dependent), and Varied (:math:`p`-independent) factors. We will now define some special cases in terms of these generic factors:
+So far we have defined Const (:math:`x_{c}`- and :math:`\theta`-independent), ConstHisto (:math:`x_{c}`-dependent), and Varied (:math:`\theta`-dependent) factors. We will now define some special cases in terms of these generic factors:
 
    * `Histo` factor: a Varied factor where all the variations are `ConstHisto` factors.
    * `Shape` factor: a `Histo` factor with one explicit parameter variation-coordinate for each bin, with the nominal variation being 0 everywhere and each parameter +/-1 variation being 0 everywhere except for the single corresponding bin, which takes on value +/-1.
