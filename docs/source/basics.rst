@@ -48,18 +48,21 @@ Some, but not all, test statistics take the form of the summation of a quantity 
   * `chi-squared`: represented by ``RooXYChi2Var`` in RooFit.
 
 
+.. _objective functions:
 Objective functions
 -------------
 `Objective Functions` are :ref:`Test Statistics` that are desirable to minimize with respect to the parameters. The term `objective function` is used in machine learning for functions that are designed to be extremised.
 
 Fit Results
 ------------
-`Fit Results` represent the result of a minimization of an `objective function` through varying its floating parameters. In RooFit fit results are represented by the ``RooFitResult`` class, and it holds the initial and final floating parameter values of the objective function, along with the constant parameter values, the minimized objective-function value with an estimate of the difference to the true minimum, and a status code to indicate whether the minimization was successful or not. Fit Results can also hold estimates floating parameter errors, along with status codes for the algorithms that estimate these errors.
+`Fit Results` represent the result of a :ref:`minimization <minimization>`: of an `objective function` through varying its floating parameters. In RooFit fit results are represented by the ``RooFitResult`` class, and it holds the initial and final floating parameter values of the objective function, along with the constant parameter values, the minimized objective-function value with an estimate of the difference to the true minimum, and a status code to indicate whether the minimization was successful or not. Fit Results can also hold estimates floating parameter errors, along with status codes for the algorithms that estimate these errors.
 
 Workspaces
 ------------
 A workspace is a collection of one or more models with one or more datasets. The observables of a workspace are all the observables of the datasets. The parameters of a workspace are all the other variables of the models in the workspace. In RooFit these are the class ``RooWorkspace``. These can also store fit results and any other type of ROOT object.
 
+.. _regular observables:
+.. _global observables:
 Summary of types of variable
 ----------------------------
 The table below summarises the different types of variables that were introduced above:
