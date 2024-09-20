@@ -13,7 +13,7 @@ The NLL is the most commonly used :ref:`objective function <objective functions>
 
 The most important NLL options, which affect how the NLL is actually defined, are described in the section below. 
 
-Whatever the NLL options are, the NLL function can always be factorized into two parts: the *main term* and the *constraint term*. The main term depends on the :ref:`regular observables <regular observables>` and the constraint term depends on the :ref:`global observables <global observables>`. The main term is the sum of the negative log likelihoods of each the entries in the dataset (accounting for any weights):
+Whatever the NLL options are, the NLL function can always be factorized into two parts: the *main term* and the *constraint term*. The main term depends on the :ref:`regular observables <regular observables>`: and the constraint term depends on the :ref:`global observables <global observables>`:. The main term is the sum of the negative log likelihoods of each the entries in the dataset (accounting for any weights):
 
 .. math::
 
@@ -26,8 +26,15 @@ NLL Options
 These are passed to the ``nll`` method (alongside the dataset name) and determine specifically how the NLL objective function is constructed ...
 
 
+.. _minimization:
 Running a minimization
 ----------------------
+
+To minimize the NLL function, just call its ``minimize`` method, which will return a ``FitResult`` object:
+
+>>> fr = nll.minimize()
+
+You can draw the fit result (``fr.Draw()``) to see the post-fit parameter pulls. 
 
 The Fit Config
 ^^^^^^^^^^^^^^
