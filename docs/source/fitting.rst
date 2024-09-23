@@ -39,7 +39,43 @@ You can draw the fit result (``fr.Draw()``) to see the post-fit parameter pulls.
 
 The Fit Config
 ^^^^^^^^^^^^^^
-The ``minimize`` method accepts an optional fit configuration that contains hyperparameters that steer the minimization ...
+The ``minimize`` method accepts an optional fit configuration that contains hyperparameters that steer the minimization. The nll function has its own copy of the fit config that is used if you do not pass your own fit config object to minimize. The settings in the fit config that is stored in the nll can be viewed by using ``nll.Print()``. The table below describes what each config option does and how to set it (the first column is what to pass in the NLL option list to the :ref:`nll method <nll options>`, the second column is how to change the setting after creating the nll object). In each case, the default value is given as the example setting:
+
+.. list-table:: Fit Config settings
+    :widths: 25 10 65
+    :header-rows: 1
+
+    * - NLL Option
+      - Setting after nll creation
+      - Description
+    * - XRF.xRooFit.Tolerance(0.01)
+      - nll.fitConfig().MinimizerOptions().SetTolerance(0.01)
+      - 1000 times the maximum allowed value of the edm (estimated distance to minimum) of the fit before the fit is considered converged. E.g. the default value of 0.01 means that the edm must become less than 1e-5 for convergence. If this is not reached, the migrad status code will be 3.
+    * - ROOT.RooFit.Strategy(-1)
+      - nll.fitConfig().MinimizerOptions().SetStrategy(-1)
+      - The starting minuit strategy. If set to -1 (the default), the starting strategy is the start of the StrategySequence setting (see below). 
+    * - XRF.xRooFit.StrategySequence("0s01s12s2s3m")
+      - nll.fitConfigOptions().SetValue("StrategySequence","0s01s12s2s3m")
+      - Determines the order of retries automatically performed if a fit fails. A number indicates a strategy setting, `s` indicates a rescan, and `m` indicates a switch to minuit1 (which will soon be deprecated). For example, a strategy sequence of "0s01s12s2m" means that if a strategy=0 fit fails it will try a rescan and then try the strategy=0 fit again, if that fails it will switch to strategy=1, and so on. 
+    * - ROOT.RooFit.Hesse(True)
+      - nll.fitConfig().SetParabErrors(True)
+      - Controls if hesse should be run after the migrad minimization (if it wasn't already run with the necessary level of precision by the migrad minimization, which can sometimes happen and xRooFit will automatically determine this). If it is not run, the covariance matrix may not be accurate (quality != 3).
+    * - n/a
+      - nll.fitConfigOptions().SetValue("HesseStrategy",-1)
+      - Controls which strategy is used first when hesse algorithm is run. If -1, will take first strategy in the HesseStrategySequence (see below)
+    * - n/a
+      - nll.fitConfigOptions().SetValue("HesseStrategySequence","23")
+      - Similar to the StrategySequence setting, this controls the order of attempts made in the hesse algorithm, with an example of hesse failure being e.g. a non-positive definite covariance matrix (covQuality=1 in the case of hesse strategy 3 in the fit result). 
+
+For example, to make the tolerance equal to 1 and the starting strategy equal to 1, you can do (assumes you have done e.g. `import ROOT as XRF` if using xRooFit compiled on top of ROOT):
+
+>>> nll = w["pdfs/pdfName"].nll("datasetName",[XRF.xRooFit.Tolerance(1),ROOT.RooFit.Strategy(1)])
+
+Or equivalently you can do:
+
+>>> nll = w["pdfs/pdfName"].nll("datasetName")
+>>> nll.fitConfig().MinimizerOptions().SetTolerance(1)
+>>> nll.fitConfig().MinimizerOptions().SetStrategy(1)
 
 Goodness of fit
 ^^^^^^^^^^^^^^^
