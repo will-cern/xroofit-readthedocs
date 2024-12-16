@@ -114,8 +114,8 @@ for multiplicative interpolation codes, where the code types and interpolation f
 
     * - 4
       - Additive Poly Interp. + Linear Extrap
-      - :math:`I_4(\theta;x_{-},x_0,x_{+}) = \begin{cases}I_0(\theta;x_{-},x_0,x_{+}) & \text{if} |\theta|>=1 \\ \theta(\frac{x_{+}-x_{-}}{2}+\theta\frac{x_{+}+x_{-}-2x_{0}}{16}(15+\theta^2(3\alpha^2-10))) & \text{otherwise}\end{cases}`
-      - Interpolation is 6th-order polynomial through origin for with matching 0th,1st,2nd derivatives at boundary.
+      - :math:`I_4(\theta;x_{-},x_0,x_{+}) = \begin{cases}I_0(\theta;x_{-},x_0,x_{+}) & \text{if} |\theta|>=1 \\ \sum_{i=1}^6 a_i\theta^i & \text{otherwise}\end{cases}`
+      - :math:`a_i` such that matching 0th,1st,2nd derivatives at :math:`|\theta|=1` boundaries.
 
     * - 5
       - Multiplicative Poly Interp. + Exponential Extrap.
