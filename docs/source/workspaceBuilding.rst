@@ -136,7 +136,7 @@ Combining the factors, samples, and channels together into a single likelihood g
 
   L(\underline{\underline{x}},\underline{a}|\underline{\theta}) = \frac{\lambda(\underline{\theta})^{W}e^{-\lambda(\underline{\theta})}}{W!} p_a(\underline{a}|\underline{\theta})\prod_{i=1}^{N} \left(\frac{\lambda_{c_i}(\underline{\theta})}{\sum_j\lambda_j(\underline{\theta})}\frac{\sum_s c_{c_is}(\theta)\prod_k f^{(k)}_{c_is}(\underline{x}|\theta)}{\int\sum_s c_{c_is}\prod_k f^{(k)}_{c_is}(\underline{x}|\theta)dx}\right)^{w_i}
 
-where the product over :math:`k` is for the observable-dependent factors in the sample in the channel, and the :math:`c_{c_is}` coefficient is the product of the observable-independent factors in the sample in the channel. Conventionally the yield the channel :math:`\lambda_{c_i}` is the same the normalization term :math:`\int\sum_s c_{c_is}\prod_k f^{(k)}_{c_is}(\underline{x}|\theta)dx` and hence the likelihood can also be written as:
+where the product over :math:`k` is for the observable-dependent factors in the sample in the channel, and the :math:`c_{c_is}` coefficient is the product of the observable-independent factors in the sample in the channel. Conventionally the yield of the channel, :math:`\lambda_{c_i}`, is the same the normalization term for the channel, :math:`\int\sum_s c_{c_is}\prod_k f^{(k)}_{c_is}(\underline{x}|\theta)dx`, and hence the likelihood can also be written as:
 
 .. math::
 
