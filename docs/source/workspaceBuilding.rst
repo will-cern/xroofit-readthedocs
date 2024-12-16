@@ -93,28 +93,32 @@ for additive interpolation codes and
 for multiplicative interpolation codes, where the code types and interpolation functions are defined in the following table:
 
 
+.. list-table:: Types of variable
+    :widths: 25 10 65
+    :header-rows: 1
 
+    * - Code
+      - Name
+      - Definition
 
-A Varied factor is a parameterized (i.e. -:math:`\theta`-dependent) function on one or more parameters. It should be thought of as being built up of a set of "variations" that correspond to particular points in the "variation space", specifically the points where one of the "variation coordinates" equals +1 or -1 and the remaining "variation coordinates" are all 0. The +1 point is the "up variation" corresponding to the given coordinate, and the -1 point is the "down variation" for that coordinate. There is also the "nominal variation"  corresponding to all coordinates equalling 0. The variations themselves could be functions of the parameters but are normally just ConstHisto factors (in which case the Varied factor is called a `Histo` factor). The variation coordinates are often explicitly model parameters, but could also be functions of the model parameters (i.e. the coordinates implicitly depend on the parameters). The Varied factor has an "interpolation code" that defines how exactly to interpolates/extrapolate from these defined points to any point in the variation space. The formulae for this interpolation are:....
+    * - 0   (default)
+      - Additive Piecewise Linear 
+      - :math:`I_0(\theta;x_{-},x_0,x_{+}) = \theta(x_{+} - x_0)` for :math:`\theta>=0`, otherwise :math:`\theta(x_0 - x_{-})`. Not recommended except if using a symmetric variation, because of discontinuities in derivatives.
 
-.. math::
+    * - 1             
+      - Multiplicative Piecewise Exponential 
+      - :math:`I_1(\theta;x_{-},x_0,x_{+}) = (x_{+}/x_0)^{\theta}` for :math:`\theta>=0`, otherwise :math:`(x_{-}/x_0)^{-\theta}`.
 
-   TBD
+    * - 4
+      - Additive Poly Interp. + Linear Extrap
+      - :math:`I_4(\theta;x_{-},x_0,x_{+}) = I_0(\theta;x_{-},x_0,x_{+})` if :math:`|\theta|>=1`, otherwise :math:`\theta(\frac{x_{+}-x_{-}}{2}+\theta\frac{x_{+}+x_{-}-2x_{0}}{16}(15+\theta^2(3\alpha^2-10)))`  (6th-order polynomial through origin for with matching 0th,1st,2nd derivatives at boundary).
 
-In RooFit Histfactory models Histo factors are represented by the ``PiecewiseInterpolation`` class. 
+    * - 5
+      - Multiplicative Poly Interp. + Exponential Extrap.
+      - :math:`I_5(\theta;x_{-},x_0,x_{+}) = I_1(\theta;x_{-},x_0,x_{+})` if :math:`|\theta|>=1`, otherwise 6th-order polynomial for :math:`|\theta_i|<1` with matching 0th,1st,2nd derivatives at boundary. Recommended for normalization factors. In FlexibleInterpVar this is interpCode=4.
 
-Shape Factors
-^^^^^^^^^^^^^^^^
-A Shape factor is equivalent to a Histo factor where there is exactly one variation coordinate for every bin in the observable, the nominal variation being a Simple factor that is 1 everywhere, and each +1 or -1 variation is a Simple factor with a single bin being set equal to +1 or -1 respectively. Effectively this means that content of each bin of a shape factor is precisely equal to the value of one (and only one) of the variation coordinates. And normally each variation coordinate is explicitly one of the model parameters. 
-
-In RooFit Histfactory models Shape factors are represented by ``ParamHistFunc`` class.
-
-Overall Factors
-^^^^^^^^^^^^^^^^^^
-An overall factor is equivalent to a Histo Factor where all bins in the observable are the same value, i.e. this type of factor is independent of the :math:`x_{c}` observables. Additionally overall factors are restricted to their variations being unparameterized i.e. the variations must be just Const factors. In RooFit Histfactory models Shape factors are represented by ``RooStats::HistFactory::FlexibleInterpVar`` class.
-
-Norm Factors
-^^^^^^^^^^^^^^^^^^^
-Really these are just the floating version of a Const factor, i.e. where a ``RooRealVar`` is used instead of a ``RooConstVar``. We can make a Histo factor equivalent to this by creating a Histo factor with just one parameter and the nominal variation being a ConstHisto with 0 everywhere, +/-1 variation being ConstHisto with +/-1 everywhere, respectively.
+    * - 6
+      - Multiplicative Poly Interp. + Linear Extrap.
+      - :math:`I_6(\theta;x_{-},x_0,x_{+}) = 1+I_4(\theta;x_{-},x_0,x_{+})`. Recommended for normalization factors that must not have roots (i.e. be equal to 0) outside of :math:`|\theta_i|<1`.
 
    
