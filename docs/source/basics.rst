@@ -20,6 +20,7 @@ Variables
   * `continuous`: represented in RooFit by ``RooRealVar``, they can optionally have one or more named `ranges` associated to them, each range being defined by a lower and upper `bound`. 
   * `discrete` or `categorical`: represented in RooFit by ``RooCategory``, they have a finite set of possible values (states) defined for them.
 
+.. _Datasets:
 Datasets
 ---------
 :ref:`Datasets` consist of a set of values for a collection of variables. The variables that appear in a dataset are known as `observables`. You should think of a dataset as a table of values, where each observable is one column of the table, and the rows of the table are known as `entries` in the dataset. The entries of a dataset usually correspond to a single event, but an entry can also have a `weight` for when dealing with weighted data (the weights can also have an error, which can be used if calculating the `chi-squared` test statistic, which will be introduced below). Additionally, datasets can have a special list of observables called `global observables` (also known as the `auxilliary measurements`), which can be thought of as like metadata for the dataset: their values are not specific to any entry, and are even defined if the dataset has no entries. The observables that are used as columns in the dataset are known as `regular observables`. Datasets are represented in RooFit by classes inheriting from ``RooAbsData``, of which ``RooDataSet`` is really the only one you need to know about. 
@@ -32,6 +33,7 @@ Datasets
 
 The mathematical symbol for regular observables is :math:`x` and for the global observables it is :math:`a`. The value of the jth observable in the ith entry of a dataset is denoted :math:`x_{ij}`. 
 
+.. _PDFs:
 PDFs
 ----------
 `PDFs` are functions that evaluate to the probability density (or sometimes probability mass if all the observables are categorical) of observing an entry of a given dataset. This will include the probability of observing the global observable values of the dataset. Any variable that the PDF depends which isn't an observable is known as a `parameter`. The symbol used for any/all parameters is :math:`\theta`. We will learn below that PDFs usually follow a common generic structure in HEP. PDFs are represented in RooFit by classes inheriting from ``RooAbsPdf``.
