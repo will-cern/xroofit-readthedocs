@@ -1,4 +1,4 @@
-Day 1: Variables, Models, Datasets, Workspaces
+Day 1: Variables, PDFs, Datasets, Workspaces
 ===========
 
 Today we introduce the terminology adopted throughout the rest of this course. We summarise of the basic building blocks of statistical analysis.
@@ -9,13 +9,13 @@ What do I mean by statistical analysis?
 For now I will work with the following description that will cover many of the common analyses performed in HEP
 
 .. note:: Statistical Analysis:
-    The process of making inferences about the values of parameters from a dataset of observables, using a parameterized probability model for the dataset. 
+    The process of making inferences about the values of parameters from a dataset of observables, using a parameterized PDF for the dataset. 
 
-Therefore we need to understand the following terms: parameters, observables, models, datasets. 
+Therefore we need to understand the following terms: parameters, observables, PDFs, datasets. 
 
 Variables
 ---------
-:ref:`Variables` are the fundamental entities from which :ref:`Models` and :ref:`Datasets` are built. A variable has a value that is not derived from any other variable, as opposed to a `function` which has its value derived from variables (or other functions). There are two types:
+:ref:`Variables` are the fundamental entities from which :ref:`PDFs` and :ref:`Datasets` are built. A variable has a value that is not derived from any other variable, as opposed to a `function` which has its value derived from variables (or other functions). There are two types:
 
   * `continuous`: represented in RooFit by ``RooRealVar``, they can optionally have one or more named `ranges` associated to them, each range being defined by a lower and upper `bound`. 
   * `discrete` or `categorical`: represented in RooFit by ``RooCategory``, they have a finite set of possible values (states) defined for them.
@@ -32,21 +32,23 @@ Datasets
 
 PDFs
 ----------
-`PDFs` are functions that evaluate to the probability density (or sometimes probability mass if all the observables are categorical) of observing an entry of a given dataset. This will include the probability of observing the global observable values of the dataset. Any variable that the model depends which isn't an observable is known as a `parameter`. We will learn below that models usually follow a common generic structure in HEP. Models are represented in RooFit by classes inheriting from ``RooAbsPdf``.
+`PDFs` are functions that evaluate to the probability density (or sometimes probability mass if all the observables are categorical) of observing an entry of a given dataset. This will include the probability of observing the global observable values of the dataset. Any variable that the PDF depends which isn't an observable is known as a `parameter`. We will learn below that PDFs usually follow a common generic structure in HEP. PDFs are represented in RooFit by classes inheriting from ``RooAbsPdf``.
 
-Parameters are in one of two possible states: they are either `floating` or `constant`. Parameters that can be in either state are `floatable` parameters. Non-floatable parameters must be `constant` - these types of parameters are also called `prespecified`. Categorical parameters can be floatable. Continuous variables can be non-floatable if they are represented with a `RooConstVar` in RooFit. The constant parameters are also sometimes called the `consts` of the model, and the floating parameters are the `floats`.
+Parameters are in one of two possible states: they are either `floating` or `constant`. Parameters that can be in either state are `floatable` parameters. Non-floatable parameters must be `constant` - these types of parameters are also called `prespecified`. Categorical parameters can be floatable. Continuous variables can be non-floatable if they are represented with a `RooConstVar` in RooFit. The constant parameters are also sometimes called the `consts` of the PDF, and the floating parameters are the `floats`.
 
 Additionally, for statistical analysis purposes, one or more floatable parameters can be labelled `parameters of interest` (poi). The remaining floatable parameters are deemed the `nuisance parameters` (np).
 
+.. _Test Statistics:
 Test Statistics
 -------------
-`Test Statistics` are functions that map a dataset onto a single value. They are usually constructed/defined using a model, thereby the parameters of the model are parameters of the test statistic.
+`Test Statistics` are functions that map a dataset onto a single value. They are usually constructed/defined using a PDF, thereby the parameters of the PDF are parameters of the test statistic.
 
 Some, but not all, test statistics take the form of the summation of a quantity over the entries of the dataset and therefore the calculation can readily be parallelized across the entries. Such batch-computable test statistics are represented in RooFit by classes inheriting from `RooAbsTestStatistic`. Two such statistics are:
 
   * `Negative Log Likelihoood`: represented by  ``RooNLLVar`` in RooFit.
   * `chi-squared`: represented by ``RooXYChi2Var`` in RooFit.
 
+The configuration required to construct the test statistic for an arbitrary dataset is called a `Model` and in RooFit this is represented by the `RooStats::ModelConfig` class. 
 
 .. _objective functions:
 Objective functions
@@ -59,7 +61,7 @@ Fit Results
 
 Workspaces
 ------------
-A workspace is a collection of one or more models with one or more datasets. The observables of a workspace are all the observables of the datasets. The parameters of a workspace are all the other variables of the models in the workspace. In RooFit these are the class ``RooWorkspace``. These can also store fit results and any other type of ROOT object.
+A workspace is a collection of one or more pdfs with one or more datasets. The observables of a workspace are all the observables of the datasets. The parameters of a workspace are all the other variables of the pdfs in the workspace. In RooFit these are the class ``RooWorkspace``. These can also store fit results and any other type of ROOT object.
 
 .. _regular observables:
 .. _global observables:
