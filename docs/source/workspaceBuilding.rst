@@ -142,3 +142,5 @@ where the product over :math:`k` is for the observable-dependent factors in the 
 
 L(\underline{\underline{x}},\underline{a}|\underline{\theta}) = \frac{\lambda(\underline{\theta})^{W}e^{-\lambda(\underline{\theta})}}{W!} p_a(\underline{a}|\underline{\theta})\prod_{i=1}^{N} \left(\frac{\sum_s c_{c_is}(\theta)\prod_k f^{(k)}_{c_is}(\underline{x}|\theta)}{\sum_j\int\sum_s c_{c_js}\prod_k f^{(k)}_{c_js}(\underline{x}|\theta)dx}\right)^{w_i}.
 
+
+
