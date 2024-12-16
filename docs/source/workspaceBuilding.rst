@@ -7,8 +7,11 @@ Today you will learn how to build a workspace containing a model and a dataset.
 Anatomy of a model
 ==================
 
-.. note:: 
-  In this section :math:`\theta` is used as the symbol to represent *all* types of parameter rather than just the nuisance parameters.
+In RooFit the standard model for a dataset defines a likelihood for the dataset:
+
+.. math::
+
+  L(\underline{\underline{x}},\underline{a}|\underline{\theta}) = \frac{\lambda(\underline{\theta})^{N}e^{-\lambda(\underline{\theta})}}{N!}\prod_{j=1}^{M} p_j(a_j|\underline{\theta})\prod_{i=1}^{N} p(\underline{x}_i|\underline{\theta})
 
 
 
