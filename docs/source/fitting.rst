@@ -13,13 +13,7 @@ The NLL is the most commonly used :ref:`objective function <objective functions>
 
 The list of NLL options is optional. The most important NLL options, which affect how the NLL is actually defined, are described in the :ref:`section below <objective functions>`. 
 
-Whatever the NLL options are, the NLL function can always be factorized into two parts: the *main term* and the *constraint term*. The main term depends on the :ref:`regular observables <regular observables>` and the constraint term depends on the :ref:`global observables <global observables>`. The main term is the sum of the negative log likelihoods of each the entries in the dataset (accounting for any weights):
-
-.. math::
-
-  -\ln(L(\mu,\theta)) = -\ln(p(\underline{a}|\mu,\theta)) -\sum_{i=0}^{N}w_i\ln(p(\underline{x}_i|\mu,\theta))
-
-where :math:`\underline{a}` are the global observables and :math:`\underline{x}_i` are the regular observables of the ith entry in the dataset, which has weight :math:`w_i`. :math:`p(\underline{a}|\mu,\theta)` is the product of just the constraint terms from the pdf, which feature just global observables. In the above expression, the first term is just called the constraint term and the second is called the main term. 
+Whatever the NLL options are, the NLL function can always be factorized into two parts: the *main term* and the *constraint term*. The main term depends on the :ref:`regular observables <regular observables>` and the constraint term depends on the :ref:`global observables <global observables>`. See :ref:`NLL definition <NLL definition>` for more info.
 
 .. _nll options:
 NLL Options
