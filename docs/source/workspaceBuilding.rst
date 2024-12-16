@@ -51,7 +51,7 @@ Channels can be built out of samples. A sample is a sub-component of a channel, 
   
 where :math:`c_{cs}(\theta)` are known as the `coefficients` of the sample :math:`s` that appears in channel :math:`c` (technical points: the coefficients are "owned" by the channel rather than the sample). 
 
-In RooFit the above PDF is represented by `RooRealSumPdf` (if the :math:`f_s` are functions) or `RooAddPdf` (if the :math:`f_s` are all PDFs, in which case the samples are known as 'components' and the coefficients will correspond to the yield for each component).
+In RooFit the above PDF is represented by ``RooRealSumPdf`` (if the :math:`f_s` are functions) or ``RooAddPdf`` (if the :math:`f_s` are all PDFs, in which case the samples are known as 'components' and the coefficients will correspond to the yield for each component).
 
 In the case where the :math:`f_s` are functions are functions, we can usually write this function as a product of factors that depend on the observables. The coefficients are also types of factor that do not depend on the observables.
 
