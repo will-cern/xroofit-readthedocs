@@ -68,8 +68,8 @@ Here is a list of types of factors:
   * `Simple` factor: An observable-dependent parameter-independent function. Commonly represents a histogram of bin yields. RooFit class: ``RooHistFunc``.
   * `Density` factor: A special case of Simple factor where the bin value is equal to 1/binWidth. RooFit class: ``RooBinWidthFunction``.
   * `Varied` factor: A parameterized factor with variations and an interpolation+extrapolation rule RooFit class: ``PiecewiseInterpolation``.
-    * `Overall` factor: A special case of Varied factor where the variations are const factors. RooFit class: ``RooStats::HistFactory::FlexibleInterpVar`` or ``PiecewiseInterpolation``.
-    * `Histo` factor: A special case of Varied factor where the variations are simple factors. RooFit class: ``PiecewiseInterpolation``.
+     * `Overall` factor: A special case of Varied factor where the variations are const factors. RooFit class: ``RooStats::HistFactory::FlexibleInterpVar`` or ``PiecewiseInterpolation``.
+     * `Histo` factor: A special case of Varied factor where the variations are simple factors. RooFit class: ``PiecewiseInterpolation``.
   * `Shape` factor: A parameterized and observable-dependent factor where each bin in the observable is scaled by an individual norm factor. RooFit class: ``ParamHistFunc``
 
 When any of the parameters of a parameter-dependent factor also have a constraint term, the phrase `factor` can be replaced by `sys`, e.g. a `ShapeFactor` becomes a `ShapeSys`.
