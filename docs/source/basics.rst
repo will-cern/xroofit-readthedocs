@@ -22,7 +22,7 @@ Variables
 
 Datasets
 ---------
-:ref:`Datasets` consist of a set of values for a collection of variables. The variables that appear in a dataset are known as `observables`. You should think of a dataset as a table of values, where each observable is one column of the table, and the rows of the table are known as `entries` in the dataset. The entries of a dataset usually correspond to a single event, but an entry can also have a `weight` for when dealing with weighted data (the weights can also have an error, which can be used if calculating the `chi-squared` test statistic, which will be introduced below). Additionally, datasets can have a special list of observables called `global observables`, which can be thought of as like metadata for the dataset: their values are not specific to any entry, and are even defined if the dataset has no entries. The observables that are used as columns in the dataset are known as `regular observables`. Datasets are represented in RooFit by classes inheriting from ``RooAbsData``, of which ``RooDataSet`` is really the only one you need to know about. 
+:ref:`Datasets` consist of a set of values for a collection of variables. The variables that appear in a dataset are known as `observables`. You should think of a dataset as a table of values, where each observable is one column of the table, and the rows of the table are known as `entries` in the dataset. The entries of a dataset usually correspond to a single event, but an entry can also have a `weight` for when dealing with weighted data (the weights can also have an error, which can be used if calculating the `chi-squared` test statistic, which will be introduced below). Additionally, datasets can have a special list of observables called `global observables` (also known as the `auxilliary measurements`), which can be thought of as like metadata for the dataset: their values are not specific to any entry, and are even defined if the dataset has no entries. The observables that are used as columns in the dataset are known as `regular observables`. Datasets are represented in RooFit by classes inheriting from ``RooAbsData``, of which ``RooDataSet`` is really the only one you need to know about. 
 
 .. figure:: dataset_concept.png
     :width: 80%
@@ -30,13 +30,15 @@ Datasets
     
     A visual representation of a dataset.
 
+The mathematical symbol for regular observables is :math:`x` and for the global observables it is :math:`a`. The value of the jth observable in the ith entry of a dataset is denoted :math:`x_{ij}`. 
+
 PDFs
 ----------
-`PDFs` are functions that evaluate to the probability density (or sometimes probability mass if all the observables are categorical) of observing an entry of a given dataset. This will include the probability of observing the global observable values of the dataset. Any variable that the PDF depends which isn't an observable is known as a `parameter`. We will learn below that PDFs usually follow a common generic structure in HEP. PDFs are represented in RooFit by classes inheriting from ``RooAbsPdf``.
+`PDFs` are functions that evaluate to the probability density (or sometimes probability mass if all the observables are categorical) of observing an entry of a given dataset. This will include the probability of observing the global observable values of the dataset. Any variable that the PDF depends which isn't an observable is known as a `parameter`. The symbol used for any/all parameters is :math:`\theta`. We will learn below that PDFs usually follow a common generic structure in HEP. PDFs are represented in RooFit by classes inheriting from ``RooAbsPdf``.
 
 Parameters are in one of two possible states: they are either `floating` or `constant`. Parameters that can be in either state are `floatable` parameters. Non-floatable parameters must be `constant` - these types of parameters are also called `prespecified`. Categorical parameters can be floatable. Continuous variables can be non-floatable if they are represented with a `RooConstVar` in RooFit. The constant parameters are also sometimes called the `consts` of the PDF, and the floating parameters are the `floats`.
 
-Additionally, for statistical analysis purposes, one or more floatable parameters can be labelled `parameters of interest` (poi). The remaining floatable parameters are deemed the `nuisance parameters` (np).
+Additionally, for statistical analysis purposes, one or more floatable parameters can be labelled `parameters of interest` (poi). The remaining floatable parameters are deemed the `nuisance parameters` (np). The symbol used for parameters of interest is :math:`\mu`, and for nuisance parameters it is :math:`\nu`.
 
 .. _Test Statistics:
 Test Statistics
@@ -74,32 +76,40 @@ The table below summarises the different types of variables that were introduced
     :header-rows: 1
 
     * - Type
+      - Symbol
       - xRooNode method
       - Description
     * - Observable
+      - 
       - obs()
       - Variable that features in a dataset. Includes 
         regular and global observables.
     * - - Regular observable
+      - :math:`x`
       - robs()
       - Observable that is a column of a dataset, and can 
         have a different value for each entry.
     * - - Global observable
+      - :math:`a`
       - globs()
       - Metadata of a dataset, same value for every entry 
         (can be defined even if no entries in the datset).
     * - Parameter
+      - :math:`\theta`
       - pars()
       - Not an observable. Includes prespecified and nuisance 
         parameters, and parameters of interest.
     * - - Prespecified parameter
+      - 
       - pp()
       - Non-floatable parameter, i.e. cannot be varied 
         during a fit, nor assigned an uncertainty.
     * - - Parameter of interest
+      - :math:`\mu`
       - poi()
       - A floatable parameter that has been marked as "of interest".
     * - - Nuisance parameter
+      - :math:`\nu`
       - np()
       - A floatable parameter that is not a parameter of interest.
     * - - Floating parameter
