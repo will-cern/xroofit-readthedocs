@@ -13,7 +13,7 @@ The NLL is the most commonly used :ref:`objective function <objective functions>
 
 The list of NLL options is optional. The most important NLL options, which affect how the NLL is actually defined, are described in the :ref:`section below <objective functions>`. 
 
-Whatever the NLL options are, the NLL function can always be factorized into two parts: the *main term* and the *constraint term*. The main term depends on the :ref:`regular observables <regular observables>` and the constraint term depends on the :ref:`global observables <global observables>`. See :ref:`NLL definition <NLL definition>` for more info.
+Whatever the NLL options are, the NLL function can always be factorized into two parts: the *main term* and the *constraint term*. The main term depends on the :ref:`regular observables <regular observables>` and the constraint term depends on the :ref:`global observables <global observables>`. See :ref:`NLL Definition <NLL Definition>` for more info.
 
 .. _nll options:
 NLL Options
