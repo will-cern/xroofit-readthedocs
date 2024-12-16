@@ -94,31 +94,37 @@ for multiplicative interpolation codes, where the code types and interpolation f
 
 
 .. list-table:: Types of variable
-    :widths: 25 10 65
+    :widths: 25 10 55 10
     :header-rows: 1
 
     * - Code
       - Name
       - Definition
+      - Notes
 
-    * - 0   (default)
+    * - 0
       - Additive Piecewise Linear 
-      - :math:`I_0(\theta;x_{-},x_0,x_{+}) = \begin{cases}\theta(x_{+} - x_0) & \text{if} \theta>=0 \\ \theta(x_0 - x_{-}) & \text{otherwise}\end{cases}` for :math:`\theta>=0`, otherwise :math:`\theta(x_0 - x_{-})`. Not recommended except if using a symmetric variation, because of discontinuities in derivatives.
+      - :math:`I_0(\theta;x_{-},x_0,x_{+}) = \begin{cases}\theta(x_{+} - x_0) & \text{if} \theta>=0 \\ \theta(x_0 - x_{-}) & \text{otherwise}\end{cases}`
+      - Not recommended except if using a symmetric variation, because of discontinuities in derivatives.
 
     * - 1             
       - Multiplicative Piecewise Exponential 
-      - :math:`I_1(\theta;x_{-},x_0,x_{+}) = (x_{+}/x_0)^{\theta}` for :math:`\theta>=0`, otherwise :math:`(x_{-}/x_0)^{-\theta}`.
+      - :math:`I_1(\theta;x_{-},x_0,x_{+}) = \begin{cases}(x_{+}/x_0)^{\theta} & \text{if} \theta>=0 \\ (x_{-}/x_0)^{-\theta} & \text{otherwise}\end{cases}`
+      - Not recommended.
 
     * - 4
       - Additive Poly Interp. + Linear Extrap
-      - :math:`I_4(\theta;x_{-},x_0,x_{+}) = I_0(\theta;x_{-},x_0,x_{+})` if :math:`|\theta|>=1`, otherwise :math:`\theta(\frac{x_{+}-x_{-}}{2}+\theta\frac{x_{+}+x_{-}-2x_{0}}{16}(15+\theta^2(3\alpha^2-10)))`  (6th-order polynomial through origin for with matching 0th,1st,2nd derivatives at boundary).
+      - :math:`I_4(\theta;x_{-},x_0,x_{+}) = \begin{cases}I_0(\theta;x_{-},x_0,x_{+}) & \text{if} |\theta|>=1 \\ \theta(\frac{x_{+}-x_{-}}{2}+\theta\frac{x_{+}+x_{-}-2x_{0}}{16}(15+\theta^2(3\alpha^2-10))) & \text{otherwise}\end{cases}`
+      - Interpolation is 6th-order polynomial through origin for with matching 0th,1st,2nd derivatives at boundary.
 
     * - 5
       - Multiplicative Poly Interp. + Exponential Extrap.
-      - :math:`I_5(\theta;x_{-},x_0,x_{+}) = I_1(\theta;x_{-},x_0,x_{+})` if :math:`|\theta|>=1`, otherwise 6th-order polynomial for :math:`|\theta_i|<1` with matching 0th,1st,2nd derivatives at boundary. Recommended for normalization factors. In FlexibleInterpVar this is interpCode=4.
+      - :math:`I_5(\theta;x_{-},x_0,x_{+}) = \begin{cases}I_1(\theta;x_{-},x_0,x_{+}) & \text{if} |\theta|>=1 \\ 1 +\sum_{i=1}^6 a_i\theta^i & \text{otherwise}\end{cases}`
+      - :math:`a_i` such that matching 0th,1st,2nd derivatives at :math:`|\theta|=1` boundaries. Recommended for normalization factors. In FlexibleInterpVar this is interpCode=4.
 
     * - 6
       - Multiplicative Poly Interp. + Linear Extrap.
-      - :math:`I_6(\theta;x_{-},x_0,x_{+}) = 1+I_4(\theta;x_{-},x_0,x_{+})`. Recommended for normalization factors that must not have roots (i.e. be equal to 0) outside of :math:`|\theta_i|<1`.
+      - :math:`I_6(\theta;x_{-},x_0,x_{+}) = 1+I_4(\theta;x_{-},x_0,x_{+})`. 
+      - Recommended for normalization factors that must not have roots (i.e. be equal to 0) outside of :math:`|\theta|<1`.
 
    
