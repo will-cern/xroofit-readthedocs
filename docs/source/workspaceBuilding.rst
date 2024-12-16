@@ -11,7 +11,7 @@ When we talk about a model for a dataset, we usually mean we are defining a like
 
 .. math::
 
-  L(\underline{\underline{x}},\underline{a}|\underline{\theta}) = \frac{\lambda(\underline{\theta})^{N}e^{-\lambda(\underline{\theta})}}{N!} p(\underline{a}|\underline{\theta})\prod_{i=1}^{N} p(\underline{x}_i|\underline{\theta})^{w_i},
+  L(\underline{\underline{x}},\underline{a}|\underline{\theta}) = \frac{\lambda(\underline{\theta})^{N}e^{-\lambda(\underline{\theta})}}{N!} p_a(\underline{a}|\underline{\theta})\prod_{i=1}^{N} p_x(\underline{x}_i|\underline{\theta})^{w_i},
 
 where :math:`\lambda(\underline{\theta})` is the total yield (predicted total number of events from the (extended) PDF), :math:`p_a(\underline{a})` is the constraint PDF for all the global observables, :math:`p_x(\underline{x}_i|\underline{\theta})` is the probability for the ith entry of the dataset, and :math:`w_i` is the weight of the ith entry. 
 
@@ -127,4 +127,11 @@ for multiplicative interpolation codes, where the code types and interpolation f
       - :math:`I_6(\theta;x_{-},x_0,x_{+}) = 1+I_4(\theta;x_{-},x_0,x_{+})`. 
       - Recommended for normalization factors that must not have roots (i.e. be equal to 0) outside of :math:`|\theta|<1`.
 
-   
+
+The complete model likelihood
+^^^^^^^^^^^^^^
+Combining the factors, samples, and channels together into a single likelihood gives:
+
+.. math::
+
+  L(\underline{\underline{x}},\underline{a}|\underline{\theta}) = \frac{\lambda(\underline{\theta})^{N}e^{-\lambda(\underline{\theta})}}{N!} p_a(\underline{a}|\underline{\theta})\prod_{i=1}^{N} \left(\frac{\lambda_{c_i}(\underline{\theta})}{\sum_j\lambda_j(\underline{\theta})}\frac{\sum_s c_{c_is}(\theta)f_{c_is}(\underline{x}_i|\theta)}{\int\sum_s c_{c_is}f_{c_is}(\underline{x}_i|\theta)dx}\right)^{w_i},
