@@ -29,7 +29,7 @@ Our attention now turns to :math:`p_x(\underline{x}|\underline{\theta})`, which 
 
 Channels
 ---------
-PDFs of models are usually factorised into channels, which means that there is a discrete regular observable (traditionally called ``channelCat``) that indicates which channel each entry in the dataset belongs to. If we denote this observable as :math:`c`, then we can write
+PDFs of models are usually factorised into channels (sometimes called `Regions`), which means that there is a discrete regular observable (traditionally called ``channelCat``) that indicates which channel each entry in the dataset belongs to. If we denote this observable as :math:`c`, then we can write
 
 .. math::
 
