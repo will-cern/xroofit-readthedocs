@@ -103,7 +103,13 @@ for multiplicative interpolation codes, where the code types and interpolation f
 
     * - 0   (default)
       - Additive Piecewise Linear 
-      - :math:`I_0(\theta;x_{-},x_0,x_{+}) = \theta(x_{+} - x_0)` for :math:`\theta>=0`, otherwise :math:`\theta(x_0 - x_{-})`. Not recommended except if using a symmetric variation, because of discontinuities in derivatives.
+      - 
+
+.. math::
+
+  I_0(\theta;x_{-},x_0,x_{+}) = \theta(x_{+} - x_0)` 
+
+for :math:`\theta>=0`, otherwise :math:`\theta(x_0 - x_{-})`. Not recommended except if using a symmetric variation, because of discontinuities in derivatives.
 
     * - 1             
       - Multiplicative Piecewise Exponential 
