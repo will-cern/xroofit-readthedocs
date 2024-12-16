@@ -15,13 +15,14 @@ When we talk about a model for a dataset, we usually mean we are defining a like
 
 where :math:`\lambda(\underline{\theta})` is the total yield (predicted total number of events from the (extended) PDF), :math:`p_a(\underline{a})` is the constraint PDF for all the global observables, :math:`p_x(\underline{x}_i|\underline{\theta})` is the probability for the ith entry of the dataset, and :math:`w_i` is the weight of the ith entry. :math:`W` is the sum of the weights in the dataset (:math:`\sum_i w_i`).
 
+.. _NLL Definition:
 The negative log likelihood (NLL) is given by:
 
 .. math::
 
   -\log L(\underline{\underline{x}},\underline{a}) = \lambda - W\log(\lambda) + \log(W!) + (-\log p_a(\underline{a})) + \sum_{i=1}^{N} (-w_i\log(p_x(\underline{x}_i)))
 
-where it is understood :math:`\lambda`, :math:`p_a(\underline{a})`, and :math:`p_x(\underline{x}_i)` are all implicitly dependent on the parameters :math:`\underline{\theta}`. The first two terms :math:`\lambda - W\log(\lambda)` are collectively called the `extended term`, the :math:`(-\log p_a(\underline{a}))` is the `constraint term`, and the :math:`(-w_i\log(p_x(\underline{x}_i)))` is the ith `entry term`. The term :math:`\log(W!)` is known as the `dataset term` because it only depends on the dataset. It is often omitted from the NLL evaluation because it is independent of the parameters. 
+where it is understood :math:`\lambda`, :math:`p_a(\underline{a})`, and :math:`p_x(\underline{x}_i)` are all implicitly dependent on the parameters :math:`\underline{\theta}`. The first two terms :math:`\lambda - W\log(\lambda)` are collectively called the `extended term`, the :math:`(-\log p_a(\underline{a}))` is the `constraint term`, and the :math:`(-w_i\log(p_x(\underline{x}_i)))` is the ith `entry value`. The term :math:`\log(W!)` is known as the `dataset term` because it only depends on the dataset. It is often omitted from the NLL evaluation because it is independent of the parameters. The part of the NLL that is not the constraint term is known collectively as the `main term` (i.e. it is made up of the extended term and the sum of the entry values). 
 
 The constraint term is usually (but not always) a product of individual PDFs for each of the global observables. Typically they are one of two types: Gaussian, or Poisson. The latter are almost exclusive used for constraints on MC-stat nuisance parameters (often known as "gamma" parameters). Normally-constrained nuisance parameters (known as "alpha" parameters) use a gaussian constraint with variance of 1 and global observable nominal value of 0. In HistFactory models, the luminosity parameter is the only parameter that receives a gaussian constraint with a variance different to 1 and nominal observed value different to 0. 
 
