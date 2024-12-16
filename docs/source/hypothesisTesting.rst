@@ -70,10 +70,10 @@ So all that remains is to define what actual test statistic to use at each hypoP
 
 .. math::
 
-  t_\mu \equiv -2\log\left(\frac{L(\mu,\hat{\hat{\theta}},\alpha)}{L(\hat{\mu},\hat{\theta},\alpha)}\right)
+  t_\mu \equiv -2\log\left(\frac{L(\mu,\hat{\hat{\nu}},\theta)}{L(\hat{\mu},\hat{\nu},\theta)}\right)
   
-(where :math:`\mu` are the poi, :math:`\theta` are the np, and :math:`\alpha` are the arguments). This test statistic requires 
-a choice of :math:`\mu` and :math:`\alpha` values, which are set equal to the hypoPoint coordinate values. 
+(where :math:`\mu` are the poi, :math:`\nu` are the np, and :math:`\theta` are the pre-specified parameters). This test statistic requires 
+a choice of :math:`\mu` and :math:`\theta` values, which are set equal to the hypoPoint coordinate values. 
 
 The test statistic we usually use for upper limits is the *one-sided (capped-above) lower-bound profile likelihood ratio*, 
 :math:`\tilde{q}_\mu`:
@@ -187,15 +187,11 @@ A minimal version of running a limit would be:
   import ROOT
   XRF = ROOT # or for ROOT's builtin xRooFit: XRF = ROOT.Experimental.XRooFit
   w = XRF.xRooNode("path/to/workspace.root")
-  print( w.nll().hypoSpace().limits() )
+  print( w.nll("datasetName").hypoSpace().limits() )
 
-This assumes that the POI has already been declared in the workspace, there is only one top-level pdf in the workspace, and that the fitting range of the POI is appropriate to also be used as the scan range. For the observed data an asimov dataset is generated corresponding to whatever the state of the model is at the time the workspace is opened. 
+This assumes that the POI has already been declared in the workspace, there is only one top-level pdf in the workspace, and that the fitting range of the POI is appropriate to also be used as the scan range. 
 
-95\% CLs limits on a hypoSpace defined with just the parameter of interest (assigned to x-axis) can be calculated with the asymptotic formulae with:
-
->>> w["modelName"].nll("datasetName").hypoSpace().limits()
-
-which returns a dictionary of the observed and expected limits on the parameter of interest. The keys of the dictionary are "-2","-1","0","1","2" for the expected limits and "obs" for the observed limits. If no dataset is specified in the construction of the `nll` then the asimov expected dataset is used as the "observed" dataset.
+The ``limits()`` method returns a dictionary of limits (each with a ``value()`` and ``error()``), with the keys of the dictionary being "-2","-1","0","1","2" for the expected limits and "obs" for the observed limits. If no dataset is specified in the construction of the `nll` then the asimov expected dataset is used as the "observed" dataset.
 
 The values of the dictionary are pairs of numbers where the first number is the limit, and the second number is the uncertainty on that limit. 
 
