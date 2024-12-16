@@ -47,17 +47,17 @@ Channels can be built out of samples. A sample is a sub-component of a channel, 
 
 .. math::
 
-  p_{c}(\underline{x}|\theta) = \frac{\sum_s c_{cs}(\theta)f_{cs}(\underline{x}|\theta)}{\int\sum_s c_{cs}f_{cs}(\underline{x}|\theta)dx}
+  p_{c}(\underline{x}|\theta) = \frac{\sum_s c_{cs}(\theta)\phi_{cs}(\underline{x}|\theta)}{\int\sum_s c_{cs}\phi_{cs}(\underline{x}|\theta)dx}
   
 where :math:`c_{cs}(\theta)` are known as the `coefficients` of the sample :math:`s` that appears in channel :math:`c` (technical points: the coefficients are "owned" by the channel rather than the sample). 
 
-In RooFit the above PDF is represented by ``RooRealSumPdf`` (if the :math:`f_s` are functions) or ``RooAddPdf`` (if the :math:`f_s` are all PDFs, in which case the samples are known as 'components' and the coefficients will correspond to the yield for each component).
+In RooFit the above PDF is represented by ``RooRealSumPdf`` (if the :math:`\phi_{cs}` are functions) or ``RooAddPdf`` (if the :math:`\phi_{cs}` are all PDFs, in which case the samples are known as 'components' and the coefficients will correspond to the yield for each component).
 
-In the case where the :math:`f_s` are functions are functions, we can usually write this function as a product of factors that depend on the observables. The coefficients are also types of factor that do not depend on the observables.
+In the case where the :math:`\phi_{cs}` are functions, we can usually write this function as a product of factors that depend on the observables. The coefficients are also types of factor that do not depend on the observables.
 
 Factors
 --------
-As stated above, there are two types of factors: observable-dependent, and observable-independent. Conventionally, the observable-independent factors of a sample are made  the coefficients of the sample (:math:`c_{cs}(\theta)`), while the sample itself is just made from the observable-dependent factors (:math:`f_{cs}(\underline{x}|\theta)`).
+As stated above, there are two types of factors: observable-dependent, and observable-independent. Conventionally, the observable-independent factors of a sample are made  the coefficients of the sample (:math:`c_{cs}(\theta)`), while the sample itself is just made from the observable-dependent factors (:math:`\phi_{cs} = \prod_k f^{(k)}_{cs}(\underline{x}|\theta)`).
 
 Furthermore, a factor can be parameterized (:math:`\theta`-dependent) or unparameterized. Other than the trivial case where the factor is a parameter itself, there are a multitude of ways we could make a factor :math:`\theta`-dependent. One strategy is to define a collection of "variations" for the factor (the variations are themselves types of factor), locate them at points in a "variation space" with parameterized coordinates, and provide interpolation+extrapolation rules to calculate the value of the factor at any point in the variation space. Very commonly the variation coordinates will explicitly be parameters, and the points for which variations are defined will correspond to points where one of the coordinates equals either +1 or -1 and the remaining coordinates are 0. The +1 variation is called the `up` variation of that coordinate, and -1 variation is the `down` variation. Additionally the point where all the coordinates are 0 will be known as the "nominal" variation.
 
@@ -134,4 +134,6 @@ Combining the factors, samples, and channels together into a single likelihood g
 
 .. math::
 
-  L(\underline{\underline{x}},\underline{a}|\underline{\theta}) = \frac{\lambda(\underline{\theta})^{N}e^{-\lambda(\underline{\theta})}}{N!} p_a(\underline{a}|\underline{\theta})\prod_{i=1}^{N} \left(\frac{\lambda_{c_i}(\underline{\theta})}{\sum_j\lambda_j(\underline{\theta})}\frac{\sum_s c_{c_is}(\theta)f_{c_is}(\underline{x}_i|\theta)}{\int\sum_s c_{c_is}f_{c_is}(\underline{x}_i|\theta)dx}\right)^{w_i},
+  L(\underline{\underline{x}},\underline{a}|\underline{\theta}) = \frac{\lambda(\underline{\theta})^{N}e^{-\lambda(\underline{\theta})}}{N!} p_a(\underline{a}|\underline{\theta})\prod_{i=1}^{N} \left(\frac{\lambda_{c_i}(\underline{\theta})}{\sum_j\lambda_j(\underline{\theta})}\frac{\sum_s c_{c_is}(\theta)\prod_k f^{(k)}_{c_is}(\underline{x}|\theta)}{\int\sum_s c_{c_is}\prod_k f^{(k)}_{c_is}(\underline{x}|\theta)dx}\right)^{w_i}
+
+where the product over :math:`k` is for the observable-dependent factors in the sample in the channel, and the :math:`c_{c_is}` coefficient is the product of the observable-independent factors in the sample in the channel.
