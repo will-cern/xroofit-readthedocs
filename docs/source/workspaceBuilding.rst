@@ -130,7 +130,7 @@ for multiplicative interpolation codes, where the code types and interpolation f
 
 
 The complete model likelihood
-^^^^^^^^^^^^^^
+---------
 Combining the factors, samples, and channels together into a single likelihood gives:
 
 .. math::
