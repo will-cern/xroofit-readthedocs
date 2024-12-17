@@ -160,11 +160,27 @@ Combining the factors, samples, and channels together into a single likelihood g
 
   L(\underline{\underline{x}},\underline{a}|\underline{\theta}) = \frac{\lambda(\underline{\theta})^{W}e^{-\lambda(\underline{\theta})}}{W!} p_a(\underline{a}|\underline{\theta})\prod_{i=1}^{N} \left(\frac{\lambda_{c_i}(\underline{\theta})}{\sum_j\lambda_j(\underline{\theta})}\frac{\sum_s c_{c_is}(\theta)\prod_k f^{(k)}_{c_is}(\underline{x}_i|\theta)}{\int\sum_s c_{c_is}\prod_k f^{(k)}_{c_is}(\underline{x}|\theta)dx}\right)^{w_i}
 
-where the product over :math:`k` is for the observable-dependent factors in the sample in the channel, and the :math:`c_{c_is}` coefficient is the product of the observable-independent factors in the sample in the channel. Conventionally the yield of the channel, :math:`\lambda_{c_i}`, is the same the normalization term for the channel, :math:`\int\sum_s c_{c_is}\prod_k f^{(k)}_{c_is}(\underline{x}|\theta)dx`, and hence the likelihood can also be written as:
+where the product over :math:`k` is for the observable-dependent factors in the sample in the channel, and the :math:`c_{c_is}` coefficient is the product of the observable-independent factors in the sample in the channel. Conventionally the yield of the channel, :math:`\lambda_{c_i}`, is the same sas the normalization term for the channel, :math:`\int\sum_s c_{c_is}\prod_k f^{(k)}_{c_is}(\underline{x}|\theta)dx`, and hence the likelihood can also be written as:
 
 .. math::
 
-  L(\underline{\underline{x}},\underline{a}|\underline{\theta}) = \frac{\lambda(\underline{\theta})^{W}e^{-\lambda(\underline{\theta})}}{W!} p_a(\underline{a}|\underline{\theta})\prod_{i=1}^{N} \left(\frac{\sum_s c_{c_is}(\theta)\prod_k f^{(k)}_{c_is}(\underline{x}_i|\theta)}{\sum_j\int\sum_s c_{c_js}\prod_k f^{(k)}_{c_js}(\underline{x}|\theta)dx}\right)^{w_i}.
+  L(\underline{\underline{x}},\underline{a}|\underline{\theta}) = \frac{\lambda(\underline{\theta})^{W}e^{-\lambda(\underline{\theta})}}{W!} p_a(\underline{a}|\underline{\theta})\prod_{i=1}^{N} \left(\frac{\sum_s c_{c_is}(\theta)\prod_k f^{(k)}_{c_is}(\underline{x}_i|\theta)}{\lambda(\underline{\theta})}\right)^{w_i}.
+
+Binned datasets
+^^^^^^^^^^^^^^^
+For the special case where the dataset is a `binned dataset`, the :math:`x_i` each correspond to a different bin center, and the :math:`w_i` are the observed yields in that bin. The prediction in the ith bin of the model (which is in channel c) is given by :math:`\lambda_{i} = \Delta_{i}\sum_s c_{c_is}(\theta)\prod_k f^{(k)}_{c_is}(\underline{x}_i|\theta)` where :math:`\Delta_{i}` is the width of the bin and  :math:`\underline{x}_i` are the coordinates of the bin center. Hence the likelihood can be written as:
+
+.. math::
+
+  L(\underline{\underline{x}},\underline{a}|\underline{\theta}) = \frac{\lambda(\underline{\theta})^{W}e^{-\lambda(\underline{\theta})}}{W!} p_a(\underline{a}|\underline{\theta})\prod_{i=1}^{N} \left(\frac{\lambda_{ci}}{\lambda\Delta_{ci}}
+
+After some manipulation this can be shown to be equal to:
+
+.. math::
+
+  L(\underline{\underline{x}},\underline{a}|\underline{\theta}) = p_a(\underline{a}|\underline{\theta})\prod_{i=1}^{N} \frac{e^{-\lambda_i}\lambda_i^{w_i}}{w_i!}\frac{w_i!}{W!\Delta_i^{w_i}}
+
+The second part of product, :math:`\frac{w_i!}{W!\Delta_i^{w_i}}` is independent of the parameters and hence can be included in the `dataset term` of the NLL, and the first part of the product then amounts to just a product of Poissons. Hence people will often claim their model is a product of Poissons, with a constraint PDF for nuisance parameters constrained by auxilliary measurements (aka global observables).
 
 
 
