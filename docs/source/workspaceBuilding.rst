@@ -20,7 +20,7 @@ When we talk about a model for a dataset, we usually mean we are defining a like
 
 .. math::
 
-  L(\underline{\underline{x}},\underline{a}|\underline{\theta}) = \frac{\lambda(\underline{\theta})^{W}e^{-\lambda(\underline{\theta})}}{W!} p_a(\underline{a}|\underline{\theta})\prod_{i=1}^{N} p_x(\underline{x}_i|\underline{\theta})^{w_i},
+  L(\underline{\underline{x}},\underline{a}|\underline{\theta}) = p_a(\underline{a}|\underline{\theta})\frac{\lambda(\underline{\theta})^{W}e^{-\lambda(\underline{\theta})}}{W!} \prod_{i=1}^{N} p_x(\underline{x}_i|\underline{\theta})^{w_i},
 
 where :math:`\lambda(\underline{\theta})` is the total yield (predicted total number of events from the (extended) PDF), :math:`p_a(\underline{a})` is the constraint PDF for all the global observables, :math:`p_x(\underline{x}_i|\underline{\theta})` is the probability for the ith entry of the dataset, and :math:`w_i` is the weight of the ith entry. :math:`W` is the sum of the weights in the dataset (:math:`\sum_i w_i`).
 
@@ -29,9 +29,9 @@ The negative log likelihood (NLL) is given by:
 
 .. math::
 
-  -\log L(\underline{\underline{x}},\underline{a}) = \lambda - W\log(\lambda) + \log(W!) + (-\log p_a(\underline{a})) + \sum_{i=1}^{N} (-w_i\log(p_x(\underline{x}_i)))
+  -\log L(\underline{\underline{x}},\underline{a}) = -\log p_a(\underline{a}) + \lambda - W\log(\lambda) + \log(W!) + \sum_{i=1}^{N} (-w_i\log(p_x(\underline{x}_i)))
 
-where it is understood :math:`\lambda`, :math:`p_a(\underline{a})`, and :math:`p_x(\underline{x}_i)` are all implicitly dependent on the parameters :math:`\underline{\theta}`. The first two terms :math:`\lambda - W\log(\lambda)` are collectively called the `extended term`, the :math:`(-\log p_a(\underline{a}))` is the `constraint term`, and the :math:`(-w_i\log(p_x(\underline{x}_i)))` is the ith `entry value`. The term :math:`\log(W!)` is known as the `dataset term` because it only depends on the dataset. It is often omitted from the NLL evaluation because it is independent of the parameters. The part of the NLL that is not the constraint term is known collectively as the `main term` (i.e. it is made up of the extended term and the sum of the entry values). 
+where it is understood :math:`\lambda`, :math:`p_a(\underline{a})`, and :math:`p_x(\underline{x}_i)` are all implicitly dependent on the parameters :math:`\underline{\theta}`. The two terms :math:`\lambda - W\log(\lambda)` are collectively called the `extended term`, the :math:`-\log p_a(\underline{a})` is the `constraint term`, and the :math:`(-w_i\log(p_x(\underline{x}_i)))` is the ith `entry value`. The term :math:`\log(W!)` is known as the `dataset term` because it only depends on the dataset. It is often omitted from the NLL evaluation because it is independent of the parameters. The part of the NLL that is not the constraint term is known collectively as the `main term` (i.e. it is made up of the extended term and the sum of the entry values, and any dataset terms). 
 
 The constraint term is usually (but not always) a product of individual PDFs for each of the global observables. Typically they are one of two types: Gaussian, or Poisson. The latter are almost exclusive used for constraints on MC-stat nuisance parameters (often known as "gamma" parameters). Normally-constrained nuisance parameters (known as "alpha" parameters) use a gaussian constraint with variance of 1 and global observable nominal value of 0. In HistFactory models, the luminosity parameter is the only parameter that receives a gaussian constraint with a variance different to 1 and nominal observed value different to 0. 
 
@@ -185,13 +185,13 @@ Combining the factors, samples, and channels together into a single likelihood g
 
 .. math::
 
-  L(\underline{\underline{x}},\underline{a}|\underline{\theta}) = \frac{\lambda(\underline{\theta})^{W}e^{-\lambda(\underline{\theta})}}{W!} p_a(\underline{a}|\underline{\theta})\prod_{i=1}^{N} \left(\frac{\lambda_{c_i}(\underline{\theta})}{\sum_j\lambda_j(\underline{\theta})}\frac{\sum_s c_{c_is}(\theta)\prod_k f^{(k)}_{c_is}(\underline{x}_i|\theta)}{\int\sum_s c_{c_is}\prod_k f^{(k)}_{c_is}(\underline{x}|\theta)dx}\right)^{w_i}
+  L(\underline{\underline{x}},\underline{a}|\underline{\theta}) = p_a(\underline{a}|\underline{\theta})\frac{\lambda(\underline{\theta})^{W}e^{-\lambda(\underline{\theta})}}{W!} \prod_{i=1}^{N} \left(\frac{\lambda_{c_i}(\underline{\theta})}{\sum_j\lambda_j(\underline{\theta})}\frac{\sum_s c_{c_is}(\theta)\prod_k f^{(k)}_{c_is}(\underline{x}_i|\theta)}{\int\sum_s c_{c_is}\prod_k f^{(k)}_{c_is}(\underline{x}|\theta)dx}\right)^{w_i}
 
 where the product over :math:`k` is for the observable-dependent factors in the sample in the channel, and the :math:`c_{c_is}` coefficient is the product of the observable-independent factors in the sample in the channel. Conventionally the yield of the channel, :math:`\lambda_{c_i}`, is the same sas the normalization term for the channel, :math:`\int\sum_s c_{c_is}\prod_k f^{(k)}_{c_is}(\underline{x}|\theta)dx`, and hence the likelihood can also be written as:
 
 .. math::
 
-  L(\underline{\underline{x}},\underline{a}|\underline{\theta}) = \frac{\lambda(\underline{\theta})^{W}e^{-\lambda(\underline{\theta})}}{W!} p_a(\underline{a}|\underline{\theta})\prod_{i=1}^{N} \left(\frac{\sum_s c_{c_is}(\theta)\prod_k f^{(k)}_{c_is}(\underline{x}_i|\theta)}{\lambda(\underline{\theta})}\right)^{w_i}.
+  L(\underline{\underline{x}},\underline{a}|\underline{\theta}) = p_a(\underline{a}|\underline{\theta})\frac{\lambda(\underline{\theta})^{W}e^{-\lambda(\underline{\theta})}}{W!} \prod_{i=1}^{N} \left(\frac{\sum_s c_{c_is}(\theta)\prod_k f^{(k)}_{c_is}(\underline{x}_i|\theta)}{\lambda(\underline{\theta})}\right)^{w_i}.
 
 Binned datasets
 ^^^^^^^^^^^^^^^
@@ -199,7 +199,7 @@ For the special case where the dataset is a `binned dataset`, the :math:`x_i` ea
 
 .. math::
 
-  L(\underline{\underline{x}},\underline{a}|\underline{\theta}) = \frac{\lambda(\underline{\theta})^{W}e^{-\lambda(\underline{\theta})}}{W!} p_a(\underline{a}|\underline{\theta})\prod_{i=1}^{N} \left(\frac{\lambda_{ci}}{\lambda\Delta_{ci}}\right)^{w_i}
+  L(\underline{\underline{x}},\underline{a}|\underline{\theta}) = p_a(\underline{a}|\underline{\theta})\frac{\lambda(\underline{\theta})^{W}e^{-\lambda(\underline{\theta})}}{W!} \prod_{i=1}^{N} \left(\frac{\lambda_{i}}{\lambda\Delta_{i}}\right)^{w_i}
 
 After some manipulation this can be shown to be equal to:
 
