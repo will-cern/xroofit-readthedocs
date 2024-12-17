@@ -178,9 +178,9 @@ After some manipulation this can be shown to be equal to:
 
 .. math::
 
-  L(\underline{\underline{x}},\underline{a}|\underline{\theta}) = p_a(\underline{a}|\underline{\theta})\prod_{i=1}^{N} \frac{e^{-\lambda_i}\lambda_i^{w_i}}{w_i!}\frac{w_i!}{W!\Delta_i^{w_i}}
+  L(\underline{\underline{x}},\underline{a}|\underline{\theta}) = p_a(\underline{a}|\underline{\theta})\frac{1}{W!}\prod_{i=1}^{N} \frac{e^{-\lambda_i}\lambda_i^{w_i}}{w_i!}\frac{w_i!}{\Delta_i^{w_i}}
 
-The second part of product, :math:`\frac{w_i!}{W!\Delta_i^{w_i}}` is independent of the parameters and hence can be included in the `dataset term` of the NLL, and the first part of the product then amounts to just a product of Poissons. Hence people will often claim their model is a product of Poissons, with a constraint PDF for nuisance parameters constrained by auxilliary measurements (aka global observables).
+The second part of product, :math:`\frac{w_i!}{\Delta_i^{w_i}}` is independent of the parameters and hence can be included in the `dataset term` of the NLL, and the first part of the product then amounts to just a product of Poissons. Hence people will often claim their model is a product of Poissons, with a constraint PDF for nuisance parameters constrained by auxilliary measurements (aka global observables).
 
 
 
