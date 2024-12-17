@@ -73,30 +73,55 @@ In RooFit the above PDF is represented by ``RooRealSumPdf`` (if the :math:`\phi_
 
 In the case where the :math:`\phi_{cs}` are functions, we can usually write this function as a product of factors that depend on the observables. The coefficients are also types of factor that do not depend on the observables.
 
-To add a new sample to a channel, do e.g.:
+To add a new sample to a channel, the channel must have a regular observable declared, with a binning. 
 
 .. code-block:: python
 
+  w["pdfs/simPdf/SR"].SetXaxis("obsName","obs title",nBins,low,high) # declare a regular observable for the channel
   w["pdfs/simPdf/SR/samples"].Add("bkg") # adds a "bkg" sample to the "SR" channel in the "simPdf" pdf
+
+Alternatively, you can use a ROOT histogram to achieve the same results:
+
+.. code-block:: python
+
+  hBkg = ROOT.TH1D("bkg","Background;obs title",nBins,low,high)
+  hBkg.GetXaxis().SetName("obsName")
+  w["pdfs/simPdf/SR/samples"].Add(hBkg)
+
+Both of these approaches will create an initial `SimpleDensity` factor for the sample (see below). Subsequent factors can be included by multiplying the sample. 
 
 Factors
 --------
 As stated above, there are two types of factors: observable-dependent, and observable-independent. Conventionally, the observable-independent factors of a sample are made  the coefficients of the sample (:math:`c_{cs}(\theta)`), while the sample itself is just made from the observable-dependent factors (:math:`\phi_{cs} = \prod_k f^{(k)}_{cs}(\underline{x}|\theta)`).
 
-Furthermore, a factor can be parameterized (:math:`\theta`-dependent) or unparameterized. Other than the trivial case where the factor is a parameter itself, there are a multitude of ways we could make a factor :math:`\theta`-dependent. One strategy is to define a collection of "variations" for the factor (the variations are themselves types of factor), locate them at points in a "variation space" with parameterized coordinates, and provide interpolation+extrapolation rules to calculate the value of the factor at any point in the variation space. Very commonly the variation coordinates will explicitly be parameters, and the points for which variations are defined will correspond to points where one of the coordinates equals either +1 or -1 and the remaining coordinates are 0. The +1 variation is called the `up` variation of that coordinate, and -1 variation is the `down` variation. Additionally the point where all the coordinates are 0 will be known as the "nominal" variation.
+Furthermore, a factor can be parameterized (:math:`\theta`-dependent) or unparameterized. 
 
-Here is a list of types of factors:
+The following factor types can be included in a sample by multiplying the sample by them. The first time you do this you must specify the factor type:
+
+.. code-block:: python
+
+  w["pdfs/simPdf/SR/samples/bkg"].Multiply("myFactor","shape") # multiplying the sample by an observable-depdenent factor type
+  w["pdfs/simPdf/SR/samples/bkg"].coefs().Multiply("mu_bkg","norm") # observable-independent factors conventionally go in as coefficients
+
+Here are the basic factor types:
 
   * `Const` factor: An observable-independent pre-specified parameter or constant. RooFit class: ``RooConstVar``.
   * `Norm` factor: An observable-independent floatable parameter. RooFit class: ``RooRealVar``.
   * `Simple` factor: An observable-dependent parameter-independent function. Commonly represents a histogram of bin yields. RooFit class: ``RooHistFunc``.
   * `Density` factor: A special case of Simple factor where the bin value is equal to 1/binWidth. RooFit class: ``RooBinWidthFunction``.
+  * `Shape` factor: A parameterized and observable-dependent factor where each bin in the observable is scaled by an individual norm factor. RooFit class: ``ParamHistFunc``
+
+Other than the trivial case where the factor is a parameter itself (i.e. norm factor), there are a multitude of ways we could make a factor :math:`\theta`-dependent. One strategy is to define a collection of "variations" for the factor (the variations are themselves types of factor), locate them at points in a "variation space" with parameterized coordinates, and provide interpolation+extrapolation rules to calculate the value of the factor at any point in the variation space. Very commonly the variation coordinates will explicitly be parameters, and the points for which variations are defined will correspond to points where one of the coordinates equals either +1 or -1 and the remaining coordinates are 0. The +1 variation is called the `up` variation of that coordinate, and -1 variation is the `down` variation. Additionally the point where all the coordinates are 0 will be known as the "nominal" variation.
+
+These factors can be created in xRooFit by `varying` one of the parameter-independent factors above:
+
   * `Varied` factor: A parameterized factor with variations and an interpolation+extrapolation rule. RooFit class: ``PiecewiseInterpolation``.
      * `Overall` factor: A special case of Varied factor where the variations are const factors. RooFit class: ``RooStats::HistFactory::FlexibleInterpVar`` or ``PiecewiseInterpolation``.
      * `Histo` factor: A special case of Varied factor where the variations are simple factors. RooFit class: ``PiecewiseInterpolation``.
-  * `Shape` factor: A parameterized and observable-dependent factor where each bin in the observable is scaled by an individual norm factor. RooFit class: ``ParamHistFunc``
 
 When any of the parameters of a parameter-dependent factor also have a constraint term, the phrase `factor` can be replaced by `sys`, e.g. a `ShapeFactor` becomes a `ShapeSys`.
+
+
 
 Interpolation and Extrapolation Rules of Varied Factors
 ^^^^^^^^^^^^^^
