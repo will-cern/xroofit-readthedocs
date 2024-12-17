@@ -113,13 +113,14 @@ The above factor types can be created and included in a sample as follows:
 
 If a factor with the same name already exists in the workspace, the factor type is ignored and the existing factor is used. This allows factors to be shared between samples both in the same channel and across channels. 
 
-Other than the trivial case where the factor is a parameter itself (i.e. norm factor), there are a multitude of ways we could make a factor :math:`\theta`-dependent. One strategy is to define a collection of "variations" for the factor (the variations are themselves types of factor), locate them at points in a "variation space" with parameterized coordinates, and provide interpolation+extrapolation rules to calculate the value of the factor at any point in the variation space. Very commonly the variation coordinates will explicitly be parameters, and the points for which variations are defined will correspond to points where one of the coordinates equals either +1 or -1 and the remaining coordinates are 0. The +1 variation is called the `up` variation of that coordinate, and -1 variation is the `down` variation. Additionally the point where all the coordinates are 0 will be known as the "nominal" variation.
+Other than the trivial case where the factor is a parameter itself (i.e. norm factor), there are a multitude of ways we could make a factor :math:`\theta`-dependent. One strategy is to define a collection of "variations" for the factor (the variations are themselves types of factor), locate them at points in a "variation space" with parameterized coordinates, and provide interpolation+extrapolation rules to calculate the value of the factor at any point in the variation space. Very commonly the variation coordinates will explicitly be parameters, and the points for which variations are defined will correspond to points where one of the coordinates equals either +1 or -1 and the remaining coordinates are 0. The +1 variation is called the `up` variation of that coordinate, and -1 variation is the `down` variation. Additionally the point where all the coordinates are 0 will be known as the "nominal" variation. These `Varied` factors can be created in xRooFit by `varying` one of the parameter-independent factors above.
 
-These factors can be created in xRooFit by `varying` one of the parameter-independent factors above:
+So the additional factor types are:
 
   * `Varied` factor: A parameterized factor with variations and an interpolation+extrapolation rule. RooFit class: ``PiecewiseInterpolation``.
      * `Overall` factor: A special case of Varied factor where the variations are const factors. RooFit class: ``RooStats::HistFactory::FlexibleInterpVar`` or ``PiecewiseInterpolation``.
      * `Histo` factor: A special case of Varied factor where the variations are simple factors. RooFit class: ``PiecewiseInterpolation``.
+  * `Func` factor: a generic parametric function. RooFit class: ``RooFormulaVar``. 
 
 When any of the parameters of a parameter-dependent factor also have a constraint term, the phrase `factor` can be replaced by `sys`, e.g. a `ShapeFactor` becomes a `ShapeSys`.
 
