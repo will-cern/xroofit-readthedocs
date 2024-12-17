@@ -96,13 +96,6 @@ As stated above, there are two types of factors: observable-dependent, and obser
 
 Furthermore, a factor can be parameterized (:math:`\theta`-dependent) or unparameterized. 
 
-The following factor types can be included in a sample by multiplying the sample by them. The first time you do this you must specify the factor type:
-
-.. code-block:: python
-
-  w["pdfs/simPdf/SR/samples/bkg"].Multiply("myFactor","shape") # multiplying the sample by an observable-depdenent factor type
-  w["pdfs/simPdf/SR/samples/bkg"].coefs().Multiply("mu_bkg","norm") # observable-independent factors conventionally go in as coefficients
-
 Here are the basic factor types:
 
   * `Const` factor: An observable-independent pre-specified parameter or constant. RooFit class: ``RooConstVar``.
@@ -110,6 +103,15 @@ Here are the basic factor types:
   * `Simple` factor: An observable-dependent parameter-independent function. Commonly represents a histogram of bin yields. RooFit class: ``RooHistFunc``.
   * `Density` factor: A special case of Simple factor where the bin value is equal to 1/binWidth. RooFit class: ``RooBinWidthFunction``.
   * `Shape` factor: A parameterized and observable-dependent factor where each bin in the observable is scaled by an individual norm factor. RooFit class: ``ParamHistFunc``
+
+The above factor types can be created and included in a sample as follows:
+
+.. code-block:: python
+
+  w["pdfs/simPdf/SR/samples/bkg"].Multiply("myFactor","shape") # multiplying the sample by an observable-depdenent factor type
+  w["pdfs/simPdf/SR/samples/bkg"].coefs().Multiply("mu_bkg","norm") # observable-independent factors conventionally go in as coefficients
+
+If a factor with the same name already exists in the workspace, the factor type is ignored and the existing factor is used. This allows factors to be shared between samples both in the same channel and across channels. 
 
 Other than the trivial case where the factor is a parameter itself (i.e. norm factor), there are a multitude of ways we could make a factor :math:`\theta`-dependent. One strategy is to define a collection of "variations" for the factor (the variations are themselves types of factor), locate them at points in a "variation space" with parameterized coordinates, and provide interpolation+extrapolation rules to calculate the value of the factor at any point in the variation space. Very commonly the variation coordinates will explicitly be parameters, and the points for which variations are defined will correspond to points where one of the coordinates equals either +1 or -1 and the remaining coordinates are 0. The +1 variation is called the `up` variation of that coordinate, and -1 variation is the `down` variation. Additionally the point where all the coordinates are 0 will be known as the "nominal" variation.
 
