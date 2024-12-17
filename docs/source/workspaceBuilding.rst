@@ -3,6 +3,10 @@ Day 2: Workspace Building
 
 Today you will learn how to build a workspace containing a model and a dataset. 
 
+We start by creating a new ``RooWorkspace`` owned by an ``xRooNode`` smart pointer:
+
+
+
 
 Anatomy of a model
 ==================
