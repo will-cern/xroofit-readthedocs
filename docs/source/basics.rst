@@ -128,16 +128,16 @@ Exercises
  
 Working with workspaces
 ^^^^^^^^^^^^^^^^^^^^^^^
-Here are some ways to load a workspace into an `xRooNode`:
+Here are some ways to load a workspace into an ``xRooNode``:
  
 >>> w = XRF.xRooNode("filename.root")
 >>> f = ROOT.TFile("filename.root"); ws = f.Get("wsname"); w = XRF.xRooNode(ws) # assumes wsname is name of workspace in file
 
 Changing parameters from floating to constant and vice versa
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Once you have an `xRooNode` that wraps a workspace you can use methods of the node to access the different variables (see methods in table above). These each return a node that wraps a `RooArgList`. See https://root.cern.ch/doc/master/classRooArgList.html for documentation of that class. The individual elements of the list can be accessed by name or index via xRooNode e.g.: `w.obs()["obsName"]` which will return an xRooNode that wraps e.g. a `RooRealVar` with the name `obsName`. You can also produce another `xRooNode` that is a subset of the list using its `reduced <https://root.cern.ch/doc/master/classROOT_1_1Experimental_1_1XRooFit_1_1xRooNode.html#ac11e410ea9561991b44c2598be8c2659>`_ method, passing a comma separated list with or without wildcards. 
+Once you have an ``xRooNode`` that wraps a workspace you can use methods of the node to access the different variables (see methods in table above). These each return a node that wraps a ``RooArgList``. See https://root.cern.ch/doc/master/classRooArgList.html for documentation of that class. The individual elements of the list can be accessed by name or index via xRooNode e.g.: ``w.obs()["obsName"]`` which will return an xRooNode that wraps e.g. a ``RooRealVar`` with the name `obsName`. You can also produce another ``xRooNode`` that is a subset of the list using its `reduced <https://root.cern.ch/doc/master/classROOT_1_1Experimental_1_1XRooFit_1_1xRooNode.html#ac11e410ea9561991b44c2598be8c2659>`_ method, passing a comma separated list with or without wildcards. 
 
-Any variable in RooFit can have boolean attributes on it, essentially a flag on the variable. All the constant parameters have the "Constant" attribute (note: it is case-sensitive). All the parameters of interest have the "poi" attribute. Attributes on individual variables can be set and retrieved with the `setAttribute <https://root.cern.ch/doc/master/classRooAbsArg.html#ac77328af4e29b2642c248a03f03deb73>`_ and `getAttribute <https://root.cern.ch/doc/master/classRooAbsArg.html#aa0e2616c8c43065117031c6797ac19d4>`_ methods of `RooAbsArg` (base class of almost everything in RooFit, including variables). `RooArgList` also has the method `setAttribAll` that can be used to set the same attribute on all the variables in the list.
+Any variable in RooFit can have boolean attributes on it, essentially a flag on the variable. All the constant parameters have the "Constant" attribute (note: it is case-sensitive). All the parameters of interest have the "poi" attribute. Attributes on individual variables can be set and retrieved with the `setAttribute <https://root.cern.ch/doc/master/classRooAbsArg.html#ac77328af4e29b2642c248a03f03deb73>`_ and `getAttribute <https://root.cern.ch/doc/master/classRooAbsArg.html#aa0e2616c8c43065117031c6797ac19d4>`_ methods of ``RooAbsArg`` (base class of almost everything in RooFit, including variables). ``RooArgList`` also has the method ``setAttribAll`` that can be used to set the same attribute on all the variables in the list.
 
 Here are a few examples:
 
