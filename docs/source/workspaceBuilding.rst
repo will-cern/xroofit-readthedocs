@@ -5,7 +5,12 @@ Today you will learn how to build a workspace containing a model and a dataset.
 
 We start by creating a new ``RooWorkspace`` owned by an ``xRooNode`` smart pointer:
 
+.. code-block:: python
 
+  import ROOT
+  import ROOT as XRF # or for ROOT's implementation of xRooFit, do: import ROOT.Experimental.XRooFit as XRF
+
+  w = XRF.xRooNode("RooWorkspace","combined","my workspace")
 
 
 Anatomy of a model
@@ -30,7 +35,11 @@ where it is understood :math:`\lambda`, :math:`p_a(\underline{a})`, and :math:`p
 
 The constraint term is usually (but not always) a product of individual PDFs for each of the global observables. Typically they are one of two types: Gaussian, or Poisson. The latter are almost exclusive used for constraints on MC-stat nuisance parameters (often known as "gamma" parameters). Normally-constrained nuisance parameters (known as "alpha" parameters) use a gaussian constraint with variance of 1 and global observable nominal value of 0. In HistFactory models, the luminosity parameter is the only parameter that receives a gaussian constraint with a variance different to 1 and nominal observed value different to 0. 
 
-Our attention now turns to :math:`p_x(\underline{x}|\underline{\theta})`, which is conventionally split up into channels ...
+Our attention now turns to :math:`p_x(\underline{x}|\underline{\theta})`, which is conventionally split up into channels. Such PDFs are represented by ``RooSimultaneous`` in RooFit. To a new PDF of this type, just do:
+
+.. code-block:: python
+
+  w["pdfs"].Add("simPdf") # simPdf is the traditional name of a multi-channel PDF, but can be any name.
 
 Channels
 ---------
@@ -42,7 +51,11 @@ PDFs of models are usually factorised into channels (sometimes called `Regions`)
 
 where :math:`p_c(\underline{x}|\underline{\theta})` is the channel's PDF, and :math:`\lambda_c(\underline{\theta})` is the yield (predicted number of events) for the channel :math:`c`. Note that :math:`p_c` will not be a PDF for the regular obserable :math:`c`, i.e. that regular observable is effectively ignored by the channel PDF.
 
-PDFs which are factorized into channels are represented in RooFit by the class ``RooSimultaneous``.
+To add a new channel to our multi-channel PDF, do e.g.:
+
+.. code-block:: python
+
+  w["pdfs/simPdf"].Add("SR") # adds the channel "SR" to the "simPdf" top-level pdf
 
 We now will see how a channel's PDF can be built out of samples ....
 
@@ -59,6 +72,12 @@ where :math:`c_{cs}(\theta)` are known as the `coefficients` of the sample :math
 In RooFit the above PDF is represented by ``RooRealSumPdf`` (if the :math:`\phi_{cs}` are functions) or ``RooAddPdf`` (if the :math:`\phi_{cs}` are all PDFs, in which case the samples are known as 'components' and the coefficients will correspond to the yield for each component).
 
 In the case where the :math:`\phi_{cs}` are functions, we can usually write this function as a product of factors that depend on the observables. The coefficients are also types of factor that do not depend on the observables.
+
+To add a new sample to a channel, do e.g.:
+
+.. code-block:: python
+
+  w["pdfs/simPdf/SR/samples"].Add("bkg") # adds a "bkg" sample to the "SR" channel in the "simPdf" pdf
 
 Factors
 --------
