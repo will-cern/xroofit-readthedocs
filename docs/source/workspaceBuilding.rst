@@ -172,7 +172,7 @@ For the special case where the dataset is a `binned dataset`, the :math:`x_i` ea
 
 .. math::
 
-  L(\underline{\underline{x}},\underline{a}|\underline{\theta}) = \frac{\lambda(\underline{\theta})^{W}e^{-\lambda(\underline{\theta})}}{W!} p_a(\underline{a}|\underline{\theta})\prod_{i=1}^{N} \left(\frac{\lambda_{ci}}{\lambda\Delta_{ci}}
+  L(\underline{\underline{x}},\underline{a}|\underline{\theta}) = \frac{\lambda(\underline{\theta})^{W}e^{-\lambda(\underline{\theta})}}{W!} p_a(\underline{a}|\underline{\theta})\prod_{i=1}^{N} \left(\frac{\lambda_{ci}}{\lambda\Delta_{ci}}\right)^{w_i}
 
 After some manipulation this can be shown to be equal to:
 
