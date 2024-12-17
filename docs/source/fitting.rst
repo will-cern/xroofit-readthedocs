@@ -93,3 +93,29 @@ It is also possible to do the above calculation with the constraint term include
   nll.ndof() # the number of degrees of freedom (nBins + nGlobs - nFloats in a binned model)
   nll.pgof() # = ROOT.TMath.Prob( 2*(nll.getVal() - nll.saturatedVal()), nll.ndof() )
 
+.. _profilelikelihood:
+Profiled Likelihood Scans
+----------------------
+To draw the profiled likelihood ratio for a given parameter, you can do:
+
+.. code-block:: python
+
+  hs = nll.hypoSpace("parName")
+  hs.scan("plr",nPoints,minVal,maxVal)
+  hs.Draw()
+
+You will learn more about ``hypoSpace`` on the next day, but this object will allow you to access the conditional fits that are run in order to evaluate the profile likelihood ratio at each point in the scan. Alternatively, to do the conditional fits manually and make the plot by hand, you could e.g. do:
+
+.. code-block:: python
+
+  fr = nll.minimize()
+  g = ROOT.TGraph()
+  v = minVal
+  while v < maxVal:
+    cfr = fr.cfit(f"parName={v}") # should ideally check status codes etc of cfr
+    g.AddPoint( v, 2*(cfr.minNll() - fr.minNll() ) ) # computes the 2*PLR value
+    v += (maxVal-minVal)/(nPoints-1)
+  g.Draw("ALP")
+
+
+
