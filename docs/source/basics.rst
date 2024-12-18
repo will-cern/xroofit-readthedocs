@@ -42,6 +42,8 @@ Parameters are in one of two possible states: they are either `floating` or `con
 
 Additionally, for statistical analysis purposes, one or more floatable parameters can be labelled `parameters of interest` (poi). The remaining floatable parameters are deemed the `nuisance parameters` (np). The symbol used for parameters of interest is :math:`\mu`, and for nuisance parameters it is :math:`\nu`.
 
+Finally, nuisance parameters that have a normal constraint (a Gaussian with nominal global observable equal to 0 and variance of 1) are conventionally called :math:`\alpha` nuisance parameters. Nuisance parameters that have a Poisson constraint (typically the case of MC-statistical uncertainties) are conventionally called :math:`\gamma` nuisance parameters.
+
 .. _Test Statistics:
 Test Statistics
 -------------
@@ -113,7 +115,7 @@ The table below summarises the different types of variables that were introduced
     * -   * Nuisance parameters
       - :math:`\nu`
       - ``np()``
-      - A floatable parameter that is not a parameter of interest.
+      - A floatable parameter that is not a parameter of interest. Gaussian-constrained np are called :math:`\alpha` parameters, and Poisson-constrained np are :math:`\gamma` parameters.
     * -   * Floating parameters
       -
       - ``floats()``
