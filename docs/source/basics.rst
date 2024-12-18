@@ -74,7 +74,7 @@ Summary of types of variable
 The table below summarises the different types of variables that were introduced above:
 
 .. list-table:: Types of variable
-    :widths: 25 10 65
+    :widths: 25 10 10 55
     :header-rows: 1
 
     * - Type
