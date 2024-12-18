@@ -47,18 +47,17 @@ When setting limits, the "null hypothesis" is the signal+background hypothesis w
 hypoPoint being tested, and the "alt hypothesis" is the background-only hypothesis. Once these two distributions are determined 
 (by throwing the toys or by other methods) then the p-value for that point is given by one of the following:
 
-   * null p-value (``pNull``): the fraction of null-hypothesis toys with ts greater than the target ts value. Use this value for 
+   * null p-value (:math:`p_{null}`): the fraction of null-hypothesis toys with ts greater than the target ts value. Use this value for 
    calculating `CLs+b` limits.
-   * alt p-value (``pAlt``): the fraction of alt-hypothesis toys with ts greater than the target ts-value.
-   * cls p-value (``pCLs``): ratio ``pNull/pAlt``. Use this p-value when calculating `CLs` limits. Note that it is strictly not a p-value
-   because it can take on values greater than 1; it is a ratio of probabilities, not a probability itself.
+   * alt p-value (:math:`p_{alt}`)): the fraction of alt-hypothesis toys with ts greater than the target ts-value.
+   * cls p-value (:math:`p_{cls}`)): ratio :math:`p_{null}/p_{alt}`. Use this p-value when calculating `CLs` limits. Note that it is strictly not a p-value because it can take on values greater than 1; it is a ratio of probabilities, not a probability itself.
 
 Note that the target ts value is dependent on what type of limit/interval is being found. If we are finding the observed limit, 
 the target ts value is the ts value calculated with the observed dataset. If the we are finding the N-sigma limit the target 
-ts value is whatever ts value has a ``pAlt`` equal to :math:`\Phi(N)` (so for the expected limit, the target ts value 
-has ``pAlt = 0.5``). 
+ts value is whatever ts value has a :math:`p_{alt}=\Phi(N)` (so for the expected limit, the target ts value 
+has :math:`p_{alt}=0.5`). These are known as the `N-sigma Asimov Test Statistic Values`.  
 
-By definition ``pNull`` and ``pAlt`` are between 0 and 1, but ``pCLs`` can be any positive number. 
+By definition :math:`p_{null}` and :math:`p_{alt}` are between 0 and 1, but :math:`p_{cls}` can be any positive number. 
 Also note that we can assign an uncertainty to these p-values, e.g. when determining them with toys we can compute the 
 uncertainty on the p-values in the same way we would calculate an uncertainty on an efficiency. This way it is clear that the 
 more toys we generate, the more certain the p-value becomes, and the clearer defined the interval/limit edge will be.
@@ -124,6 +123,49 @@ In the next section you will learn how to create a hypoSpace and run a scan in i
 
 Here is a table of the quantities that can be computed for a hypoPoint:
 
+.. list-table:: hypoPoint quantities
+    :widths: 25 75
+    :header-rows: 1
+
+    * - Method (all results have a ``value()`` and ``error()``)
+      - Description
+    * - ``pNull_asymp()``
+      - The Observed :math:`p_{null}` computed from asymptotic formulae.
+    * - ``pNull_asymp(n)``
+      - The n-sigma expected :math:`p_{null}` computed from asymptotic formulae using Asimov Test Statistic values.
+    * - ``pAlt_asymp()``
+      - The Observed :math:`p_{alt}` computed from asymptotic formulae.
+    * - ``pAlt_asymp(n)``
+      - The n-sigma expected :math:`p_{alt}` computed from asymptotic formulae using Asimov Test Statistic values. By construction, this will be :math:`\Phi(n)`.
+    * - ``pCLs_asymp()``
+      - Equal to ``pNull_asymp()/pAlt_asymp()``.
+    * - ``pCLs_asymp(n)``
+      - Equal to ``pNull_asymp(n)/pAlt_asymp(n)``.
+    * - ``ts_asymp()``
+      - The observed test statistic value. 
+    * - ``ts_asymp(n)``
+      - The n-sigma Asimov test statistic value, as computed using the asymptotic formulae for the test statistic distributions.
+
+In all the above methods, the ``_asymp`` can be replaced by ``_toys`` and the values returned will be based on toy distributions. This requires null and alt hypothesis toys to have been added to the hypoPoint. 
+
+The fits involved in the calculation of the above quantites are accessible using the methods described in the following table:
+
+.. list-table:: hypoPoint fits
+    :widths: 25 75
+    :header-rows: 1
+
+    * - Method
+      - Description
+    * - ``ufit()``
+      - The unconditional fit to the observed data. The denominator in profile likelihood ratio test statistics.
+    * - ``cfit_null()``
+      - The conditional fit to the observed data, with poi fixed at the null hypothesis values. The numerator in test statistics.
+    * - ``cfit_alt()``
+      - The conditional fit to the observed data, with the poi fixed at the alt hypothesis values. This fit is needed before generating the asimov dataset.
+    * - ``asimov().ufit()``
+      - The unconditional fit to the asimov dataset. This is necessary for calculating asymptotic formulae.
+    * - ``asimov().cfit_null()``
+      - The null conditional fit to the asimov dataset. This is necessary for calculating asymptotic formulae.
 
 
 Limit Setting Checklist
