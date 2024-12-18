@@ -112,10 +112,19 @@ However, in recent years a different test statistic variant has become popular f
 Asymptotic p-values
 ^^^^^^^^^^^^^^^^^^^
 With just what is defined above one could calculate p-values for a hypoPoint by building up the test statistic distributions from toys. 
-However, because each evaluation of the test statistic will involve one or two fits, this can end up being a costly calculation to perform 
+However, because each evaluation of the test statistic will involve one (the unconditional fit) or two (the conditional fit) fits, this can end up being a costly calculation to perform 
 (especially for hypoPoints where the p-value turns out to be small, which will require many toys to determine accurately).
 
 An approximation can be obtained using asymptotic formulae for test statistic distributions based on the Wald approximation.
+
+Properties and Quantities of a HypoPoint
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In the next section you will learn how to create a hypoSpace and run a scan in it, which will create hypoPoints in the space. 
+
+Here is a table of the quantities that can be computed for a hypoPoint:
+
+
 
 Limit Setting Checklist
 -----------------------
