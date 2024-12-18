@@ -83,43 +83,43 @@ The table below summarises the different types of variables that were introduced
       - Description
     * - Observable
       - 
-      - obs()
+      - ``obs()``
       - Variable that features in a dataset. Includes 
         regular and global observables.
-    * - - Regular observable
+    * - Regular observable
       - :math:`x`
-      - robs()
+      - ``robs()``
       - Observable that is a column of a dataset, and can 
         have a different value for each entry.
-    * - - Global observable
+    * - Global observable
       - :math:`a`
-      - globs()
+      - ``globs()``
       - Metadata of a dataset, same value for every entry 
         (can be defined even if no entries in the datset).
     * - Parameter
       - :math:`\theta`
-      - pars()
+      - ``pars()``
       - Not an observable. Includes prespecified and nuisance 
         parameters, and parameters of interest.
-    * - - Prespecified parameter
+    * - Prespecified parameter
       - 
-      - pp()
+      - ``pp()``
       - Non-floatable parameter, i.e. cannot be varied 
         during a fit, nor assigned an uncertainty.
-    * - - Parameter of interest
+    * - Parameter of interest
       - :math:`\mu`
-      - poi()
+      - ``poi()``
       - A floatable parameter that has been marked as "of interest".
-    * - - Nuisance parameter
+    * - Nuisance parameter
       - :math:`\nu`
-      - np()
+      - ``np()``
       - A floatable parameter that is not a parameter of interest.
-    * - - Floating parameter
-      - floats()
+    * - Floating parameter
+      - ``floats()``
       - A parameter that is currently marked as 
         floating (will be subset of poi and np).
-    * - - Constant parameter
-      - consts()
+    * - Constant parameter
+      - ``consts()``
       - A parameter that is currently marked as 
         constant (all pp + any const poi or np). 
 
