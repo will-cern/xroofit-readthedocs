@@ -106,11 +106,24 @@ The table below summarises the different types of variables that were introduced
       - ``pp()``
       - Non-floatable parameter, i.e. cannot be varied 
         during a fit, nor assigned an uncertainty.
-    * - Parameter of interest
+    * - >>> Parameter of interest
       - :math:`\mu`
       - ``poi()``
       - A floatable parameter that has been marked as "of interest".
-
+    * - Nuisance parameter
+      - :math:`\nu`
+      - ``np()``
+      - A floatable parameter that is not a parameter of interest.
+    * - Floating parameter
+      -
+      - ``floats()``
+      - A parameter that is currently marked as 
+        floating (will be subset of poi and np).
+    * - Constant parameter
+      -
+      - ``consts()``
+      - A parameter that is currently marked as 
+        constant (all pp + any const poi or np). 
 
 Exercises
 ----------------------------
