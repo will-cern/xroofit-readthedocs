@@ -88,7 +88,10 @@ Alternatively, you can use a ROOT histogram to achieve the same results:
   hBkg.GetXaxis().SetName("obsName")
   w["pdfs/simPdf/SR/samples"].Add(hBkg)
 
-Both of these approaches will create an initial `SimpleDensity` factor for the sample (see below). Subsequent factors can be included by multiplying the sample. If you use a histogram to create a sample, any bin errors in the histogram will automatically trigger the creation or modification of a ShapeSys (a constrained shape factor, so next section) representing the statistical uncertainty. If you do not want this to happen, ensure your bins have 0 errors in them. 
+Both of these approaches will create an initial `SimpleDensity` factor for the sample (see below). Subsequent factors can be included by multiplying the sample. 
+
+.. note:: Samples created from histograms with bin errors:
+If you use a histogram to create a sample, any bin errors in the histogram will automatically trigger the creation or modification of a ShapeSys (a constrained shape factor, so next section) representing the statistical uncertainty. If you do not want this to happen, ensure your bins have 0 errors in them. You can also control which shapesys the bin errors contribute to by specifying the ``statPrefix`` option on the histogram, e.g. do ``hBkg.SetOption("statPrefix=stat_SR_bkg")``. The default statPrefix is effectively ``stat_<channelName>``. 
 
 Factors
 --------
