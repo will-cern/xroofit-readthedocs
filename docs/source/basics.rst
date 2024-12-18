@@ -96,6 +96,20 @@ The table below summarises the different types of variables that were introduced
       - ``globs()``
       - Metadata of a dataset, same value for every entry 
         (can be defined even if no entries in the datset).
+    * - Parameter
+      - :math:`\theta`
+      - ``pars()``
+      - Not an observable. Includes prespecified and nuisance 
+        parameters, and parameters of interest.
+    * - Prespecified parameter
+      - 
+      - ``pp()``
+      - Non-floatable parameter, i.e. cannot be varied 
+        during a fit, nor assigned an uncertainty.
+    * - Parameter of interest
+      - :math:`\mu`
+      - ``poi()``
+      - A floatable parameter that has been marked as "of interest".
 
 
 Exercises
