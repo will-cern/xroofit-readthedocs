@@ -157,22 +157,22 @@ for multiplicative interpolation codes, where the code types and interpolation f
     * - 0
       - Additive Piecewise Linear 
       - :math:`I_0(\theta;x_{-},x_0,x_{+}) = \begin{cases}\theta(x_{+} - x_0) & \text{if} \theta>=0 \\ \theta(x_0 - x_{-}) & \text{otherwise}\end{cases}`
-      - Not recommended except if using a symmetric variation, because of discontinuities in derivatives.
+      - **Not recommended** except if using a symmetric variation, because of discontinuities in derivatives.
 
     * - 1             
       - Multiplicative Piecewise Exponential 
       - :math:`I_1(\theta;x_{-},x_0,x_{+}) = \begin{cases}(x_{+}/x_0)^{\theta} & \text{if} \theta>=0 \\ (x_{-}/x_0)^{-\theta} & \text{otherwise}\end{cases}`
-      - Not recommended.
+      - **Not recommended.**
 
     * - 4
       - Additive Poly Interp. + Linear Extrap
       - :math:`I_4(\theta;x_{-},x_0,x_{+}) = \begin{cases}I_0(\theta;x_{-},x_0,x_{+}) & \text{if} |\theta|>=1 \\ \sum_{i=1}^6 a_i\theta^i & \text{otherwise}\end{cases}`
-      - :math:`a_i` such that matching 0th,1st,2nd derivatives at :math:`|\theta|=1` boundaries.
+      - :math:`a_i` such that matching 0th,1st,2nd derivatives at :math:`|\theta|=1` boundaries. **Recommended for histo factors**.
 
     * - 5
       - Multiplicative Poly Interp. + Exponential Extrap.
       - :math:`I_5(\theta;x_{-},x_0,x_{+}) = \begin{cases}I_1(\theta;x_{-},x_0,x_{+}) & \text{if} |\theta|>=1 \\ 1 +\sum_{i=1}^6 a_i\theta^i & \text{otherwise}\end{cases}`
-      - :math:`a_i` such that matching 0th,1st,2nd derivatives at :math:`|\theta|=1` boundaries. Recommended for normalization factors. In FlexibleInterpVar this is interpCode=4.
+      - :math:`a_i` such that matching 0th,1st,2nd derivatives at :math:`|\theta|=1` boundaries. Recommended for normalization factors. In FlexibleInterpVar this is interpCode=4. **Recommended for overall factors**.
 
     * - 6
       - Multiplicative Poly Interp. + Linear Extrap.
