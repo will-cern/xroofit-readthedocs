@@ -182,6 +182,9 @@ for multiplicative interpolation codes, where the code types and interpolation f
       - :math:`I_6(\theta;x_{-},x_0,x_{+}) = 1+I_4(\theta;x_{-},x_0,x_{+})`. 
       - Recommended for normalization factors that must not have roots (i.e. be equal to 0) outside of :math:`|\theta|<1`.
 
+Handling MC Stat Errors: A special ShapeSys for MC Stat errrors
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The standard way to incorporate MC stat uncertainties on the sample nominal histograms is to have a dedicated ShapeSys for the uncertainty, where the parameters are constrained by Poissons (they are hence known as :math:`\gamma` mc stat parameters). This ShapeSys is nominally shared between all the samples in the channel that are participating in the calculation of the total MC stat uncertainty. However, I would advise that any sample that gets its own Norm factor should also have its own separate ShapeSys (or none at all), rather than share the ShapeSys. This is because the affect of the normalization factor isn't accounted for in the calculation of the Poisson constraint term unless the sample has its own stat ShapeSys with its own :math:`\gamma` parameters.
 
 The complete model likelihood
 ---------
