@@ -81,45 +81,45 @@ The table below summarises the different types of variables that were introduced
       - Symbol
       - xRooNode method
       - Description
-    * - Observable
+    * - Observables
       - 
       - ``obs()``
       - Variable that features in a dataset. Includes 
         regular and global observables.
-    * - Regular observable
+    * -   * Regular observables
       - :math:`x`
       - ``robs()``
       - Observable that is a column of a dataset, and can 
         have a different value for each entry.
-    * - Global observable
+    * -   * Global observables
       - :math:`a`
       - ``globs()``
       - Metadata of a dataset, same value for every entry 
         (can be defined even if no entries in the datset).
-    * - Parameter
+    * - Parameters
       - :math:`\theta`
       - ``pars()``
       - Not an observable. Includes prespecified and nuisance 
         parameters, and parameters of interest.
-    * - Prespecified parameter
+    * -   * Prespecified parameters
       - 
       - ``pp()``
       - Non-floatable parameter, i.e. cannot be varied 
         during a fit, nor assigned an uncertainty.
-    * -   * Parameter of interest
+    * -   * Parameters of interest
       - :math:`\mu`
       - ``poi()``
       - A floatable parameter that has been marked as "of interest".
-    * - Nuisance parameter
+    * -   * Nuisance parameters
       - :math:`\nu`
       - ``np()``
       - A floatable parameter that is not a parameter of interest.
-    * - Floating parameter
+    * -   * Floating parameters
       -
       - ``floats()``
       - A parameter that is currently marked as 
         floating (will be subset of poi and np).
-    * - Constant parameter
+    * -   * Constant parameters
       -
       - ``consts()``
       - A parameter that is currently marked as 
