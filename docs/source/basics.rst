@@ -42,6 +42,8 @@ Parameters are in one of two possible states: they are either `floating` or `con
 
 Additionally, for statistical analysis purposes, one or more floatable parameters can be labelled `parameters of interest` (poi). The remaining floatable parameters are deemed the `nuisance parameters` (np). The symbol used for parameters of interest is :math:`\mu`, and for nuisance parameters it is :math:`\nu`.
 
+Finally, nuisance parameters that have a normal constraint (a Gaussian with nominal global observable equal to 0 and variance of 1) are conventionally called :math:`\alpha` nuisance parameters. Nuisance parameters that have a Poisson constraint (typically the case of MC-statistical uncertainties) are conventionally called :math:`\gamma` nuisance parameters.
+
 .. _Test Statistics:
 Test Statistics
 -------------
@@ -74,52 +76,54 @@ Summary of types of variable
 The table below summarises the different types of variables that were introduced above:
 
 .. list-table:: Types of variable
-    :widths: 25 10 65
+    :widths: 25 10 10 55
     :header-rows: 1
 
     * - Type
       - Symbol
       - xRooNode method
       - Description
-    * - Observable
+    * - Observables
       - 
-      - obs()
+      - ``obs()``
       - Variable that features in a dataset. Includes 
         regular and global observables.
-    * - - Regular observable
+    * -   * Regular observables
       - :math:`x`
-      - robs()
+      - ``robs()``
       - Observable that is a column of a dataset, and can 
         have a different value for each entry.
-    * - - Global observable
+    * -   * Global observables
       - :math:`a`
-      - globs()
+      - ``globs()``
       - Metadata of a dataset, same value for every entry 
         (can be defined even if no entries in the datset).
-    * - Parameter
+    * - Parameters
       - :math:`\theta`
-      - pars()
+      - ``pars()``
       - Not an observable. Includes prespecified and nuisance 
         parameters, and parameters of interest.
-    * - - Prespecified parameter
+    * -   * Prespecified parameters
       - 
-      - pp()
+      - ``pp()``
       - Non-floatable parameter, i.e. cannot be varied 
         during a fit, nor assigned an uncertainty.
-    * - - Parameter of interest
+    * -   * Parameters of interest
       - :math:`\mu`
-      - poi()
+      - ``poi()``
       - A floatable parameter that has been marked as "of interest".
-    * - - Nuisance parameter
+    * -   * Nuisance parameters
       - :math:`\nu`
-      - np()
-      - A floatable parameter that is not a parameter of interest.
-    * - - Floating parameter
-      - floats()
+      - ``np()``
+      - A floatable parameter that is not a parameter of interest. Gaussian-constrained np are called :math:`\alpha` parameters, and Poisson-constrained np are :math:`\gamma` parameters.
+    * -   * Floating parameters
+      -
+      - ``floats()``
       - A parameter that is currently marked as 
         floating (will be subset of poi and np).
-    * - - Constant parameter
-      - consts()
+    * -   * Constant parameters
+      -
+      - ``consts()``
       - A parameter that is currently marked as 
         constant (all pp + any const poi or np). 
 
@@ -128,16 +132,16 @@ Exercises
  
 Working with workspaces
 ^^^^^^^^^^^^^^^^^^^^^^^
-Here are some ways to load a workspace into an `xRooNode`:
+Here are some ways to load a workspace into an ``xRooNode``:
  
 >>> w = XRF.xRooNode("filename.root")
 >>> f = ROOT.TFile("filename.root"); ws = f.Get("wsname"); w = XRF.xRooNode(ws) # assumes wsname is name of workspace in file
 
 Changing parameters from floating to constant and vice versa
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Once you have an `xRooNode` that wraps a workspace you can use methods of the node to access the different variables (see methods in table above). These each return a node that wraps a `RooArgList`. See https://root.cern.ch/doc/master/classRooArgList.html for documentation of that class. The individual elements of the list can be accessed by name or index via xRooNode e.g.: `w.obs()["obsName"]` which will return an xRooNode that wraps e.g. a `RooRealVar` with the name `obsName`. You can also produce another `xRooNode` that is a subset of the list using its `reduced <https://root.cern.ch/doc/master/classROOT_1_1Experimental_1_1XRooFit_1_1xRooNode.html#ac11e410ea9561991b44c2598be8c2659>`_ method, passing a comma separated list with or without wildcards. 
+Once you have an ``xRooNode`` that wraps a workspace you can use methods of the node to access the different variables (see methods in table above). These each return a node that wraps a ``RooArgList``. See https://root.cern.ch/doc/master/classRooArgList.html for documentation of that class. The individual elements of the list can be accessed by name or index via xRooNode e.g.: ``w.obs()["obsName"]`` which will return an xRooNode that wraps e.g. a ``RooRealVar`` with the name `obsName`. You can also produce another ``xRooNode`` that is a subset of the list using its `reduced <https://root.cern.ch/doc/master/classROOT_1_1Experimental_1_1XRooFit_1_1xRooNode.html#ac11e410ea9561991b44c2598be8c2659>`_ method, passing a comma separated list with or without wildcards. 
 
-Any variable in RooFit can have boolean attributes on it, essentially a flag on the variable. All the constant parameters have the "Constant" attribute (note: it is case-sensitive). All the parameters of interest have the "poi" attribute. Attributes on individual variables can be set and retrieved with the `setAttribute <https://root.cern.ch/doc/master/classRooAbsArg.html#ac77328af4e29b2642c248a03f03deb73>`_ and `getAttribute <https://root.cern.ch/doc/master/classRooAbsArg.html#aa0e2616c8c43065117031c6797ac19d4>`_ methods of `RooAbsArg` (base class of almost everything in RooFit, including variables). `RooArgList` also has the method `setAttribAll` that can be used to set the same attribute on all the variables in the list.
+Any variable in RooFit can have boolean attributes on it, essentially a flag on the variable. All the constant parameters have the "Constant" attribute (note: it is case-sensitive). All the parameters of interest have the "poi" attribute. Attributes on individual variables can be set and retrieved with the `setAttribute <https://root.cern.ch/doc/master/classRooAbsArg.html#ac77328af4e29b2642c248a03f03deb73>`_ and `getAttribute <https://root.cern.ch/doc/master/classRooAbsArg.html#aa0e2616c8c43065117031c6797ac19d4>`_ methods of ``RooAbsArg`` (base class of almost everything in RooFit, including variables). ``RooArgList`` also has the method ``setAttribAll`` that can be used to set the same attribute on all the variables in the list.
 
 Here are a few examples:
 

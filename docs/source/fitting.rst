@@ -42,23 +42,23 @@ The ``minimize`` method accepts an optional fit configuration that contains hype
     * - NLL Option
       - Setting after nll creation
       - Description
-    * - XRF.xRooFit.Tolerance(0.01)
-      - nll.fitConfig().MinimizerOptions().SetTolerance(0.01)
+    * - ``XRF.xRooFit.Tolerance(0.01)``
+      - ``nll.fitConfig().MinimizerOptions().SetTolerance(0.01)``
       - 1000 times the maximum allowed value of the edm (estimated distance to minimum) of the fit before the fit is considered converged. E.g. the default value of 0.01 means that the edm must become less than 1e-5 for convergence. If this is not reached, the migrad status code will be 3.
-    * - ROOT.RooFit.Strategy(-1)
-      - nll.fitConfig().MinimizerOptions().SetStrategy(-1)
+    * - ``ROOT.RooFit.Strategy(-1)``
+      - ``nll.fitConfig().MinimizerOptions().SetStrategy(-1)``
       - The starting minuit strategy. If set to -1 (the default), the starting strategy is the start of the StrategySequence setting (see below). 
-    * - XRF.xRooFit.StrategySequence("0s01s12s2s3m")
-      - nll.fitConfigOptions().SetValue("StrategySequence","0s01s12s2s3m")
+    * - ``XRF.xRooFit.StrategySequence("0s01s12s2s3m")``
+      - ``nll.fitConfigOptions().SetValue("StrategySequence","0s01s12s2s3m")``
       - Determines the order of retries automatically performed if a fit fails. A number indicates a strategy setting, `s` indicates a rescan, and `m` indicates a switch to minuit1 (which will soon be deprecated). For example, a strategy sequence of "0s01s12s2m" means that if a strategy=0 fit fails it will try a rescan and then try the strategy=0 fit again, if that fails it will switch to strategy=1, and so on. 
-    * - ROOT.RooFit.Hesse(True)
-      - nll.fitConfig().SetParabErrors(True)
+    * - ``ROOT.RooFit.Hesse(True)``
+      - ``nll.fitConfig().SetParabErrors(True)``
       - Controls if hesse should be run after the migrad minimization (if it wasn't already run with the necessary level of precision by the migrad minimization, which can sometimes happen and xRooFit will automatically determine this). If it is not run, the covariance matrix may not be accurate (quality != 3).
     * - n/a
-      - nll.fitConfigOptions().SetValue("HesseStrategy",-1)
+      - ``nll.fitConfigOptions().SetValue("HesseStrategy",-1)``
       - Controls which strategy is used first when hesse algorithm is run. If -1, will take first strategy in the HesseStrategySequence (see below)
     * - n/a
-      - nll.fitConfigOptions().SetValue("HesseStrategySequence","23")
+      - ``nll.fitConfigOptions().SetValue("HesseStrategySequence","23")``
       - Similar to the StrategySequence setting, this controls the order of attempts made in the hesse algorithm, with an example of hesse failure being e.g. a non-positive definite covariance matrix (covQuality=1 in the case of hesse strategy 3 in the fit result). 
 
 For example, to make the tolerance equal to 1 and the starting strategy equal to 1, you can do (assumes you have done e.g. `import ROOT as XRF` if using xRooFit compiled on top of ROOT):
@@ -92,4 +92,30 @@ It is also possible to do the above calculation with the constraint term include
   nll.saturatedVal() # the value of the NLL in the hypothetical
   nll.ndof() # the number of degrees of freedom (nBins + nGlobs - nFloats in a binned model)
   nll.pgof() # = ROOT.TMath.Prob( 2*(nll.getVal() - nll.saturatedVal()), nll.ndof() )
+
+.. _profilelikelihood:
+Profiled Likelihood Scans
+----------------------
+To draw the profiled likelihood ratio for a given parameter, you can do:
+
+.. code-block:: python
+
+  hs = nll.hypoSpace("parName")
+  hs.scan("plr",nPoints,minVal,maxVal)
+  hs.Draw()
+
+You will learn more about ``hypoSpace`` on the next day, but this object will allow you to access the conditional fits that are run in order to evaluate the profile likelihood ratio at each point in the scan. Alternatively, to do the conditional fits manually and make the plot by hand, you could e.g. do:
+
+.. code-block:: python
+
+  fr = nll.minimize()
+  g = ROOT.TGraph()
+  v = minVal
+  while v < maxVal:
+    cfr = fr.cfit(f"parName={v}") # should ideally check status codes etc of cfr
+    g.AddPoint( v, 2*(cfr.minNll() - fr.minNll() ) ) # computes the 2*PLR value
+    v += (maxVal-minVal)/(nPoints-1)
+  g.Draw("ALP")
+
+
 

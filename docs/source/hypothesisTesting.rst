@@ -47,18 +47,17 @@ When setting limits, the "null hypothesis" is the signal+background hypothesis w
 hypoPoint being tested, and the "alt hypothesis" is the background-only hypothesis. Once these two distributions are determined 
 (by throwing the toys or by other methods) then the p-value for that point is given by one of the following:
 
-   * null p-value (``pNull``): the fraction of null-hypothesis toys with ts greater than the target ts value. Use this value for 
+   * null p-value (:math:`p_{null}`): the fraction of null-hypothesis toys with ts greater than the target ts value. Use this value for 
    calculating `CLs+b` limits.
-   * alt p-value (``pAlt``): the fraction of alt-hypothesis toys with ts greater than the target ts-value.
-   * cls p-value (``pCLs``): ratio ``pNull/pAlt``. Use this p-value when calculating `CLs` limits. Note that it is strictly not a p-value
-   because it can take on values greater than 1; it is a ratio of probabilities, not a probability itself.
+   * alt p-value (:math:`p_{alt}`)): the fraction of alt-hypothesis toys with ts greater than the target ts-value.
+   * cls p-value (:math:`p_{cls}`)): ratio :math:`p_{null}/p_{alt}`. Use this p-value when calculating `CLs` limits. Note that it is strictly not a p-value because it can take on values greater than 1; it is a ratio of probabilities, not a probability itself.
 
 Note that the target ts value is dependent on what type of limit/interval is being found. If we are finding the observed limit, 
 the target ts value is the ts value calculated with the observed dataset. If the we are finding the N-sigma limit the target 
-ts value is whatever ts value has a ``pAlt`` equal to :math:`\Phi(N)` (so for the expected limit, the target ts value 
-has ``pAlt = 0.5``). 
+ts value is whatever ts value has a :math:`p_{alt}=\Phi(N)` (so for the expected limit, the target ts value 
+has :math:`p_{alt}=0.5`). These are known as the `N-sigma Asimov Test Statistic Values`.  
 
-By definition ``pNull`` and ``pAlt`` are between 0 and 1, but ``pCLs`` can be any positive number. 
+By definition :math:`p_{null}` and :math:`p_{alt}` are between 0 and 1, but :math:`p_{cls}` can be any positive number. 
 Also note that we can assign an uncertainty to these p-values, e.g. when determining them with toys we can compute the 
 uncertainty on the p-values in the same way we would calculate an uncertainty on an efficiency. This way it is clear that the 
 more toys we generate, the more certain the p-value becomes, and the clearer defined the interval/limit edge will be.
@@ -112,10 +111,62 @@ However, in recent years a different test statistic variant has become popular f
 Asymptotic p-values
 ^^^^^^^^^^^^^^^^^^^
 With just what is defined above one could calculate p-values for a hypoPoint by building up the test statistic distributions from toys. 
-However, because each evaluation of the test statistic will involve one or two fits, this can end up being a costly calculation to perform 
+However, because each evaluation of the test statistic will involve one (the unconditional fit) or two (the conditional fit) fits, this can end up being a costly calculation to perform 
 (especially for hypoPoints where the p-value turns out to be small, which will require many toys to determine accurately).
 
 An approximation can be obtained using asymptotic formulae for test statistic distributions based on the Wald approximation.
+
+Properties and Quantities of a HypoPoint
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In the next section you will learn how to create a hypoSpace and run a scan in it, which will create hypoPoints in the space. 
+
+Here is a table of the quantities that can be computed for a hypoPoint:
+
+.. list-table:: hypoPoint quantities
+    :widths: 25 75
+    :header-rows: 1
+
+    * - Method (all results have a ``value()`` and ``error()``)
+      - Description
+    * - ``pNull_asymp()``
+      - The Observed :math:`p_{null}` computed from asymptotic formulae.
+    * - ``pNull_asymp(n)``
+      - The n-sigma expected :math:`p_{null}` computed from asymptotic formulae using Asimov Test Statistic values.
+    * - ``pAlt_asymp()``
+      - The Observed :math:`p_{alt}` computed from asymptotic formulae.
+    * - ``pAlt_asymp(n)``
+      - The n-sigma expected :math:`p_{alt}` computed from asymptotic formulae using Asimov Test Statistic values. By construction, this will be :math:`\Phi(n)`.
+    * - ``pCLs_asymp()``
+      - Equal to ``pNull_asymp()/pAlt_asymp()``.
+    * - ``pCLs_asymp(n)``
+      - Equal to ``pNull_asymp(n)/pAlt_asymp(n)``.
+    * - ``ts_asymp()``
+      - The observed test statistic value. 
+    * - ``ts_asymp(n)``
+      - The n-sigma Asimov test statistic value, as computed using the asymptotic formulae for the test statistic distributions.
+
+In all the above methods, the ``_asymp`` can be replaced by ``_toys`` and the values returned will be based on toy distributions. This requires null and alt hypothesis toys to have been added to the hypoPoint. 
+
+The fits involved in the calculation of the above quantites are accessible using the methods described in the following table:
+
+.. list-table:: hypoPoint fits
+    :widths: 25 75
+    :header-rows: 1
+
+    * - Method
+      - Description
+    * - ``ufit()``
+      - The unconditional fit to the observed data. The denominator in profile likelihood ratio test statistics.
+    * - ``cfit_null()``
+      - The conditional fit to the observed data, with poi fixed at the null hypothesis values. The numerator in test statistics.
+    * - ``cfit_alt()``
+      - The conditional fit to the observed data, with the poi fixed at the alt hypothesis values. This fit is needed before generating the asimov dataset.
+    * - ``asimov().ufit()``
+      - The unconditional fit to the asimov dataset. This is necessary for calculating asymptotic formulae.
+    * - ``asimov().cfit_null()``
+      - The null conditional fit to the asimov dataset. This is necessary for calculating asymptotic formulae.
+
 
 Limit Setting Checklist
 -----------------------
@@ -191,19 +242,21 @@ A minimal version of running a limit would be:
 
 This assumes that the POI has already been declared in the workspace, there is only one top-level pdf in the workspace, and that the fitting range of the POI is appropriate to also be used as the scan range. 
 
-The ``limits()`` method returns a dictionary of limits (each with a ``value()`` and ``error()``), with the keys of the dictionary being "-2","-1","0","1","2" for the expected limits and "obs" for the observed limits. If no dataset is specified in the construction of the `nll` then the asimov expected dataset is used as the "observed" dataset.
+The ``limits()`` method returns an ``std::map`` of limits (each with a ``value()`` and ``error()``), with the keys of the map being "-2", "-1", "0", "1", "2" for the expected limits and "obs" for the observed limits. If no dataset is specified in the construction of the `nll` then the asimov expected dataset is used as the "observed" dataset.
 
-The values of the dictionary are pairs of numbers where the first number is the limit, and the second number is the uncertainty on that limit. 
+The values of the map are pairs of numbers where the first number is the limit, and the second number is the uncertainty on that limit, estimated from the distance to the furthest of the two neighbouring hypoPoints that straddle the target p-value. 
 
 Why does my CLs limit scan fail?
 -----------------------------------
 Many fits are involved in the process of calculating the limits. If at any point a fit fails, the limit being calculated will be set to `NaN` and the next limit will be calculated. 
 
-You should print the hypoSpace or explore it in the browser, as demonstrated in the script above, in order to work out which hypothesis tests (hypoPoints) returned non-zero status codes. 
+You should print the hypoSpace or explore it in the browser, as demonstrated in the script above, in order to work out which hypothesis tests (hypoPoints) had fits that returned non-zero status codes. 
 
-A common issue is that the range specified for the scan is too large, and the so the hypoPoints get created that are too discrepant with the dataset and the fit struggles to correctly evaluate the covariance matrix at the minima (the covariance matrix must be positive definite, but status code = 1 indicates that the matrix was forced positive definite, which means you are not at a valid minima). 
+A common issue is that the range specified for the scan is too large, causing hypoPoints to be created that are too discrepant with the dataset and the fit struggles to correctly evaluate the covariance matrix at the minima (the covariance matrix must be positive definite, but status code = 1 indicates that the matrix was forced positive definite, which means you are not at a valid minima). 
 
-If you specified a sensible scan range, you should next try to identify if there is a particular (nuisance) parameter that is causing your fits to fail. You can use the demo code above to select groups of parameters to hold constant during the fit. Remember that ``w.pars().Print()`` will list all the parameters and ``w.floats().Print()`` will list all the currently-floating parameters.
+If you specified a sensible scan range but your status codes are still equal to 1 (indicative of bad fits), you should next try to identify if there is a particular (nuisance) parameter that is causing your fits to fail. You can use the demo code above to select groups of parameters to hold constant during the fit. Remember that ``w.pars().Print()`` will list all the parameters and ``w.floats().Print()`` will list all the currently-floating parameters.
+
+If your fits are failing with status code 3, you can try increasing the tolerance, which risk increasing the uncertainties on the p-values, but usually a tolerance of 1 (which translates to a max EDM of 0.001) is still very safe. Note that you may also need to increase the strategy if you see warnings that the post-hesse edm is greater than the max allowed. This has been seen to occur with strategy 0 fits where migrad converges with an EDM estimate below the max, but then the hesse evaluation updates the edm estimate to be above the max. Using strategy 2 solves this, since that strategy ensures hesse is evaluated as part of the migrad step to confirm convergence.
 
 
 xRooFit Demo: Computing Discovery Significance
