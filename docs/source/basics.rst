@@ -86,6 +86,16 @@ The table below summarises the different types of variables that were introduced
       - ``obs()``
       - Variable that features in a dataset. Includes 
         regular and global observables.
+    * - Regular observable
+      - :math:`x`
+      - ``robs()``
+      - Observable that is a column of a dataset, and can 
+        have a different value for each entry.
+    * - Global observable
+      - :math:`a`
+      - ``globs()``
+      - Metadata of a dataset, same value for every entry 
+        (can be defined even if no entries in the datset).
 
 
 Exercises
