@@ -145,7 +145,7 @@ for additive interpolation codes and
 for multiplicative interpolation codes, where the code types and interpolation functions are defined in the following table:
 
 
-.. list-table:: Types of variable
+.. list-table:: Interpolation Schemes
     :widths: 25 10 55 10
     :header-rows: 1
 
