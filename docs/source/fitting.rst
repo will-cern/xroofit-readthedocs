@@ -110,9 +110,9 @@ The *impact* on some parameter, :math:`\mu`, due to another parameter :math:`\nu
 
 .. math::
 
-  \Delta_{\nu\pm}\mu = \hat\hat{\mu}(\nu=\hat{nu}+\Delta_{\pm}\nu) - \hat{\mu}
+  \Delta_{\nu\pm}\mu = \hat{\hat{\mu}}(\nu=\hat{nu}+\Delta_{\pm}\nu) - \hat{\mu}
 
-where :math:`\hat\hat{\mu}(\nu=\hat{nu}\pm\Delta\nu)` signifies the conditional maximum likelihood estimator of :math:`\mu` for a fit with :math:`\nu` held constant at the given value. The (possibly-asymmetric) uncertainty on :math:`\nu` is given by :math:`\Delta_{\pm}\nu`.
+where :math:`\hat{\hat{\mu}}(\nu=\hat{nu}\pm\Delta\nu)` signifies the conditional maximum likelihood estimator of :math:`\mu` for a fit with :math:`\nu` held constant at the given value. The (possibly-asymmetric) uncertainty on :math:`\nu` is given by :math:`\Delta_{\pm}\nu`.
 
 Impact is very closely related to the correlation between two parameters, and in fact the *ranking plot* that is frequently produced in HEP analyses can be viewed as just a way of visualizing the row of the correlation matrix corresponding to the parameter of interest. In fact, the impact can be estimated from the covariance matrix as follows:
 
