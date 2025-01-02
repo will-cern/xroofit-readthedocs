@@ -113,7 +113,7 @@ With just what is defined above one could calculate p-values for a hypoPoint by 
 However, because each evaluation of the test statistic will involve one (the unconditional fit) or two (the conditional fit) fits, this can end up being a costly calculation to perform 
 (especially for hypoPoints where the p-value turns out to be small, which will require many toys to determine accurately).
 
-An approximation can be obtained using asymptotic formulae for test statistic distributions based on the Wald approximation.
+An approximation can be obtained using asymptotic formulae for test statistic distributions based on the Wald approximation. These formulae usually (but not always) depend on a parameter called :math:`\sigma_\mu` that roughly corresponds to the standard deviation of :math:`\hat{\mu}` values under "alternative" hypothesis (usually :math:`\mu=0` for limits, and `\mu=1` for discovery). This parameter could be estimated with toys as well, but in the fully-asymptotic approach it is estimated using the two-sided test statistic of the asimov dataset corresponding to the alternative hypothesis. Generating such an asimov dataset requires a choice for the nuisance parameters, which conventionally is taken to be the post-fit values of a conditional fit (with the POI fixed equal to the alt hypothesis values) to the observed data. 
 
 Properties and Quantities of a HypoPoint
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
