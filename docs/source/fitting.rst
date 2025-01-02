@@ -61,7 +61,7 @@ The ``minimize`` method accepts an optional fit configuration that contains hype
       - ``nll.fitConfigOptions().SetValue("HesseStrategySequence","23")``
       - Similar to the StrategySequence setting, this controls the order of attempts made in the hesse algorithm, with an example of hesse failure being e.g. a non-positive definite covariance matrix (covQuality=1 in the case of hesse strategy 3 in the fit result). 
 
-For example, to make the tolerance equal to 1 and the starting strategy equal to 1, you can do (assumes you have done e.g. `import ROOT as XRF` if using xRooFit compiled on top of ROOT):
+For example, to make the tolerance equal to 1 and the starting strategy equal to 1, you can do (assumes you have done e.g. ``import ROOT as XRF`` if using xRooFit compiled on top of ROOT):
 
 >>> nll = w["pdfs/pdfName"].nll("datasetName",[XRF.xRooFit.Tolerance(1),ROOT.RooFit.Strategy(1)])
 
