@@ -80,15 +80,14 @@ The test statistic we usually use for upper limits is the *one-sided (capped-abo
 .. math::
 
   \tilde{q}_\mu \equiv \begin{cases}
-    t_\mu \text{ if $\hat\mu < \mu$,} \\
-    0 \text{ if $\hat\mu >= \mu$,} \\
+    t_\mu \text{ if $\mu_L \leq \hat\mu < \mu$,} \\
+    0 \text{ if $\hat\mu \geq \mu$,} \\
     t_\mu-t_{\mu=\mu_L} \text{ if $\hat\mu < \mu_L$}. \\
     \end{cases}
     
 where :math:`\mu_L` is the lower-bound of the physical range of the parameter of interest, which is normally equal to 0. The 
 notation is such that q inidicates this likelihood ratio is one-sided (the second condition), and the ~ above the q indicates it is lower-bound (the third condition).
-It will take up to two fits to evaluate this test statistic (the unconditional fit, the conditional fit at either the test-value of :math:`\mu` 
-or at :math:`\mu=\mu_L`).
+It will take up to three fits to evaluate this test statistic: the unconditional fit is always required, then if :math:`\hat\mu < \mu` the conditional fit at the test-value of :math:`\mu` is required, and finally the conditional fit at :math:`\mu=\mu_L` is required if :math:`\hat\mu < \mu_L`.
 
 The test statistic conventionally used for discovery is the *one-sided (capped-below) profile likelihood ratio*:
 
