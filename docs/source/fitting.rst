@@ -93,6 +93,13 @@ It is also possible to do the above calculation with the constraint term include
   nll.ndof() # the number of degrees of freedom (nBins + nGlobs - nFloats in a binned model)
   nll.pgof() # = ROOT.TMath.Prob( 2*(nll.getVal() - nll.saturatedVal()), nll.ndof() )
 
+.. _impact:
+Impact and parameter correlations
+-----------------------
+The *impact* on one parameter, :math:`\mu`, due to another parameter :math:`\nu`, is defined as how much the best-fit value of :math:`\mu` changes by if :math:`\nu` is changed by its corresponding post-fit uncertainty and held constant. Specifically, impact is:
+
+
+
 .. _profilelikelihood:
 Profiled Likelihood Scans
 ----------------------
