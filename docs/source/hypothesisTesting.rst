@@ -161,6 +161,8 @@ The fits involved in the calculation of the above quantites are accessible using
       - The conditional fit to the observed data, with poi fixed at the null hypothesis values. The numerator in test statistics.
     * - ``cfit_alt()``
       - The conditional fit to the observed data, with the poi fixed at the alt hypothesis values. This fit is needed before generating the asimov dataset.
+    * - ``cfit_lbound()``
+      - The conditional fit to the observed data, with the poi fixed at the lower bound, :math:`\mu_L`. This fit is needed for the :math:`\tilde{q}_\mu` test statistic if :math:`\hat{\mu}<\mu_L`.
     * - ``asimov().ufit()``
       - The unconditional fit to the asimov dataset. This is necessary for calculating asymptotic formulae.
     * - ``asimov().cfit_null()``
@@ -268,6 +270,7 @@ You can compute discovery significances using the example program above, where y
   scanMax = 0 # so set min and max both to 0
   scanN = 1
   scanType = "pnull"
+  tsType = XRF.xRooFit.TestStatistic.u0 # use the uncapped discovery test statistic
 
 And instead of calling the ``limits`` method, extract the null pvalues as follows:
 
@@ -278,4 +281,5 @@ And instead of calling the ``limits`` method, extract the null pvalues as follow
   print("Expected +1 sigma:",hs[0].pNull_asymp(1))
   print("Expected -1 sigma:",hs[0].pNull_asymp(-1))
 
-Null p-values can be converted to significances using the standard gaussian quantile (aka normile) function. 
+Null p-values can be converted to significances using the standard gaussian quantile (aka normile) function: ``ROOT::Math::gaussian_quantile_c(pValue,1)``
+
