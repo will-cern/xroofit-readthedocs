@@ -47,8 +47,7 @@ When setting limits, the "null hypothesis" is the signal+background hypothesis w
 hypoPoint being tested, and the "alt hypothesis" is the background-only hypothesis. Once these two distributions are determined 
 (by throwing the toys or by other methods) then the p-value for that point is given by one of the following:
 
-   * null p-value (:math:`p_{null}`): the fraction of null-hypothesis toys with ts greater than the target ts value. Use this value for 
-   calculating `CLs+b` limits.
+   * null p-value (:math:`p_{null}`): the fraction of null-hypothesis toys with ts greater than the target ts value. Use this value for calculating `CLs+b` limits.
    * alt p-value (:math:`p_{alt}`)): the fraction of alt-hypothesis toys with ts greater than the target ts-value.
    * cls p-value (:math:`p_{cls}`)): ratio :math:`p_{null}/p_{alt}`. Use this p-value when calculating `CLs` limits. Note that it is strictly not a p-value because it can take on values greater than 1; it is a ratio of probabilities, not a probability itself.
 
