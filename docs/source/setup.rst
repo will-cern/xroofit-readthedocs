@@ -72,7 +72,7 @@ All the software comes pre-compiled as part of the StatAnalysis software reeleas
 The above will set up the 0.4 series nightly, which corresponds to the ROOT 6.32 series of releases. 
 
 Using StatAnalysis in SWAN
-==========================
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 It is possible to use StatAnalysis in a `SWAN Jupyter Session <https://swan.cern.ch>`_. For this you need to create a setup script for the release you want to set up. It looks for example like this:
 
