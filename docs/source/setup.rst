@@ -10,7 +10,7 @@ The most helpful way to understand the interplay of xRooFit with RooFit is to th
 ROOT
 ------------
 
-If you need to install ROOT, you can follow one of the `instructions for installing ROOT <https://root.cern/install/>`_ but note that you should always try to use the latest stable release. At the time of writing, it is strongly recommended to use at least 6.30 or later.
+If you need to install ROOT, you can follow one of the `instructions for installing ROOT <https://root.cern/install/>`_ but note that you should always try to use the latest stable release. At the time of writing, it is strongly recommended to use at least 6.32 or later.
 
 xRooFit
 ----------------
@@ -57,3 +57,35 @@ In C++ you would have to do:
 
 In C++ you also have to be aware that some methods of ``xRooNode`` will return a pointer to an ``xRooNode`` whereas others will return an ``xRooNode``, and so you have to remember after each method if you should use ``.`` or ``->`` which isn't an issue in python where it is always ``.``. For these reasons, in this course we will stick with python in all the examples as the code is less verbose and more uniform in these cases.
 
+
+StatAnalysis releases
+------------
+
+All the software comes pre-compiled as part of the StatAnalysis software reeleases. On CVMFS these can be setup as follows:
+
+.. code-block:: console
+
+   $ export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase
+   $ source ${ATLAS_LOCAL_ROOT_BASE}/user/atlasLocalSetup.sh
+   $ asetup StatAnalysis,0.4,latest
+
+The above will set up the 0.4 series nightly, which corresponds to the ROOT 6.32 series of releases. 
+
+Using StatAnalysis in SWAN
+==========================
+
+It is possible to use StatAnalysis in a `SWAN Jupyter Session <https://swan.cern.ch>`_. For this you need to create a setup script for the release you want to set up. It looks for example like this:
+
+.. code-block:: console
+
+   unset PYTHONHOME
+   unset PYTHONPATH
+   unset ROOTSYS
+   unset CPPYY_BACKEND_LIBRARY
+   unset LD_LIBRARY_PATH
+   export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase
+   source ${ATLAS_LOCAL_ROOT_BASE}/user/atlasLocalSetup.sh
+   asetup StatAnalysis,0.4,latest
+   export JUPYTER_PATH=$StatAnalysis_DIR/etc/notebook
+
+You should amend the second-to-last line to setup the release you want. Save the above to a file, and then use it as your setup script for your swan session. 
