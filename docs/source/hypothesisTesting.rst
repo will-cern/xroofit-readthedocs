@@ -47,8 +47,7 @@ When setting limits, the "null hypothesis" is the signal+background hypothesis w
 hypoPoint being tested, and the "alt hypothesis" is the background-only hypothesis. Once these two distributions are determined 
 (by throwing the toys or by other methods) then the p-value for that point is given by one of the following:
 
-   * null p-value (:math:`p_{null}`): the fraction of null-hypothesis toys with ts greater than the target ts value. Use this value for 
-   calculating `CLs+b` limits.
+   * null p-value (:math:`p_{null}`): the fraction of null-hypothesis toys with ts greater than the target ts value. Use this value for calculating `CLs+b` limits.
    * alt p-value (:math:`p_{alt}`)): the fraction of alt-hypothesis toys with ts greater than the target ts-value.
    * cls p-value (:math:`p_{cls}`)): ratio :math:`p_{null}/p_{alt}`. Use this p-value when calculating `CLs` limits. Note that it is strictly not a p-value because it can take on values greater than 1; it is a ratio of probabilities, not a probability itself.
 
@@ -80,15 +79,14 @@ The test statistic we usually use for upper limits is the *one-sided (capped-abo
 .. math::
 
   \tilde{q}_\mu \equiv \begin{cases}
-    t_\mu \text{ if $\hat\mu < \mu$,} \\
-    0 \text{ if $\hat\mu >= \mu$,} \\
+    t_\mu \text{ if $\mu_L \leq \hat\mu < \mu$,} \\
+    0 \text{ if $\hat\mu \geq \mu$,} \\
     t_\mu-t_{\mu=\mu_L} \text{ if $\hat\mu < \mu_L$}. \\
     \end{cases}
     
 where :math:`\mu_L` is the lower-bound of the physical range of the parameter of interest, which is normally equal to 0. The 
 notation is such that q inidicates this likelihood ratio is one-sided (the second condition), and the ~ above the q indicates it is lower-bound (the third condition).
-It will take up to two fits to evaluate this test statistic (the unconditional fit, the conditional fit at either the test-value of :math:`\mu` 
-or at :math:`\mu=\mu_L`).
+It will take up to three fits to evaluate this test statistic: the unconditional fit is always required, then if :math:`\hat\mu < \mu` the conditional fit at the test-value of :math:`\mu` is required, and finally the conditional fit at :math:`\mu=\mu_L` is required if :math:`\hat\mu < \mu_L`.
 
 The test statistic conventionally used for discovery is the *one-sided (capped-below) profile likelihood ratio*:
 
@@ -114,7 +112,7 @@ With just what is defined above one could calculate p-values for a hypoPoint by 
 However, because each evaluation of the test statistic will involve one (the unconditional fit) or two (the conditional fit) fits, this can end up being a costly calculation to perform 
 (especially for hypoPoints where the p-value turns out to be small, which will require many toys to determine accurately).
 
-An approximation can be obtained using asymptotic formulae for test statistic distributions based on the Wald approximation.
+An approximation can be obtained using asymptotic formulae for test statistic distributions based on the Wald approximation. These formulae usually (but not always) depend on a parameter called :math:`\sigma_\mu` that roughly corresponds to the standard deviation of :math:`\hat{\mu}` values under "alternative" hypothesis (usually :math:`\mu=0` for limits, and `\mu=1` for discovery). This parameter could be estimated with toys as well, but in the fully-asymptotic approach it is estimated using the two-sided test statistic of the asimov dataset corresponding to the alternative hypothesis. Generating such an asimov dataset requires a choice for the nuisance parameters, which conventionally is taken to be the post-fit values of a conditional fit (with the POI fixed equal to the alt hypothesis values) to the observed data. 
 
 Properties and Quantities of a HypoPoint
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -162,6 +160,8 @@ The fits involved in the calculation of the above quantites are accessible using
       - The conditional fit to the observed data, with poi fixed at the null hypothesis values. The numerator in test statistics.
     * - ``cfit_alt()``
       - The conditional fit to the observed data, with the poi fixed at the alt hypothesis values. This fit is needed before generating the asimov dataset.
+    * - ``cfit_lbound()``
+      - The conditional fit to the observed data, with the poi fixed at the lower bound, :math:`\mu_L`. This fit is needed for the :math:`\tilde{q}_\mu` test statistic if :math:`\hat{\mu}<\mu_L`.
     * - ``asimov().ufit()``
       - The unconditional fit to the asimov dataset. This is necessary for calculating asymptotic formulae.
     * - ``asimov().cfit_null()``
@@ -269,6 +269,7 @@ You can compute discovery significances using the example program above, where y
   scanMax = 0 # so set min and max both to 0
   scanN = 1
   scanType = "pnull"
+  tsType = XRF.xRooFit.TestStatistic.u0 # use the uncapped discovery test statistic
 
 And instead of calling the ``limits`` method, extract the null pvalues as follows:
 
@@ -279,4 +280,5 @@ And instead of calling the ``limits`` method, extract the null pvalues as follow
   print("Expected +1 sigma:",hs[0].pNull_asymp(1))
   print("Expected -1 sigma:",hs[0].pNull_asymp(-1))
 
-Null p-values can be converted to significances using the standard gaussian quantile (aka normile) function. 
+Null p-values can be converted to significances using the standard gaussian quantile (aka normile) function: ``ROOT::Math::gaussian_quantile_c(pValue,1)``
+

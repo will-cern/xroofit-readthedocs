@@ -61,7 +61,7 @@ The ``minimize`` method accepts an optional fit configuration that contains hype
       - ``nll.fitConfigOptions().SetValue("HesseStrategySequence","23")``
       - Similar to the StrategySequence setting, this controls the order of attempts made in the hesse algorithm, with an example of hesse failure being e.g. a non-positive definite covariance matrix (covQuality=1 in the case of hesse strategy 3 in the fit result). 
 
-For example, to make the tolerance equal to 1 and the starting strategy equal to 1, you can do (assumes you have done e.g. `import ROOT as XRF` if using xRooFit compiled on top of ROOT):
+For example, to make the tolerance equal to 1 and the starting strategy equal to 1, you can do (assumes you have done e.g. ``import ROOT as XRF`` if using xRooFit compiled on top of ROOT):
 
 >>> nll = w["pdfs/pdfName"].nll("datasetName",[XRF.xRooFit.Tolerance(1),ROOT.RooFit.Strategy(1)])
 
@@ -92,6 +92,35 @@ It is also possible to do the above calculation with the constraint term include
   nll.saturatedVal() # the value of the NLL in the hypothetical
   nll.ndof() # the number of degrees of freedom (nBins + nGlobs - nFloats in a binned model)
   nll.pgof() # = ROOT.TMath.Prob( 2*(nll.getVal() - nll.saturatedVal()), nll.ndof() )
+
+Parameter uncertainties
+-----------------------
+Post-fit parameter uncertainties are nominally estimated from the diagonal entries of the covariance matrix, i.e:
+
+.. math::
+
+  \Delta\mu = \sqrt{\mathrm{cov(\mu,\mu)}}
+
+Asymmetric uncertainties, :math:`\Delta_{\pm}\mu`, can be estimated using the *minos method*, which involves determining the values where the profile likelihood ratio curve for :math:`\mu` becomes equal to 1, which by definition occur at :math:`\mu = \hat{\mu}+\Delta_{\pm}\mu`. 
+
+.. _impact:
+Impact and parameter correlations
+-----------------------
+The *impact* on some parameter, :math:`\mu`, due to another parameter :math:`\nu`, is defined as how much the best-fit value of :math:`\mu` changes by if :math:`\nu` is changed by its corresponding post-fit uncertainty and held constant. Specifically, impact is:
+
+.. math::
+
+  \Delta_{\nu\pm}\mu = \hat{\hat{\mu}}(\nu=\hat{\nu}+\Delta_{\pm}\nu) - \hat{\mu}
+
+where :math:`\hat{\hat{\mu}}(\nu=\hat{\nu}\pm\Delta\nu)` signifies the conditional maximum likelihood estimator of :math:`\mu` for a fit with :math:`\nu` held constant at the given value. The (possibly-asymmetric) uncertainty on :math:`\nu` is given by :math:`\Delta_{\pm}\nu`.
+
+Impact is very closely related to the correlation between two parameters, and in fact the *ranking plot* that is frequently produced in HEP analyses can be viewed as just a way of visualizing the row of the correlation matrix corresponding to the parameter of interest. In fact, the impact can be estimated from the covariance matrix as follows:
+
+.. math::
+
+  \Delta_{\nu\pm}\mu \approx \frac{\mathrm{cov}(\mu,\nu)}{\pm\Delta\nu} = \mathrm{corr}(\mu,\nu)(\pm\Delta\mu)
+
+where the symmetric uncertainties from the covariance matrix diagonals are used. If the asymmetric uncertainties on :math:`\nu` have been calculated, the :math:`\pm\Delta\nu` can be replaced by :math:`\Delta_{\pm}\nu` in the formula above. We see from the above expression that impact ranking is approximately the same thing as ranking the correlation coefficients. 
 
 .. _profilelikelihood:
 Profiled Likelihood Scans
