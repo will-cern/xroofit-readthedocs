@@ -44,7 +44,7 @@ The ``minimize`` method accepts an optional fit configuration that contains hype
       - Description
     * - ``XRF.xRooFit.Tolerance(0.01)``
       - ``nll.fitConfig().MinimizerOptions().SetTolerance(0.01)``
-      - 1000 times the maximum allowed value of the edm (estimated distance to minimum) of the fit before the fit is considered converged. E.g. the default value of 0.01 means that the edm must become less than 1e-5 for convergence. If this is not reached, the migrad status code will be 3. **It is not recommended to set this any higher than 10**, as problems with parameter uncertainties have been seen for fits with EDMs above 0.01 even though the covariance matrix was positive definite. 
+      - 1000 times the maximum allowed value of the edm (estimated distance to minimum) of the fit before the fit is considered converged. E.g. the default value of 0.01 means that the edm must become less than 1e-5 for convergence. If this is not reached, the migrad status code will be 3. You generally want this parameter to be as small as possible, ideally leaving it at the default. **It is not recommended to set this any higher than 10**, as problems with parameter uncertainties have been seen for fits with EDMs above 0.01 even though the covariance matrix was positive definite. 
     * - ``ROOT.RooFit.Strategy(-1)``
       - ``nll.fitConfig().MinimizerOptions().SetStrategy(-1)``
       - The starting minuit strategy. If set to -1 (the default), the starting strategy is the start of the StrategySequence setting (see below). 
