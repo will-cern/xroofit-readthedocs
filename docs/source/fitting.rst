@@ -44,7 +44,7 @@ The ``minimize`` method accepts an optional fit configuration that contains hype
       - Description
     * - ``XRF.xRooFit.Tolerance(0.01)``
       - ``nll.fitConfig().MinimizerOptions().SetTolerance(0.01)``
-      - 1000 times the maximum allowed value of the edm (estimated distance to minimum) of the fit before the fit is considered converged. E.g. the default value of 0.01 means that the edm must become less than 1e-5 for convergence. If this is not reached, the migrad status code will be 3. You generally want this parameter to be as small as possible, ideally leaving it at the default. **It is not recommended to set this any higher than 10**, as problems with parameter uncertainties have been seen for fits with EDMs above 0.01 even though the covariance matrix was positive definite. 
+      - 1000 times the maximum allowed value of the edm (estimated distance to minimum) of the fit before the fit is considered converged. E.g. the default value of 0.01 means that the edm must become less than 1e-5 for convergence. If this is not reached, the migrad status code will be 3. It is a "stopping condition" for the convergence, the smaller it is the closer to the true minimum your are likely to be.  Ideally leave it at the default. **It is not recommended to set this any higher than 10**, as problems with parameter uncertainties have been seen for fits with EDMs above 0.01 even though the covariance matrix was positive definite. 
     * - ``ROOT.RooFit.Strategy(-1)``
       - ``nll.fitConfig().MinimizerOptions().SetStrategy(-1)``
       - The starting minuit strategy. If set to -1 (the default), the starting strategy is the start of the StrategySequence setting (see below). 
@@ -70,6 +70,8 @@ Or equivalently you can do:
 >>> nll = w["pdfs/pdfName"].nll("datasetName")
 >>> nll.fitConfig().MinimizerOptions().SetTolerance(1)
 >>> nll.fitConfig().MinimizerOptions().SetStrategy(1)
+
+A summary of the effects of Strategy and Tolerance are that higher strategies are generally slower but more robust, and lower tolerances are slower and/or more challenging to satisfy, but are more robust. So the tradeoff in setting these two hyperparameters is speed/convergence vs validity/success of the fit. A general "hyperstrategy" to follow might be to set the strategy as low as possible and increase the tolerance until your fits converge, then increase the strategy if the increased tolerance setting is causing problems such as the post-hesse EDM estimate being above tolerance. 
 
 Status codes and covariance quality codes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -110,7 +112,7 @@ It is important to check the status codes and covariance quality codes of fits t
       - Forced positive-definite. This code is returned by Hesse Strategy 2 (or lower) if the covariance matrix was not positive-definite (the status code will be 1). 
     * - 3
       - The covariance matrix is positive definite. Note that it is still possible that there are problems with the fit, particularly if the correlation matrix shows large correlations between variables. 
-    
+
    
 Goodness of fit
 ^^^^^^^^^^^^^^^
