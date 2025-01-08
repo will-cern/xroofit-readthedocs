@@ -95,7 +95,7 @@ It is important to check the status codes and covariance quality codes of fits t
     * - 4+
       - Some other error. The fit cannot be trusted. 
 
-
+,,
 
 .. list-table:: Covariance quality codes
     :widths: 10 75
