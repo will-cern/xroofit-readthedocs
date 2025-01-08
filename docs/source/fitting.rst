@@ -96,10 +96,11 @@ It is important to check the status codes and covariance quality codes of fits t
       - Some other error. The fit cannot be trusted. 
 
 
+
 .. list-table:: Covariance quality codes
     :widths: 10 75
     :header-rows: 1
-   * - Code
+    * - Code
       - Description
     * - 0
       - Covariance matrix unavailable. This should only happen if there were no floating parameters for the fit. 
