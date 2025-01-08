@@ -71,9 +71,9 @@ Or equivalently you can do:
 >>> nll.fitConfig().MinimizerOptions().SetTolerance(1)
 >>> nll.fitConfig().MinimizerOptions().SetStrategy(1)
 
-Status codes and covariance quality
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-It is important to check the status codes and covariance quality of fits to confirm the fit is valid. A "valid" fit has a status code of 0 and a covariance quality of 3. The values can be checked with:
+Status codes and covariance quality codes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+It is important to check the status codes and covariance quality codes of fits to confirm the fit is valid. A "valid" fit has a status code of 0 and a covariance quality of 3. The values can be checked with:
 
 >>> fr.status()
 >>> fr.covQual()
@@ -87,15 +87,16 @@ It is important to check the status codes and covariance quality of fits to conf
     * - 0
       - The last algorithm to run in the fit ran successfully. Normally the last algorithm to run is the `Hesse` algorithm, which calculates the covariance matrix.
     * - 1
-      - Covariance matrix forced positive-definite. This means that the place that the minimization converged does not appear to be a valid minimum; at a true minimum the covariance matrix (calculated from the Hessian) must be positive definite. It may be possible to overcome this error by increasing the strategy used by the Hesse algorithm from 2 to 3, although xRooFit by default will increase the strategy for you (look at the status code history to see if this happened). **If you see this status code, try increasing the strategy**. 
+      - Covariance matrix forced positive-definite. This means that the place that the minimization converged does not appear to be a valid minimum; at a true minimum the covariance matrix (calculated from the Hessian) must be positive definite. It may be possible to overcome this error by increasing the strategy used by the Hesse algorithm from 2 to 3, although xRooFit by default will increase the strategy for you (look at the status code history to see if this happened). **If you see this status code, try increasing the Strategy**. 
     * - 2
       - Covariance matrix is invalid (usually this means it is not positive-definite). This status code occurs only with Hesse Strategy 3.
     * - 3
-      - EDM above max threshold. EDM is estimated from the covariance matrix and is an estimate of how far from the true minimum might the fit be. The tolerance hyperparameter is what sets the threshold (see table above). **If you see this status code, try increasing the tolerance** but be aware this can increase the uncertainties on quantities derived from fits such as likelihood ratio test statistics. 
+      - EDM above max threshold. EDM is estimated from the covariance matrix and is an estimate of how far from the true minimum might the fit be. The tolerance hyperparameter is what sets the threshold (see table above). **If you see this status code, try increasing the Tolerance** but be aware this can increase the uncertainties on quantities derived from fits such as likelihood ratio test statistics. 
     * - 4+
       - Some other error. The fit cannot be trusted. 
 
-.. list-table:: Covariance quality
+
+.. list-table:: Covariance quality codes
     :widths: 10 75
     :header-rows: 1
    * - Code
