@@ -3,7 +3,7 @@
 # -- Project information
 
 project = 'xRooFit'
-copyright = '2023, Buttinger'
+copyright = '2025, Buttinger'
 author = 'Will Buttinger'
 
 release = '0.1'
