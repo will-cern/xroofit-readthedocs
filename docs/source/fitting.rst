@@ -71,6 +71,45 @@ Or equivalently you can do:
 >>> nll.fitConfig().MinimizerOptions().SetTolerance(1)
 >>> nll.fitConfig().MinimizerOptions().SetStrategy(1)
 
+Status codes and covariance quality
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+It is important to check the status codes and covariance quality of fits to confirm the fit is valid. A "valid" fit has a status code of 0 and a covariance quality of 3. The values can be checked with:
+
+>>> fr.status()
+>>> fr.covQual()
+
+.. list-table:: Status codes
+    :widths: 10 75
+    :header-rows: 1
+
+    * - Code
+      - Description
+    * - 0
+      - The last algorithm to run in the fit ran successfully. Normally the last algorithm to run is the `Hesse` algorithm, which calculates the covariance matrix.
+    * - 1
+      - Covariance matrix forced positive-definite. This means that the place that the minimization converged does not appear to be a valid minimum; at a true minimum the covariance matrix (calculated from the Hessian) must be positive definite. It may be possible to overcome this error by increasing the strategy used by the Hesse algorithm from 2 to 3, although xRooFit by default will increase the strategy for you (look at the status code history to see if this happened). **If you see this status code, try increasing the strategy**. 
+    * - 2
+      - Covariance matrix is invalid (usually this means it is not positive-definite). This status code occurs only with Hesse Strategy 3.
+    * - 3
+      - EDM above max threshold. EDM is estimated from the covariance matrix and is an estimate of how far from the true minimum might the fit be. The tolerance hyperparameter is what sets the threshold (see table above). **If you see this status code, try increasing the tolerance** but be aware this can increase the uncertainties on quantities derived from fits such as likelihood ratio test statistics. 
+    * - 4+
+      - Some other error. The fit cannot be trusted. 
+
+.. list-table:: Covariance quality
+    :widths: 10 75
+    :header-rows: 1
+   * - Code
+      - Description
+    * - 0
+      - Covariance matrix unavailable. This should only happen if there were no floating parameters for the fit. 
+    * - 1
+      - Approximation only. This code is returned by Hesse Strategy 3 if the covariance matrix is not positive-definite (the status will be 2).
+    * - 2
+      - Forced positive-definite. This code is returned by Hesse Strategy 2 (or lower) if the covariance matrix was not positive-definite (the status code will be 1). 
+    * - 3
+      - The covariance matrix is positive definite.
+    
+   
 Goodness of fit
 ^^^^^^^^^^^^^^^
 xRooFit uses the ``saturated model`` to compute a goodness of fit (g.o.f) p-value for any state of the NLL function. First the NLL function is evaluated, then the NLL is effectively re-evaluated for a hypothetical scenario where the pdf is able to describe the data perfectly. For binned data, this scenario corresponds to the case where the prediction of the model in each bin was exactly equal to the dataset yield in that bin. For unbinned data, this scenario corresponds to the model where :math:`p(\underline{x}_i)=\frac{w_i}{\sum w_i}`. The difference between the two NLL values, multiplied by two, is called the ``saturated model likelihood ratio`` test statistic. It is then assumed that this test statistic is :math:`\chi^2` distributed with an appropriate choice of the number of degrees of freedom, which allows us to compute a p-value for the test statistic value. 
