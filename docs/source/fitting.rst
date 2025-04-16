@@ -113,27 +113,8 @@ It is important to check the status codes and covariance quality codes of fits t
     * - 3
       - The covariance matrix is positive definite. Note that it is still possible that there are problems with the fit, particularly if the correlation matrix shows large correlations between variables. 
 
-Post-fit symmetric (hessian) and asymmetric uncertainties (the minos method)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The post-fit values and uncertainties on any parameter are accessed as follows:
-
-.. code-block:: python
-
-  fr.floatParsFinal().find(parName).getVal() # the post-fit value
-  fr.floatParsFinal().find(parName).getError() # the post-fit symmetric (hessian) uncertainty
-
-Asymmetric uncertainties for a parameter can be computed using the minos method, which requires conditional fits to be run in order to compute the profile likelihood ratio for the parameter and determine where this ratio becomes equal to 1 - these parameter values define the +1 sigma and -1 sigma asymmetric uncertainty values. Given the additional computational requirements, you should select which parameters should have asymmetric uncertainties computed by flagging them with an attribute before you run the fit, then the asymmetric uncertainty can be accessed similarly to above:
-
-.. code-block:: python
-
-  nll.pars().find(parName).setAttribute("minos") # flag a specific parameter of the nll as requiring asymmetric uncertainties
-  fr = nll.minimize()
-  fr.floatParsFinal().find(parName).getErrorHi() # asymmetric up uncertainty
-  fr.floatParsFinal().find(parName).getErrorLo() # asymmetric down uncertainty
-
-
 Goodness of fit
-^^^^^^^^^^^^^^^
+---------------
 xRooFit uses the ``saturated model`` to compute a goodness of fit (g.o.f) p-value for any state of the NLL function. First the NLL function is evaluated, then the NLL is effectively re-evaluated for a hypothetical scenario where the pdf is able to describe the data perfectly. For binned data, this scenario corresponds to the case where the prediction of the model in each bin was exactly equal to the dataset yield in that bin. For unbinned data, this scenario corresponds to the model where :math:`p(\underline{x}_i)=\frac{w_i}{\sum w_i}`. The difference between the two NLL values, multiplied by two, is called the ``saturated model likelihood ratio`` test statistic. It is then assumed that this test statistic is :math:`\chi^2` distributed with an appropriate choice of the number of degrees of freedom, which allows us to compute a p-value for the test statistic value. 
 
 If the above calculation is performed with just the main term of the NLL, the number of degrees of freedom is equal to the number entries in the dataset (for binned data, this is the same as the number of bins in the model) minus the number of unconstrained parameters in the main term (i.e. parameters that do not appear in the constraint term). All of this information is accessed in xRooFit as follows:
@@ -162,7 +143,21 @@ Post-fit parameter uncertainties are nominally estimated from the diagonal entri
 
   \Delta\mu = \sqrt{\mathrm{cov(\mu,\mu)}}
 
-Asymmetric uncertainties, :math:`\Delta_{\pm}\mu`, can be estimated using the *minos method*, which involves determining the values where the profile likelihood ratio curve for :math:`\mu` becomes equal to 1, which by definition occur at :math:`\mu = \hat{\mu}+\Delta_{\pm}\mu`. 
+These are known as the symmetric or hessian uncertainties. They can be accessed for any parameter from a fit result as follows:
+
+.. code-block:: python
+
+  fr.floatParsFinal().find(parName).getVal() # the post-fit value
+  fr.floatParsFinal().find(parName).getError() # the post-fit symmetric (hessian) uncertainty
+
+Asymmetric uncertainties, :math:`\Delta_{\pm}\mu`, can be estimated using the *minos method*, which involves determining the values where the profile likelihood ratio curve for :math:`\mu` becomes equal to 1, which by definition occur at :math:`\mu = \hat{\mu}+\Delta_{\pm}\mu`. Given the additional computational requirements, you should select which parameters should have asymmetric uncertainties computed by flagging them with an attribute before you run the fit, then the asymmetric uncertainty can be accessed similarly to above:
+
+.. code-block:: python
+
+  nll.pars().find(parName).setAttribute("minos") # flag a specific parameter of the nll as requiring asymmetric uncertainties
+  fr = nll.minimize()
+  fr.floatParsFinal().find(parName).getErrorHi() # asymmetric up uncertainty
+  fr.floatParsFinal().find(parName).getErrorLo() # asymmetric down uncertainty
 
 .. _impact:
 Impact and parameter correlations
@@ -198,8 +193,45 @@ The approximated impact can be calculated in xRooFit with:
 .. _breakdown:
 Conditional Uncertainties and Uncertainty Breakdowns
 ----------------------------------------------
-Fit results provide the uncertainties for 
+We saw above how to access the post-fit uncertainty for a parameter, but it is often desirable, particularly for parameters of interest, to know how much of that uncertainty was due to the presence of other uncertainties in the moodel. Impacts, as defined in the previous section, cannot be treated as uncertainty components and cannot be added in quadrature. What instead is required is known as the *conditional uncertainty*: the uncertainty on a parameter, :math:`\mu`, when another parameter, :math:`\nu`, is held constant at its post-fit (maximum likelihood estimator) value, :math:`\hat{\nu}`.
 
+This can be approximated with the covariance matrix as follows:
+
+.. math::
+
+  \Delta\mu(\nu=\hat{\nu}) \approx \sqrt{\mathrm{cov(\mu,\mu)} - \frac{\mathrm{cov(\mu,\nu)^2}}{\mathrm{cov(\nu,\nu)}}}
+
+This formula generalises to the case where we want to compute the conditional uncertainty on :math:`\mu`, conditioning on multiple other parameters. We split the list of parameters into those being conditioned on (class 2) and those not being conditioned on (class 1, this will include :math:`\mu`). Then covariance matrix is block-decomposed into matrices :math:`V_{11},V_{12},V_{21},V_{22}` according to the parameter grouping. Finally the *schur complement*, :math:`\bar{V_{22}}`, is computed according to the formula below, and the conditional uncertainty is extracted:
+
+.. math::
+
+  \bar{V_{22}} = V_{11} - V_{12} \cdot V_{22}^{-1} \cdot V_{21}\\
+  \Delta\mu(\nu_i=\hat{nu_i}) \approx \sqrt{\bar{V_{22}}(\mu,\mu)}
+    
+Conditional uncertainties can be calculated in xRooFit as follows:
+
+.. python::
+
+    cError = fr.conditionalError(muName,"list,of,nu",up=True,approx=True) # can use wildcard in list
+
+The conditional uncertainty conditioned on a group of parameters can then be translated into an *uncertainty breakdown* (uncertainty component of parameter due to the group) by subtracting this conditional uncertainty from the total uncertainty in quadrature. For example, to obtain a systematic uncertainty component, one computes the conditional uncertainty conditioned on all the systematic uncertainty parameters, and subtracts this from the total uncertainty. In this particular case, the conditional uncertainty calculated *is* the statistical uncertainty (since statistical uncertainty is all the uncertainty that isn't systematic):
+
+.. python::
+
+    totError = fr.floatParsFinal().find(muName).getError()
+    statError = fr.conditionalError(muName,"alpha_*,gamma_*",up=True,approx=True) # usual systematic parameters are prefixed by alpha_ and gamma_
+    systError = ROOT.TMath.Sqrt(ROOT.TMath.Power(totErr,2) - ROOT.TMath.Power(statErr,2))
+
+To breakdown the systematic uncertainty further, e.g. into mc-statistical (the `gamma` uncertainties) and model-sytematics (the `alpha` uncertainties) you can do:
+
+.. python::
+
+    totError = fr.floatParsFinal().find(muName).getError()
+    statAndMCStatError = fr.conditionalError(muName,"alpha_*",up=True,approx=True) # condition just on model systematics
+    modSystError = ROOT.TMath.Sqrt(ROOT.TMath.Power(totErr,2) - ROOT.TMath.Power(statAndMCStatError,2)) # model-systematics uncertainty component
+    statError = fr.conditionalError(muName,"alpha_*,gamma_*",up=True,approx=True) # condition on all systematics to get stat error
+    mcStatError = ROOT.TMath.Sqrt(ROOT.TMath.Power(statAndMCStatError,2) - ROOT.TMath.Power(statError,2)) # subtract stat error to get mc-stat uncertainty component
+    
 
 .. _profilelikelihood:
 Profiled Likelihood Scans
