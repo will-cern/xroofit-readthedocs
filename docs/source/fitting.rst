@@ -206,7 +206,7 @@ This formula generalises to the case where we want to compute the conditional un
 .. math::
 
   \bar{V_{22}} = V_{11} - V_{12} \cdot V_{22}^{-1} \cdot V_{21}\\
-  \Delta\mu(\nu_i=\hat{nu_i}) \approx \sqrt{\bar{V_{22}}(\mu,\mu)}
+  \Delta\mu(\nu_i=\hat{\nu}_i) \approx \sqrt{\bar{V_{22}}(\mu,\mu)}
     
 Conditional uncertainties can be calculated in xRooFit as follows:
 
