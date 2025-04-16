@@ -113,7 +113,25 @@ It is important to check the status codes and covariance quality codes of fits t
     * - 3
       - The covariance matrix is positive definite. Note that it is still possible that there are problems with the fit, particularly if the correlation matrix shows large correlations between variables. 
 
-   
+Post-fit symmetric (hessian) and asymmetric uncertainties (the minos method)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+The post-fit values and uncertainties on any parameter are accessed as follows:
+
+.. code-block:: python
+
+  fr.floatParsFinal().find(parName).getVal() # the post-fit value
+  fr.floatParsFinal().find(parName).getError() # the post-fit symmetric (hessian) uncertainty
+
+Asymmetric uncertainties for a parameter can be computed using the minos method, which requires conditional fits to be run in order to compute the profile likelihood ratio for the parameter and determine where this ratio becomes equal to 1 - these parameter values define the +1 sigma and -1 sigma asymmetric uncertainty values. Given the additional computational requirements, you should select which parameters should have asymmetric uncertainties computed by flagging them with an attribute before you run the fit, then the asymmetric uncertainty can be accessed similarly to above:
+
+.. code-block:: python
+
+  nll.pars().find(parName).setAttribute("minos") # flag a specific parameter of the nll as requiring asymmetric uncertainties
+  fr = nll.minimize()
+  fr.floatParsFinal().find(parName).getErrorHi() # asymmetric up uncertainty
+  fr.floatParsFinal().find(parName).getErrorLo() # asymmetric down uncertainty
+
+
 Goodness of fit
 ^^^^^^^^^^^^^^^
 xRooFit uses the ``saturated model`` to compute a goodness of fit (g.o.f) p-value for any state of the NLL function. First the NLL function is evaluated, then the NLL is effectively re-evaluated for a hypothetical scenario where the pdf is able to describe the data perfectly. For binned data, this scenario corresponds to the case where the prediction of the model in each bin was exactly equal to the dataset yield in that bin. For unbinned data, this scenario corresponds to the model where :math:`p(\underline{x}_i)=\frac{w_i}{\sum w_i}`. The difference between the two NLL values, multiplied by two, is called the ``saturated model likelihood ratio`` test statistic. It is then assumed that this test statistic is :math:`\chi^2` distributed with an appropriate choice of the number of degrees of freedom, which allows us to compute a p-value for the test statistic value. 
@@ -155,7 +173,12 @@ The *impact* on some parameter, :math:`\mu`, due to another parameter :math:`\nu
 
   \Delta_{\nu\pm}\mu = \hat{\hat{\mu}}(\nu=\hat{\nu}+\Delta_{\pm}\nu) - \hat{\mu}
 
-where :math:`\hat{\hat{\mu}}(\nu=\hat{\nu}\pm\Delta\nu)` signifies the conditional maximum likelihood estimator of :math:`\mu` for a fit with :math:`\nu` held constant at the given value. The (possibly-asymmetric) uncertainty on :math:`\nu` is given by :math:`\Delta_{\pm}\nu`.
+where :math:`\hat{\hat{\mu}}(\nu=\hat{\nu}\pm\Delta\nu)` signifies the conditional maximum likelihood estimator of :math:`\mu` for a fit with :math:`\nu` held constant at the given value. The (possibly-asymmetric) uncertainty on :math:`\nu` is given by :math:`\Delta_{\pm}\nu`. Impact can be calculated in xRooFit using the fit result object (note that these will trigger additional conditional fits):
+
+.. python::
+  
+  fr.impact(muName,nuName,up=True) # computes delta_{nu+}mu impact on "muName" parameter due to the "nuName" parameter
+  fr.impact(muName,nuName,up=True,prefit=True) # computes the 'prefit impact', meaning uncertainty on nu is the prefit uncertainty
 
 Impact is very closely related to the correlation between two parameters, and in fact the *ranking plot* that is frequently produced in HEP analyses can be viewed as just a way of visualizing the row of the correlation matrix corresponding to the parameter of interest. In fact, the impact can be estimated from the covariance matrix as follows:
 
@@ -163,7 +186,20 @@ Impact is very closely related to the correlation between two parameters, and in
 
   \Delta_{\nu\pm}\mu \approx \frac{\mathrm{cov}(\mu,\nu)}{\pm\Delta\nu} = \mathrm{corr}(\mu,\nu)(\pm\Delta\mu)
 
-where the symmetric uncertainties from the covariance matrix diagonals are used. If the asymmetric uncertainties on :math:`\nu` have been calculated, the :math:`\pm\Delta\nu` can be replaced by :math:`\Delta_{\pm}\nu` in the formula above. We see from the above expression that impact ranking is approximately the same thing as ranking the correlation coefficients. 
+where the symmetric uncertainties from the covariance matrix diagonals are used. If the asymmetric uncertainties on :math:`\nu` have been calculated, the :math:`\pm\Delta\nu` can be replaced by :math:`\Delta_{\pm}\nu` in the formula above. We learn from the above expression that impact ranking is approximately the same thing as ranking the correlation coefficients. 
+
+The approximated impact can be calculated in xRooFit with:
+
+.. python::
+  
+  fr.impact(muName,nuName,up=True,approx=True) # computes approximated delta_{nu+}mu impact on "muName" parameter due to the "nuName" parameter
+  fr.impact(muName,nuName,up=True,prefit=True,approx=True) # computes the approximated 'prefit impact', meaning uncertainty on nu is the prefit uncertainty
+
+.. _breakdown:
+Conditional Uncertainties and Uncertainty Breakdowns
+----------------------------------------------
+Fit results provide the uncertainties for 
+
 
 .. _profilelikelihood:
 Profiled Likelihood Scans
