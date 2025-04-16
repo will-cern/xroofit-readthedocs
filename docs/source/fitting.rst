@@ -212,25 +212,25 @@ Conditional uncertainties can be calculated in xRooFit as follows:
 
 .. python::
 
-    cError = fr.conditionalError(muName,"list,of,nu",up=True,approx=True) # can use wildcard in list
+  cError = fr.conditionalError(muName,"list,of,nu",up=True,approx=True) # can use wildcard in list
 
 The conditional uncertainty conditioned on a group of parameters can then be translated into an *uncertainty breakdown* (uncertainty component of parameter due to the group) by subtracting this conditional uncertainty from the total uncertainty in quadrature. For example, to obtain a systematic uncertainty component, one computes the conditional uncertainty conditioned on all the systematic uncertainty parameters, and subtracts this from the total uncertainty. In this particular case, the conditional uncertainty calculated *is* the statistical uncertainty (since statistical uncertainty is all the uncertainty that isn't systematic):
 
 .. python::
 
-    totError = fr.floatParsFinal().find(muName).getError()
-    statError = fr.conditionalError(muName,"alpha_*,gamma_*",up=True,approx=True) # usual systematic parameters are prefixed by alpha_ and gamma_
-    systError = ROOT.TMath.Sqrt(ROOT.TMath.Power(totErr,2) - ROOT.TMath.Power(statErr,2))
+  totError = fr.floatParsFinal().find(muName).getError()
+  statError = fr.conditionalError(muName,"alpha_*,gamma_*",up=True,approx=True) # usual systematic parameters are prefixed by alpha_ and gamma_
+  systError = ROOT.TMath.Sqrt(ROOT.TMath.Power(totErr,2) - ROOT.TMath.Power(statErr,2))
 
 To breakdown the systematic uncertainty further, e.g. into mc-statistical (the `gamma` uncertainties) and model-sytematics (the `alpha` uncertainties) you can do:
 
 .. python::
 
-    totError = fr.floatParsFinal().find(muName).getError()
-    statAndMCStatError = fr.conditionalError(muName,"alpha_*",up=True,approx=True) # condition just on model systematics
-    modSystError = ROOT.TMath.Sqrt(ROOT.TMath.Power(totErr,2) - ROOT.TMath.Power(statAndMCStatError,2)) # model-systematics uncertainty component
-    statError = fr.conditionalError(muName,"alpha_*,gamma_*",up=True,approx=True) # condition on all systematics to get stat error
-    mcStatError = ROOT.TMath.Sqrt(ROOT.TMath.Power(statAndMCStatError,2) - ROOT.TMath.Power(statError,2)) # subtract stat error to get mc-stat uncertainty component
+  totError = fr.floatParsFinal().find(muName).getError()
+  statAndMCStatError = fr.conditionalError(muName,"alpha_*",up=True,approx=True) # condition just on model systematics
+  modSystError = ROOT.TMath.Sqrt(ROOT.TMath.Power(totErr,2) - ROOT.TMath.Power(statAndMCStatError,2)) # model-systematics uncertainty component
+  statError = fr.conditionalError(muName,"alpha_*,gamma_*",up=True,approx=True) # condition on all systematics to get stat error
+  mcStatError = ROOT.TMath.Sqrt(ROOT.TMath.Power(statAndMCStatError,2) - ROOT.TMath.Power(statError,2)) # subtract stat error to get mc-stat uncertainty component
     
 
 .. _profilelikelihood:
