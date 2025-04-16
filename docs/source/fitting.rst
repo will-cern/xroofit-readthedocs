@@ -170,7 +170,7 @@ The *impact* on some parameter, :math:`\mu`, due to another parameter :math:`\nu
 
 where :math:`\hat{\hat{\mu}}(\nu=\hat{\nu}\pm\Delta\nu)` signifies the conditional maximum likelihood estimator of :math:`\mu` for a fit with :math:`\nu` held constant at the given value. The (possibly-asymmetric) uncertainty on :math:`\nu` is given by :math:`\Delta_{\pm}\nu`. Impact can be calculated in xRooFit using the fit result object (note that these will trigger additional conditional fits):
 
-.. python::
+.. code-block:: python
   
   fr.impact(muName,nuName,up=True) # computes delta_{nu+}mu impact on "muName" parameter due to the "nuName" parameter
   fr.impact(muName,nuName,up=True,prefit=True) # computes the 'prefit impact', meaning uncertainty on nu is the prefit uncertainty
@@ -185,7 +185,7 @@ where the symmetric uncertainties from the covariance matrix diagonals are used.
 
 The approximated impact can be calculated in xRooFit with:
 
-.. python::
+.. code-block:: python
   
   fr.impact(muName,nuName,up=True,approx=True) # computes approximated delta_{nu+}mu impact on "muName" parameter due to the "nuName" parameter
   fr.impact(muName,nuName,up=True,prefit=True,approx=True) # computes the approximated 'prefit impact', meaning uncertainty on nu is the prefit uncertainty
@@ -210,13 +210,13 @@ This formula generalises to the case where we want to compute the conditional un
     
 Conditional uncertainties can be calculated in xRooFit as follows:
 
-.. python::
+.. code-block:: python
 
   cError = fr.conditionalError(muName,"list,of,nu",up=True,approx=True) # can use wildcard in list
 
 The conditional uncertainty conditioned on a group of parameters can then be translated into an *uncertainty breakdown* (uncertainty component of parameter due to the group) by subtracting this conditional uncertainty from the total uncertainty in quadrature. For example, to obtain a systematic uncertainty component, one computes the conditional uncertainty conditioned on all the systematic uncertainty parameters, and subtracts this from the total uncertainty. In this particular case, the conditional uncertainty calculated *is* the statistical uncertainty (since statistical uncertainty is all the uncertainty that isn't systematic):
 
-.. python::
+.. code-block:: python
 
   totError = fr.floatParsFinal().find(muName).getError()
   statError = fr.conditionalError(muName,"alpha_*,gamma_*",up=True,approx=True) # usual systematic parameters are prefixed by alpha_ and gamma_
@@ -224,7 +224,7 @@ The conditional uncertainty conditioned on a group of parameters can then be tra
 
 To breakdown the systematic uncertainty further, e.g. into mc-statistical (the `gamma` uncertainties) and model-sytematics (the `alpha` uncertainties) you can do:
 
-.. python::
+.. code-block:: python
 
   totError = fr.floatParsFinal().find(muName).getError()
   statAndMCStatError = fr.conditionalError(muName,"alpha_*",up=True,approx=True) # condition just on model systematics
