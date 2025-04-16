@@ -40,8 +40,7 @@ The ``minimize`` method accepts an optional fit configuration that contains hype
     :header-rows: 1
 
     * - Name
-      - Setting after nll creation
-      - Description
+      - Details
     * - Tolerance
     * - **NLL Option**: ``XRF.xRooFit.Tolerance(0.01)``<br>**Setting after creation:** ``nll.fitConfig().MinimizerOptions().SetTolerance(0.01)``<br>**Description**: Controls when minimization stops. Tolerance equals 1000 times the maximum allowed value of the edm (estimated distance to minimum) of the fit before the fit is considered converged. E.g. the default value of 0.01 means that the edm must become less than 1e-5 for convergence. If this is not reached, the migrad status code will be 3. It is a "stopping condition" for the convergence, the smaller it is the closer to the true minimum your are likely to be.  Ideally leave it at the default. **It is not recommended to set this any higher than 10**, as problems with parameter uncertainties have been seen for fits with EDMs above 0.01 even though the covariance matrix was positive definite. 
     * - Strategy
