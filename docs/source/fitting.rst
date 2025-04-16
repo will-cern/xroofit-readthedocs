@@ -231,7 +231,12 @@ To breakdown the systematic uncertainty further, e.g. into mc-statistical (the `
   modSystError = ROOT.TMath.Sqrt(ROOT.TMath.Power(totErr,2) - ROOT.TMath.Power(statAndMCStatError,2)) # model-systematics uncertainty component
   statError = fr.conditionalError(muName,"alpha_*,gamma_*",up=True,approx=True) # condition on all systematics to get stat error
   mcStatError = ROOT.TMath.Sqrt(ROOT.TMath.Power(statAndMCStatError,2) - ROOT.TMath.Power(statError,2)) # subtract stat error to get mc-stat uncertainty component
-    
+
+Finally, note that in the case where the group consists of a single parameter, when you calculate the uncertainty component due to this parameter by subtracting off its corresponding conditional uncertainty from the total uncertainty, you get precisely the (covariance-approximated) impact:
+
+.. math::
+
+  \sqrt{(\Delta\mu)^2 - (\Delta\mu(\nu=\hat{\nu}))^2} = \sqrt{\mathrm{cov}(\mu,\mu) - \left(\sqrt{\mathrm{cov(\mu,\mu)} - \frac{\mathrm{cov(\mu,\nu)^2}}{\mathrm{cov(\nu,\nu)}}}\right)^2} = \frac{\mathrm{cov}(\mu,\nu)}{\sqrt{\mathrm{cov}(\nu,\nu)}} = \mathrm{corr}(\mu,\nu)(\Delta\mu)
 
 .. _profilelikelihood:
 Profiled Likelihood Scans
