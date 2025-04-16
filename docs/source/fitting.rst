@@ -44,10 +44,10 @@ The ``minimize`` method accepts an optional fit configuration that contains hype
       - Description
     * - Tolerance
     * - **NLL Option**: ``XRF.xRooFit.Tolerance(0.01)``<br>**Setting after creation:** ``nll.fitConfig().MinimizerOptions().SetTolerance(0.01)``<br>**Description**: Controls when minimization stops. Tolerance equals 1000 times the maximum allowed value of the edm (estimated distance to minimum) of the fit before the fit is considered converged. E.g. the default value of 0.01 means that the edm must become less than 1e-5 for convergence. If this is not reached, the migrad status code will be 3. It is a "stopping condition" for the convergence, the smaller it is the closer to the true minimum your are likely to be.  Ideally leave it at the default. **It is not recommended to set this any higher than 10**, as problems with parameter uncertainties have been seen for fits with EDMs above 0.01 even though the covariance matrix was positive definite. 
-    * - ``ROOT.RooFit.Strategy(-1)``
-      - ``nll.fitConfig().MinimizerOptions().SetStrategy(-1)``
-      - The starting minuit strategy. If set to -1 (the default), the starting strategy is the start of the StrategySequence setting (see below). 
-    * - **NLL Option**: ``XRF.xRooFit.StrategySequence("0s01s12s2s3m")``<br>**Setting after creation:** ``nll.fitConfigOptions().SetValue("StrategySequence","0s01s12s2s3m")``<br>**Description**: Determines the order of retries automatically performed if a fit fails. A number indicates a strategy setting, `s` indicates a rescan, and `m` indicates a switch to minuit1 (which will soon be deprecated). For example, a strategy sequence of "0s01s12s2m" means that if a strategy=0 fit fails it will try a rescan and then try the strategy=0 fit again, if that fails it will switch to strategy=1, and so on. 
+    * - Strategy
+      - **NLL Option**: ``ROOT.RooFit.Strategy(-1)``<br>**Setting after creation:** ``nll.fitConfig().MinimizerOptions().SetStrategy(-1)``<br>**Description**: The starting minuit strategy. If set to -1 (the default), the starting strategy is the start of the StrategySequence setting (see below). 
+    * - StrategySequence
+      - **NLL Option**: ``XRF.xRooFit.StrategySequence("0s01s12s2s3m")``<br>**Setting after creation:** ``nll.fitConfigOptions().SetValue("StrategySequence","0s01s12s2s3m")``<br>**Description**: Determines the order of retries automatically performed if a fit fails. A number indicates a strategy setting, `s` indicates a rescan, and `m` indicates a switch to minuit1 (which will soon be deprecated). For example, a strategy sequence of "0s01s12s2m" means that if a strategy=0 fit fails it will try a rescan and then try the strategy=0 fit again, if that fails it will switch to strategy=1, and so on. 
 
 For example, to make the tolerance equal to 1 and the starting strategy equal to 1, you can do (assumes you have done e.g. ``import ROOT as XRF`` if using xRooFit compiled on top of ROOT):
 
