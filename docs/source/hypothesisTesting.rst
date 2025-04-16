@@ -175,7 +175,7 @@ You should be able to answer the following questions:
   * What are your hypoSpace parameters, and what values are they set to (or which are used as axis parameters)?
   * What hypoPoints are you testing?
   * What p-value type are you using (pNull or pCLs)?
-  * How are you interpolating the p-value across the hypoSpace (linear, or log-linear, or something else)?
+  * How are you interpolating the p-value across the hypoSpace (linear, or log-linear, or something else. xRooFit uses log-linear interpolation of p-values along the parameter of interest axis)?
   * What PLR test-statistic variant are you using (two-sided, one-sided-capped-above, one-sided-capped-below, uncapped, one-sided-absolute, ...)?
   * Are you determining the ts distributions with toys or with asymptotic formulae?
   * What is the uncertainty on the p-value of each point? 
@@ -245,6 +245,27 @@ This assumes that the POI has already been declared in the workspace, there is o
 The ``limits()`` method returns an ``std::map`` of limits (each with a ``value()`` and ``error()``), with the keys of the map being "-2", "-1", "0", "1", "2" for the expected limits and "obs" for the observed limits. If no dataset is specified in the construction of the `nll` then the asimov expected dataset is used as the "observed" dataset.
 
 The values of the map are pairs of numbers where the first number is the limit, and the second number is the uncertainty on that limit, estimated from the distance to the furthest of the two neighbouring hypoPoints that straddle the target p-value. 
+
+Running limits with toys
+-----------------------------------
+The above demo using the asymptotic formulae for the test statistic distributions. You can instead run the limits with toys by altering the ``scanType`` in one of the following ways:
+
+.. code-block:: python
+
+  scanType  = "cls toys=1000.1" # will compute 1000 null hypothesis toys and 1000*0.1=100 alt hypothesis toys at each hypoPoint
+  scanType  = "cls toys=1000" # will compute 1000 null hypothesis toys and 1000 alt hypothesis toys at each hypoPoint
+  scanType  = "cls toys" # will compute toys in blocks of 100 until computed pCLs is above/below target value (0.05) with 2sigma confidence, or 10k toys are reached. 
+
+The last of these options is a form of *automated* toy calculation, designed to automatically adjust the number of toys required so that time is not wasted on computing toys for hypoPoints that are clearly far away from the limit. 
+
+After the limit is run, you can take a look at the test statistic distribution for any hypoPoint by drawing it:
+
+.. code-block:: python
+
+  hs.Print()   # list the hypoPoints in the hypoSpace
+  hs[4].Draw() # draw the test statistic distribution of e.g. the 4th (0-indexed) hypoPoint in the hypoSpace
+
+One thing to look out for when using the capped test statistics (all but ``u0``) is how many toys there are with test statistic values below 0. The capped test statistics, by definition, should all be greater than or equal to 0. If they are coming out less than 0, this indicates that the unconditional fits of those toys have not converged on the true minima. This can occur if you have set the tolerance higher than the default (setting the tolerance higher will make the minimization terminate earlier but you will be less likely to be at the true minima). 
 
 Why does my CLs limit scan fail?
 -----------------------------------
