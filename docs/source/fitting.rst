@@ -243,6 +243,19 @@ Finally, note that in the case where the group consists of a single parameter, w
 
   \sqrt{(\Delta\mu)^2 - (\Delta\mu(\nu=\hat{\nu}))^2} = \sqrt{\mathrm{cov}(\mu,\mu) - \left(\sqrt{\mathrm{cov(\mu,\mu)} - \frac{\mathrm{cov(\mu,\nu)^2}}{\mathrm{cov(\nu,\nu)}}}\right)^2} = \frac{\mathrm{cov}(\mu,\nu)}{\sqrt{\mathrm{cov}(\nu,\nu)}} = \mathrm{corr}(\mu,\nu)(\Delta\mu)
 
+.. _breakdown2:
+Shifted Global Observables (Shifted GO) method of uncertainty breakdowns
+----------------------------------------------
+A new (to 2025) technique for calculating systematic uncertainty breakdowns involves shifting global observables.
+
+This can be approximated from the covariance matrix using the following method:
+
+.. code-block:: python
+
+   systError = ROOT.TMath.Sqrt(sum([pow(fr.impact(poi,np.GetName(),up=True,prefit=True,approx=True),2) for np in w.np()]))
+
+i.e. you perform a quadrature sum of the covariance-approximated prefit impacts of the nuistance parameters
+
 .. _profilelikelihood:
 Profiled Likelihood Scans
 ----------------------
