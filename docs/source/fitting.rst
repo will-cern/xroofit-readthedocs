@@ -252,7 +252,7 @@ This can be approximated from the covariance matrix using the following method:
 
 .. code-block:: python
 
-   systError = ROOT.TMath.Sqrt(sum([pow(fr.impact(poi,np.GetName(),up=True,prefit=True,approx=True),2) for np in w.np()]))
+   systError = ROOT.TMath.Sqrt(sum([pow(fr.impact(poi,np.GetName(),up=True,prefit=True,approx=True),2) for np in w.np().reduced("alpha_*","gamma_*")]))
 
 i.e. you perform a quadrature sum of the covariance-approximated prefit impacts of the nuistance parameters
 
