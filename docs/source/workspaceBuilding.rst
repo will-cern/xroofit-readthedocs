@@ -11,6 +11,11 @@ We start by creating a new ``RooWorkspace`` owned by an ``xRooNode`` smart point
   import ROOT as XRF # or for ROOT's implementation of xRooFit, do: import ROOT.Experimental.XRooFit as XRF
 
   w = XRF.xRooNode("RooWorkspace","combined","my workspace")
+  # an alternative to the above line involves creating the RooWorkspace directly and then wrapping it
+  # in an xRooNode. The xRooNode will not own the workspace in this case, i.e. it wont be destroyed when
+  # the node is destroyed. Example is:
+  #   ws = ROOT.RooWorkspace("combined", "my workspace") # creating a RooWorkspace
+  #   w = XRF.xRooNode(ws) # wrapping the workspace in the node
 
 
 Anatomy of a model
@@ -35,15 +40,19 @@ where it is understood :math:`\lambda`, :math:`p_a(\underline{a})`, and :math:`p
 
 The constraint term is usually (but not always) a product of individual PDFs for each of the global observables. Typically they are one of two types: Gaussian, or Poisson. The latter are almost exclusive used for constraints on MC-stat nuisance parameters (often known as "gamma" parameters). Normally-constrained nuisance parameters (known as "alpha" parameters) use a gaussian constraint with variance of 1 and global observable nominal value of 0. In HistFactory models, the luminosity parameter is the only parameter that receives a gaussian constraint with a variance different to 1 and nominal observed value different to 0. 
 
-Our attention now turns to :math:`p_x(\underline{x}|\underline{\theta})`, which is conventionally split up into channels. Such PDFs are represented by ``RooSimultaneous`` in RooFit. To a new PDF of this type, just do:
+Top-level multi-channel PDF
+---------------------------
+Our attention now turns to the :math:`p_x(\underline{x}|\underline{\theta})` probability density. This PDF is conventionally split up into channels (sometimes called *regions*), meaning that there is a discrete observable (traditionally called ``channelCat``) in the dataset that determines which channel PDF should be used for the entry (i.e. which channel the entry *belongs* to). In RooFit, this channel-dependent PDF is represented by an instance of the ``RooSimultaneous`` PDF class. To create a new PDF of this type with xRooFit, just do:
 
 .. code-block:: python
 
   w["pdfs"].Add("simPdf") # simPdf is the traditional name of a multi-channel PDF, but can be any name.
 
+Here we see that xRooFit defaults to assuming any new pdf you might want to create will be a multi-channel PDF.
+
 Channels
 ---------
-PDFs of models are usually factorised into channels (sometimes called `Regions`), which means that there is a discrete regular observable (traditionally called ``channelCat``) that indicates which channel each entry in the dataset belongs to. If we denote this observable as :math:`c`, then we can write
+We now denote the the discrete channel observable as :math:`c`, and we write
 
 .. math::
 
@@ -55,7 +64,9 @@ To add a new channel to our multi-channel PDF, do e.g.:
 
 .. code-block:: python
 
-  w["pdfs/simPdf"].Add("SR") # adds the channel "SR" to the "simPdf" top-level pdf
+  w["pdfs/simPdf"].Add("SR").SetTitle("Signal Region") # adds the channel "SR" to the "simPdf" top-level pdf, and gives it a title
+
+In xRooFit, a channel PDF is represented by a RooFit `RooProdPdf` which is a PDF class that can represent a product of PDFs. For technical reasons, this `RooProdPdf` will end up containing the constraint term PDFs (meaning if we evaluate the PDF it will include the constraint term contributions).
 
 We now will see how a channel's PDF can be built out of samples ....
 
@@ -85,7 +96,7 @@ Alternatively, you can use a ROOT histogram to achieve the same results:
 .. code-block:: python
 
   hBkg = ROOT.TH1D("bkg","Background;obs title",nBins,low,high)
-  hBkg.GetXaxis().SetName("obsName")
+  hBkg.GetXaxis().SetName("obsName") # note: ROOT's default x-axis name is 'xaxis' which will be used as the robs name otherwise
   w["pdfs/simPdf/SR/samples"].Add(hBkg)
 
 Both of these approaches will create an initial `SimpleDensity` factor for the sample (see below). Subsequent factors can be included by multiplying the sample. 
@@ -116,6 +127,8 @@ The above factor types can be created and included in a sample as follows:
 
 If a factor with the same name already exists in the workspace, the factor type is ignored and the existing factor is used. This allows factors to be shared between samples both in the same channel and across channels. 
 
+Parameterizing factors (Varied factors)
+--------
 Other than the trivial case where the factor is a parameter itself (i.e. norm factor), there are a multitude of ways we could make a factor :math:`\theta`-dependent. One strategy is to define a collection of "variations" for the factor (the variations are themselves types of factor), locate them at points in a "variation space" with parameterized coordinates, and provide interpolation+extrapolation rules to calculate the value of the factor at any point in the variation space. Very commonly the variation coordinates will explicitly be parameters, and the points for which variations are defined will correspond to points where one of the coordinates equals either +1 or -1 and the remaining coordinates are 0. The +1 variation is called the `up` variation of that coordinate, and -1 variation is the `down` variation. Additionally the point where all the coordinates are 0 will be known as the "nominal" variation. These `Varied` factors can be created in xRooFit by `varying` one of the parameter-independent factors above.
 
 So the additional factor types are:
@@ -125,9 +138,20 @@ So the additional factor types are:
      * `Histo` factor: A special case of Varied factor where the variations are simple factors. RooFit class: ``PiecewiseInterpolation``.
   * `Func` factor: a generic parametric function. RooFit class: ``RooFormulaVar``. 
 
-When any of the parameters of a parameter-dependent factor also have a constraint term, the phrase `factor` can be replaced by `sys`, e.g. a `ShapeFactor` becomes a `ShapeSys`.
+To vary an existing factor, you can do:
 
+.. code-block:: python
 
+  # in this example the sample called `sampleName` is given a variation in its 2nd bin, corresponding to a shift
+  # in the parameter called `npName` from value 0 to value 1.
+  w["pdfs/simPdf/SR/samples/sampleName"].SetBinContent(2,val,"npName",1)
+
+Alternatively, you can use a ROOT histogram as a variation (**important: you will want to ensure there are no bin errors on your variation histogram, otherwise xRooFit will try to create errors-on-errors which are not fully supported at this time**):
+
+.. code-block:: python
+
+  hVaryHist.SetName("npName=1") # must follow convention here of npName followed by a value, conventionally the nSigma of the variation
+  w["pdfs/simPdf/SR/samples/sampleName"].Vary(hVaryHist)
 
 Interpolation and Extrapolation Rules of Varied Factors
 ^^^^^^^^^^^^^^
@@ -182,6 +206,28 @@ for multiplicative interpolation codes, where the code types and interpolation f
       - :math:`I_6(\theta;x_{-},x_0,x_{+}) = 1+I_4(\theta;x_{-},x_0,x_{+})`. 
       - Recommended for normalization factors that must not have roots (i.e. be equal to 0) outside of :math:`|\theta|<1`.
 
+To check or change an interpolation scheme of a `Histo` factor you can do:
+
+.. code-block:: python
+
+  w["pdfs/simPdf/SR/samples/sampleName/sampleName"].printAllInterpCodes() # list interpCode of the DensityHisto factor
+  w["pdfs/simPdf/SR/samples/sampleName/sampleName"].setAllInterpCodes(code) # change the interp code of the DensityHisto factor
+
+Factors vs Sys
+--------------
+When any of the parameters of a parameter-dependent factor also has a constraint term, the phrase `factor` can be replaced by `sys`, e.g. a `ShapeFactor` becomes a `ShapeSys`.
+
+To promote a factor to a sys we would just add a constraint to the parameter(s) of the factor. E.g.
+
+.. code-block:: python
+
+  w["pdfs/simPdf"].pars()["npName"].Constrain("gaussian(0,1)") # create a gaussian constraint on the `npName` parameter of the model 
+  w["pdfs/simPdf"].pars()["npName"].Constrain("normal") # alias to above
+
+.. note:: Log-normal constraints:
+   Sometimes you will encounter the phrase *log-normal* constraint. This is equivalent to replacing the parameter in the model with the exponentiated version of that parameter, and then applying a normal gaussian constraint to the parameter. The replacement in the model can be achieved with ``w["pdfs/simPdf"].pars()["npName"].Replace("expr::expo_npName('exp(npName)',npName)")``
+
+
 Handling MC Stat Errors: A special ShapeSys for MC Stat errrors
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 The standard way to incorporate MC stat uncertainties on the sample nominal histograms is to have a dedicated ShapeSys for the uncertainty, where the parameters are constrained by Poissons (they are hence known as :math:`\gamma` mc stat parameters). This ShapeSys is nominally shared between all the samples in the channel that are participating in the calculation of the total MC stat uncertainty. However, I would advise that any sample that gets its own Norm factor should also have its own separate ShapeSys (or none at all), rather than share the ShapeSys. This is because the affect of the normalization factor isn't accounted for in the calculation of the Poisson constraint term unless the sample has its own stat ShapeSys with its own :math:`\gamma` parameters.
@@ -217,4 +263,19 @@ After some manipulation this can be shown to be equal to:
 The second part of product, :math:`\frac{w_i!}{\Delta_i^{w_i}}` is independent of the parameters and hence can be included in the `dataset term` of the NLL, and the first part of the product then amounts to just a product of Poissons. Hence people will often claim their model is a product of Poissons, with a constraint PDF for nuisance parameters constrained by auxilliary measurements (aka global observables).
 
 
+Creating datasets in the workspace
+==================
+If you have a histogram representing the observed yield in a particular channel of the model you are working on, you can add that histogram's content to a dataset in the workspace by first ensuring the histogram's name matches the desired dataset name, and then adding the histogram to the ``datasets()`` of the channel:
+
+
+.. code-block:: python
+
+  hData.SetName("obsData")
+  w["pdfs/simPdf/channelName"].datasets().Add(hData)
+
+Alternatively, you can specify data content bin-by-bin as follows:
+
+.. code-block:: python
+
+  w["pdfs/simPdf/channelName"].SetBinData(binNumber, value, dsName) # dsName defaults to "obsData" if unspecified
 
