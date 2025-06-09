@@ -206,6 +206,13 @@ for multiplicative interpolation codes, where the code types and interpolation f
       - :math:`I_6(\theta;x_{-},x_0,x_{+}) = 1+I_4(\theta;x_{-},x_0,x_{+})`. 
       - Recommended for normalization factors that must not have roots (i.e. be equal to 0) outside of :math:`|\theta|<1`.
 
+To check or change an interpolation scheme of a `Histo` factor you can do:
+
+.. code-block:: python
+
+  w["pdfs/simPdf/SR/samples/sampleName/sampleName"].printAllInterpCodes() # list interpCode of the DensityHisto factor
+  w["pdfs/simPdf/SR/samples/sampleName/sampleName"].setAllInterpCodes(code) # change the interp code of the DensityHisto factor
+
 Factors vs Sys
 --------------
 When any of the parameters of a parameter-dependent factor also has a constraint term, the phrase `factor` can be replaced by `sys`, e.g. a `ShapeFactor` becomes a `ShapeSys`.
@@ -218,7 +225,7 @@ To promote a factor to a sys we would just add a constraint to the parameter(s) 
   w["pdfs/simPdf"].pars()["npName"].Constrain("normal") # alias to above
 
 .. note:: Log-normal constraints:
-   Sometimes you will encounter the phrase *log-normal* constraint. This is equivalent to replacing the parameter in the model with the exponentiated version of that parameter, and then applying a normal gaussian constraint to the parameter. The replacement in the model can be achieved with `w["pdfs/simPdf"].pars()["npName"].Replace("expr::expo_npName('exp(npName)',npName)")`
+   Sometimes you will encounter the phrase *log-normal* constraint. This is equivalent to replacing the parameter in the model with the exponentiated version of that parameter, and then applying a normal gaussian constraint to the parameter. The replacement in the model can be achieved with ``w["pdfs/simPdf"].pars()["npName"].Replace("expr::expo_npName('exp(npName)',npName)")``
 
 
 Handling MC Stat Errors: A special ShapeSys for MC Stat errrors
