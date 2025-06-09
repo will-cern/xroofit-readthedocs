@@ -263,4 +263,19 @@ After some manipulation this can be shown to be equal to:
 The second part of product, :math:`\frac{w_i!}{\Delta_i^{w_i}}` is independent of the parameters and hence can be included in the `dataset term` of the NLL, and the first part of the product then amounts to just a product of Poissons. Hence people will often claim their model is a product of Poissons, with a constraint PDF for nuisance parameters constrained by auxilliary measurements (aka global observables).
 
 
+Creating datasets in the workspace
+==================
+If you have a histogram representing the observed yield in a particular channel of the model you are working on, you can add that histogram's content to a dataset in the workspace by first ensuring the histogram's name matches the desired dataset name, and then adding the histogram to the ``datasets()`` of the channel:
+
+
+.. code-block:: python
+
+  hData.SetName("obsData")
+  w["pdfs/simPdf/channelName"].datasets().Add(hData)
+
+Alternatively, you can specify data content bin-by-bin as follows:
+
+.. code-block:: python
+
+  w["pdfs/simPdf/channelName"].SetBinData(binNumber, value, dsName) # dsName defaults to "obsData" if unspecified
 
