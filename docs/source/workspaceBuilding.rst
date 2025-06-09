@@ -64,7 +64,7 @@ To add a new channel to our multi-channel PDF, do e.g.:
 
 .. code-block:: python
 
-  w["pdfs/simPdf"].Add("SR") # adds the channel "SR" to the "simPdf" top-level pdf
+  w["pdfs/simPdf"].Add("SR").SetTitle("Signal Region") # adds the channel "SR" to the "simPdf" top-level pdf, and gives it a title
 
 In xRooFit, a channel PDF is represented by a RooFit `RooProdPdf` which is a PDF class that can represent a product of PDFs. For technical reasons, this `RooProdPdf` will end up containing the constraint term PDFs (meaning if we evaluate the PDF it will include the constraint term contributions).
 
@@ -96,7 +96,7 @@ Alternatively, you can use a ROOT histogram to achieve the same results:
 .. code-block:: python
 
   hBkg = ROOT.TH1D("bkg","Background;obs title",nBins,low,high)
-  hBkg.GetXaxis().SetName("obsName")
+  hBkg.GetXaxis().SetName("obsName") # note: ROOT's default x-axis name is 'xaxis' which will be used as the robs name otherwise
   w["pdfs/simPdf/SR/samples"].Add(hBkg)
 
 Both of these approaches will create an initial `SimpleDensity` factor for the sample (see below). Subsequent factors can be included by multiplying the sample. 
@@ -127,6 +127,8 @@ The above factor types can be created and included in a sample as follows:
 
 If a factor with the same name already exists in the workspace, the factor type is ignored and the existing factor is used. This allows factors to be shared between samples both in the same channel and across channels. 
 
+Parameterizing factors (Varied factors)
+--------
 Other than the trivial case where the factor is a parameter itself (i.e. norm factor), there are a multitude of ways we could make a factor :math:`\theta`-dependent. One strategy is to define a collection of "variations" for the factor (the variations are themselves types of factor), locate them at points in a "variation space" with parameterized coordinates, and provide interpolation+extrapolation rules to calculate the value of the factor at any point in the variation space. Very commonly the variation coordinates will explicitly be parameters, and the points for which variations are defined will correspond to points where one of the coordinates equals either +1 or -1 and the remaining coordinates are 0. The +1 variation is called the `up` variation of that coordinate, and -1 variation is the `down` variation. Additionally the point where all the coordinates are 0 will be known as the "nominal" variation. These `Varied` factors can be created in xRooFit by `varying` one of the parameter-independent factors above.
 
 So the additional factor types are:
@@ -136,9 +138,20 @@ So the additional factor types are:
      * `Histo` factor: A special case of Varied factor where the variations are simple factors. RooFit class: ``PiecewiseInterpolation``.
   * `Func` factor: a generic parametric function. RooFit class: ``RooFormulaVar``. 
 
-When any of the parameters of a parameter-dependent factor also have a constraint term, the phrase `factor` can be replaced by `sys`, e.g. a `ShapeFactor` becomes a `ShapeSys`.
+To vary an existing factor, you can do:
 
+.. code-block:: python
 
+  # in this example the sample called `sampleName` is given a variation in its 2nd bin, corresponding to a shift
+  # in the parameter called `npName` from value 0 to value 1.
+  w["pdfs/simPdf/SR/samples/sampleName"].SetBinContent(2,val,"npName",1)
+
+Alternatively, you can use a ROOT histogram as a variation (**important: you will want to ensure there are no bin errors on your variation histogram, otherwise xRooFit will try to create errors-on-errors which are not fully supported at this time**):
+
+.. code-block:: python
+
+  hVaryHist.SetName("npName=1") # must follow convention here of npName followed by a value, conventionally the nSigma of the variation
+  w["pdfs/simPdf/SR/samples/sampleName"].Vary(hVaryHist)
 
 Interpolation and Extrapolation Rules of Varied Factors
 ^^^^^^^^^^^^^^
@@ -192,6 +205,21 @@ for multiplicative interpolation codes, where the code types and interpolation f
       - Multiplicative Poly Interp. + Linear Extrap.
       - :math:`I_6(\theta;x_{-},x_0,x_{+}) = 1+I_4(\theta;x_{-},x_0,x_{+})`. 
       - Recommended for normalization factors that must not have roots (i.e. be equal to 0) outside of :math:`|\theta|<1`.
+
+Factors vs Sys
+--------------
+When any of the parameters of a parameter-dependent factor also has a constraint term, the phrase `factor` can be replaced by `sys`, e.g. a `ShapeFactor` becomes a `ShapeSys`.
+
+To promote a factor to a sys we would just add a constraint to the parameter(s) of the factor. E.g.
+
+.. code-block:: python
+
+  w["pdfs/simPdf"].pars()["npName"].Constrain("gaussian(0,1)") # create a gaussian constraint on the `npName` parameter of the model 
+  w["pdfs/simPdf"].pars()["npName"].Constrain("normal") # alias to above
+
+.. note:: Log-normal constraints:
+   Sometimes you will encounter the phrase *log-normal* constraint. This is equivalent to replacing the parameter in the model with the exponentiated version of that parameter, and then applying a normal gaussian constraint to the parameter. The replacement in the model can be achieved with `w["pdfs/simPdf"].pars()["npName"].Replace("expr::expo_npName('exp(npName)',npName)")`
+
 
 Handling MC Stat Errors: A special ShapeSys for MC Stat errrors
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
