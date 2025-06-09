@@ -11,6 +11,11 @@ We start by creating a new ``RooWorkspace`` owned by an ``xRooNode`` smart point
   import ROOT as XRF # or for ROOT's implementation of xRooFit, do: import ROOT.Experimental.XRooFit as XRF
 
   w = XRF.xRooNode("RooWorkspace","combined","my workspace")
+  # an alternative to the above line involves creating the RooWorkspace directly and then wrapping it
+  # in an xRooNode. The xRooNode will not own the workspace in this case, i.e. it wont be destroyed when
+  # the node is destroyed. Example is:
+  #   ws = ROOT.RooWorkspace("combined", "my workspace") # creating a RooWorkspace
+  #   w = XRF.xRooNode(ws) # wrapping the workspace in the node
 
 
 Anatomy of a model
@@ -35,15 +40,19 @@ where it is understood :math:`\lambda`, :math:`p_a(\underline{a})`, and :math:`p
 
 The constraint term is usually (but not always) a product of individual PDFs for each of the global observables. Typically they are one of two types: Gaussian, or Poisson. The latter are almost exclusive used for constraints on MC-stat nuisance parameters (often known as "gamma" parameters). Normally-constrained nuisance parameters (known as "alpha" parameters) use a gaussian constraint with variance of 1 and global observable nominal value of 0. In HistFactory models, the luminosity parameter is the only parameter that receives a gaussian constraint with a variance different to 1 and nominal observed value different to 0. 
 
-Our attention now turns to :math:`p_x(\underline{x}|\underline{\theta})`, which is conventionally split up into channels. Such PDFs are represented by ``RooSimultaneous`` in RooFit. To a new PDF of this type, just do:
+Top-level multi-channel PDF
+---------------------------
+Our attention now turns to the :math:`p_x(\underline{x}|\underline{\theta})` probability density. This PDF is conventionally split up into channels (sometimes called *regions*), meaning that there is a discrete observable (traditionally called ``channelCat``) in the dataset that determines which channel PDF should be used for the entry (i.e. which channel the entry *belongs* to). In RooFit, this channel-dependent PDF is represented by an instance of the ``RooSimultaneous`` PDF class. To create a new PDF of this type with xRooFit, just do:
 
 .. code-block:: python
 
   w["pdfs"].Add("simPdf") # simPdf is the traditional name of a multi-channel PDF, but can be any name.
 
+Here we see that xRooFit defaults to assuming any new pdf you might want to create will be a multi-channel PDF.
+
 Channels
 ---------
-PDFs of models are usually factorised into channels (sometimes called `Regions`), which means that there is a discrete regular observable (traditionally called ``channelCat``) that indicates which channel each entry in the dataset belongs to. If we denote this observable as :math:`c`, then we can write
+We now denote the the discrete channel observable as :math:`c`, and we write
 
 .. math::
 
@@ -56,6 +65,8 @@ To add a new channel to our multi-channel PDF, do e.g.:
 .. code-block:: python
 
   w["pdfs/simPdf"].Add("SR") # adds the channel "SR" to the "simPdf" top-level pdf
+
+In xRooFit, a channel PDF is represented by a RooFit `RooProdPdf` which is a PDF class that can represent a product of PDFs. For technical reasons, this `RooProdPdf` will end up containing the constraint term PDFs (meaning if we evaluate the PDF it will include the constraint term contributions).
 
 We now will see how a channel's PDF can be built out of samples ....
 
