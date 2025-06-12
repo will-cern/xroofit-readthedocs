@@ -29,7 +29,9 @@ To minimize the NLL function, just call its ``minimize`` method, which will retu
 
 >>> fr = nll.minimize()
 
-You can draw the fit result (``fr.Draw()``) to see the post-fit parameter pulls. 
+You can draw the fit result (``fr.Draw()``) to see the post-fit parameter pulls. It is also very important to look at the correlation matrix of the fit (assuming the covariance matrix quality is good (code=3, see below). To visualize the correlation matrix you can do ``fr.Draw("CORR COLZ TEXT")``. To visualize just the parameters with the top-10 off-diagonal correlations you can do ``fr.Draw("CORR10 COLZ TEXT")``.
+
+
 
 The Fit Config
 ^^^^^^^^^^^^^^
