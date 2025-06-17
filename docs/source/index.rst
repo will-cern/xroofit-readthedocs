@@ -15,9 +15,4 @@ Contents
    workspaceBuilding
    fitting
    hypothesisTesting
-
-Demos
-------------------
-
-* :ref:`genindex`
-* :ref:`modindex`
+   demos
