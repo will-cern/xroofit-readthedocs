@@ -15,3 +15,5 @@ Contents
    workspaceBuilding
    fitting
    hypothesisTesting
+   demos
+   _static/SimpleSB

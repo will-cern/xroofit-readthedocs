@@ -29,7 +29,10 @@ To minimize the NLL function, just call its ``minimize`` method, which will retu
 
 >>> fr = nll.minimize()
 
-You can draw the fit result (``fr.Draw()``) to see the post-fit parameter pulls. 
+You can draw the fit result (``fr.Draw()``) to see the post-fit parameter pulls. It is also very important to look at the correlation matrix of the fit (assuming the covariance matrix quality is good (code=3, see below). To visualize the correlation matrix you can do ``fr.Draw("CORR COLZ TEXT")``. To visualize just the parameters with the top-10 off-diagonal correlations you can do ``fr.Draw("CORR10 COLZ TEXT")``.
+
+.. note:: The importance of checking the correlation matrix:
+   The correlation matrix gives an indication of how skewed the likelihood minima is in the parameter space, in that large correlations are indicative of a potentially poorly-defined minima. A strong correlation (typically over 80%) can be evidence that your parameters are not sufficiently independent of one another and your model may then have *degeneracy* in that form of different points in the parameter space having the same (or very similar) model predictions (pdf values). If this is happening at or near where the true minima in the likelihood function lies, the minima itself would be poorly defined and the covariance matrix (and hence symmetric uncertainties) for the parameters cannot be trusted. 
 
 The Fit Config
 ^^^^^^^^^^^^^^
