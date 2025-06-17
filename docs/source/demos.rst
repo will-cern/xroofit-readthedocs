@@ -7,6 +7,7 @@ Demos
 =====
 
 `Single-bin S+B Model with a CLs Limit <_static/SimpleSB.html>`_
+`Full ABCD Model Demo, with statistical analysis <_static/ABCDFull.html>`_
 
 Exercises
 =========
