@@ -16,4 +16,4 @@ Contents
    fitting
    hypothesisTesting
    demos
-   `Single-bin S+B Model with a CLs Limit <_static/SimpleSB.html>`_
+   Single-bin S+B Model with a CLs Limit <_static/SimpleSB.html>
