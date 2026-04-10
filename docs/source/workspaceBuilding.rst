@@ -172,7 +172,7 @@ for additive interpolation codes and
 for multiplicative interpolation codes, where the code types and interpolation functions are defined in the following table:
 
 
-.. list-table:: Interpolation Schemes
+.. list-table:: Interpolation Schemes (used in equations above)
     :widths: 25 10 55 10
     :header-rows: 1
 
