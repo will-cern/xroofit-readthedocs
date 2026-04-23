@@ -78,14 +78,9 @@ It is possible to use StatAnalysis in a `SWAN Jupyter Session <https://swan.cern
 
 .. code-block:: console
 
-   unset PYTHONHOME
-   unset PYTHONPATH
-   unset ROOTSYS
-   unset CPPYY_BACKEND_LIBRARY
-   unset LD_LIBRARY_PATH
+
    export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase
    source ${ATLAS_LOCAL_ROOT_BASE}/user/atlasLocalSetup.sh
-   asetup StatAnalysis,0.4,latest
-   export JUPYTER_PATH=$StatAnalysis_DIR/etc/notebook
+   asetup StatAnalysis,0.7,latest
 
 You should amend the second-to-last line to setup the release you want. Save the above to a file, and then use it as your setup script for your swan session. 
