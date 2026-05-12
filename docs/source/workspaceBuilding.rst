@@ -279,3 +279,27 @@ Alternatively, you can specify data content bin-by-bin as follows:
 
   w["pdfs/simPdf/channelName"].SetBinData(binNumber, value, dsName) # dsName defaults to "obsData" if unspecified
 
+
+Demo: Looking for large systematic variations
+==================
+Suppose you have a workspace and you want to check every sample in every channel for any large individual systematic variations, say variations that are bigger than some percent of the nominal value in that bin for that sample. With xRooFit, this could be achieved with something like the following (assuming ``w`` is your workspace ``xRooNode``):
+
+.. code-block:: python
+  
+  systThreshold = 0.9 # look for variations greater than 90% of nominal
+  syst_nps = w.np().reduced("alpha_*") # limit ourself to nuisance parameters prefixed by 'alpha_'
+  for region in w["pdfs/simPdf"].bins(): # loop over all regions of the pdf called "simPdf"
+    for sample in region["samples"].components(): # loop over all samples in that region
+        for bin in sample.bins():
+            c = bin.GetContent()
+            for np in syst_nps:
+                np.setVal(1)
+                hi = bin.GetContent()
+                np.setVal(-1)
+                lo = bin.GetContent()
+                np.setVal(0)
+                if abs(lo-c) > c*systThreshold or abs(hi-c) > c*systThreshold:
+                    print(region.GetName(),sample.GetName(),np.GetName(),bin.GetName(),f": nom={c:g} lo={lo:g} hi={hi:g}")
+
+
+
