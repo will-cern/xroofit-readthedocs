@@ -75,7 +75,7 @@ The ``minimize`` method accepts an optional fit configuration that contains hype
     * - StrategySequence
       - | **NLL Option**: ``XRF.xRooFit.StrategySequence("0s01s12s2s3m")``
         | **Setting after creation:** ``nll.fitConfigOptions().SetValue("StrategySequence","0s01s12s2s3m")``
-        | **Description**: Determines the order of retries automatically performed if a fit fails. A number indicates a strategy setting, `s` indicates a rescan, and `m` indicates a switch to minuit1 (which will soon be deprecated). For example, a strategy sequence of "0s01s12s2m" means that if a strategy=0 fit fails it will try a rescan and then try the strategy=0 fit again, if that fails it will switch to strategy=1, and so on. 
+        | **Description**: Determines the order of retries automatically performed if a fit fails. A number indicates a strategy setting, `s` indicates a rescan, and `m` indicates a switch to minuit1 (which will soon be deprecated). An `r` indicates that the minimization is reset (return to initial parameter starting point and clear all internal minimization step values etc). For example, a strategy sequence of "0s01s12s2m" means that if a strategy=0 fit fails it will try a rescan and then try the strategy=0 fit again, if that fails it will switch to strategy=1, and so on. 
     * - Hesse
       - | **NLL Option**: ``ROOT.RooFit.Hesse(True)``
         | **Setting after creation:** ``nll.fitConfig().SetParabErrors(True)``
