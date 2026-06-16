@@ -13,12 +13,32 @@ The NLL is the most commonly used :ref:`objective function <objective functions>
 
 The list of NLL options is optional. The most important NLL options, which affect how the NLL is actually defined, are described in the :ref:`section below <objective functions>`. 
 
+The ``datasetName`` is name of one of the datasets in the workspace (see ``w.datasets().Print()``) or you can pass an actual node of a dataset, e.g. a generated dataset.
+
 Whatever the NLL options are, the NLL function can always be factorized into two parts: the *main term* and the *constraint term*. The main term depends on the :ref:`regular observables <regular observables>` and the constraint term depends on the :ref:`global observables <global observables>`. See :ref:`NLL Definition <NLL Definition>` for more info.
 
 .. _nll options:
 NLL Options
 ^^^^^^^^^^^
 These are passed to the ``nll`` method (alongside the dataset name) and determine specifically how the NLL objective function is constructed ...
+
+.. _generating:
+Generating Datasets
+^^^^^^^^^^^^^^^^^^^
+Datasets can be generated from pdfs. These are either toy datasets or expected (asimov) datasets. To generate a dataset you can do:
+
+.. code-block:: python
+
+  myDS = w["pdfs/simPdf"].generate(expected=False) # Generate a toy dataset. Change expected=True for asimov
+  nll = w["pdfs/simPdf"].nll(myDS) # use it to construct a NLL function
+
+To generate a hybrid dataset (e.g. asimov data in some channels, e.g. SR channels, but obsData in other channels, e.g. CR channels) one can use the ``reduced`` method to construct a subset of the full pdf and generate from that, then use ``Add`` to combine the datasets:
+
+.. code-block:: python
+
+  asiData = w["pdfs/simPdf"].reduced("SR*").generate(expected=True) # expected data in channels prefixed with "SR"
+  asiData.Add(w["pdfs/simPdf"].reduced("CR*").datasets()["obsData"]) # add the "obsData" from the channels prefixed with "CR"
+
 
 
 .. _minimization:
