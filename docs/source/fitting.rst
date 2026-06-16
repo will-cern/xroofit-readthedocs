@@ -5,6 +5,27 @@ This is otherwise known as the process of fitting a model to a dataset. The outp
 
 >>> fitResult = w["pdfs/pdfName"].nll("datasetName").minimize()
 
+To construct an NLL we use a PDF and a Dataset. Datasets may already exist in the workspace (see the workspace building day) in the case of observed/real datasets, but datasets can also be created from a pdf, known as generating a dataset.
+
+.. _generating:
+Generating Datasets
+-------------------
+Datasets can be generated from pdfs. These are either toy datasets or expected (asimov) datasets. To generate a dataset you can do:
+
+.. code-block:: python
+
+  myDS = w["pdfs/simPdf"].generate(expected=False) # Generate a toy dataset. Change expected=True for asimov
+  nll = w["pdfs/simPdf"].nll(myDS) # use it to construct a NLL function
+
+To generate a hybrid dataset (e.g. asimov data in some channels, e.g. SR channels, but obsData in other channels, e.g. CR channels) one can use the ``reduced`` method to construct a subset of the full pdf and generate from that, then use ``Add`` to combine the datasets:
+
+.. code-block:: python
+
+  asiData = w["pdfs/simPdf"].reduced("SR*").generate(expected=True) # expected data in channels prefixed with "SR"
+  asiData.Add(w["pdfs/simPdf"].reduced("CR*").datasets()["obsData"]) # add the "obsData" from the channels prefixed with "CR"
+
+
+
 Constructing the NLL Function
 ----------------------------
 The NLL is the most commonly used :ref:`objective function <objective functions>` for fitting. It is constructed using the ``nll`` method of a pdf node in the workspace:
@@ -21,24 +42,6 @@ Whatever the NLL options are, the NLL function can always be factorized into two
 NLL Options
 ^^^^^^^^^^^
 These are passed to the ``nll`` method (alongside the dataset name) and determine specifically how the NLL objective function is constructed ...
-
-.. _generating:
-Generating Datasets
-^^^^^^^^^^^^^^^^^^^
-Datasets can be generated from pdfs. These are either toy datasets or expected (asimov) datasets. To generate a dataset you can do:
-
-.. code-block:: python
-
-  myDS = w["pdfs/simPdf"].generate(expected=False) # Generate a toy dataset. Change expected=True for asimov
-  nll = w["pdfs/simPdf"].nll(myDS) # use it to construct a NLL function
-
-To generate a hybrid dataset (e.g. asimov data in some channels, e.g. SR channels, but obsData in other channels, e.g. CR channels) one can use the ``reduced`` method to construct a subset of the full pdf and generate from that, then use ``Add`` to combine the datasets:
-
-.. code-block:: python
-
-  asiData = w["pdfs/simPdf"].reduced("SR*").generate(expected=True) # expected data in channels prefixed with "SR"
-  asiData.Add(w["pdfs/simPdf"].reduced("CR*").datasets()["obsData"]) # add the "obsData" from the channels prefixed with "CR"
-
 
 
 .. _minimization:
